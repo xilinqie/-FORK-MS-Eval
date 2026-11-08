@@ -63,8 +63,13 @@ class DataIntegrityTests(unittest.TestCase):
         self.assertEqual((index["n_tasks"], index["n_need"], index["n_direct"]), (166, 89, 77))
         tasks = {item["task"] for item in index["tasks"]}
         self.assertEqual(tasks, {p.name[:-8] for p in (DATA_DIR / "oracle166").glob("*.task.md")})
-        revisions = json.loads((DATA_DIR / "oracle166_history/2026-11-09.json").read_text())
-        historical = {item["task"]: item["historical_source"] for item in revisions["tasks"]}
+        historical = {}
+        for name in ("2026-11-09.json", "2026-11-09-task-prompts.json"):
+            revisions = json.loads((DATA_DIR / "oracle166_history" / name).read_text())
+            for item in revisions["tasks"]:
+                if item["task"] in historical:
+                    self.assertEqual(historical[item["task"]], item["historical_source"])
+                historical[item["task"]] = item["historical_source"]
         for task in tasks:
             record = json.loads((DEFAULT_GT / f"{task}.json").read_text())
             source = record["source"]
@@ -106,6 +111,66 @@ class DataIntegrityTests(unittest.TestCase):
             stale["source"]["oracle166"] = item["corrected_source"]
             with self.assertRaisesRegex(ValueError, "oracle166 hash mismatch"):
                 validate_reviewed_gt(stale)
+
+    def test_task_prompt_errata_keep_reviewed_context_and_remove_answer_hints(self):
+        manifest = json.loads((DATA_DIR / "oracle166_history/2026-11-09-task-prompts.json").read_text())
+        self.assertEqual(len(manifest["tasks"]), 4)
+        marker = b"Task-Solving Rationable with Sub-task Decomposition:"
+        forbidden = {
+            "canvas-semester-summary-ppt": ["2498"],
+            "terminal-sf-wc-order-audit-excel-word": ["82 products"],
+            "terminal-wc-yf-ppt-notion-email": [
+                "26 percent", "62 percent", "24 percent", "+26%", "+62%", "+24%",
+                "top performing category (Electronics)", "best-performing category (Electronics)",
+                "Electronics and TV & Home Theater as the largest revenue sources",
+                "Electronics and TV & Home Theater are the top revenue generators",
+                "underperforming categories like Cameras and Watches",
+                "underperforming categories Cameras and Watches",
+                "reinforce Electronics and TV & Home Theater, promote Cameras and Watches",
+            ],
+            "terminal-yf-canvas-excel-gcal-email": ["6.10%", "-3.84%", "strong earnings", "bank sector concerns"],
+        }
+        self.assertEqual({item["task"] for item in manifest["tasks"]}, set(forbidden))
+        for item in manifest["tasks"]:
+            before = (REPO_ROOT / item["before_source"]).read_bytes()
+            after = (REPO_ROOT / item["corrected_source"]).read_bytes()
+            historical = (REPO_ROOT / item["historical_source"]).read_bytes()
+            for content, key in ((before, "before_sha256"), (after, "corrected_sha256"),
+                                 (historical, "historical_sha256")):
+                self.assertEqual(hashlib.sha256(content).hexdigest(), item[key])
+            self.assertNotEqual(before.split(marker, 1)[0], after.split(marker, 1)[0])
+            for phrase in forbidden[item["task"]]:
+                self.assertNotIn(phrase, after.decode("utf-8"))
+            before_plan, after_plan = before.split(marker, 1)[1], after.split(marker, 1)[1]
+            self.assertEqual(before_plan != after_plan, item["plan_changed"])
+            if not item["plan_changed"]:
+                self.assertEqual(before_plan, after_plan)
+            else:
+                self.assertEqual(item["task"], "terminal-wc-yf-ppt-notion-email")
+                # Result cleanup must preserve waves, agent assignments and handoffs.
+                structure = rb"(?m)^\s*(?:\d+\. Wave[^\n]*|\d+\. (?:explore|coder) \d+ \([^)]*\))"
+                self.assertEqual(re.findall(structure, before_plan), re.findall(structure, after_plan))
+            record = json.loads((DEFAULT_GT / (item["task"] + ".json")).read_text())
+            self.assertEqual(record["source"]["oracle166"], item["historical_source"])
+            self.assertEqual(load_task_text(record), historical.decode("utf-8"))
+            self.assertEqual(record["label_cache_keys"], item["published_label_cache_keys"])
+            stale = copy.deepcopy(record)
+            stale["source"]["oracle166"] = item["corrected_source"]
+            with self.assertRaisesRegex(ValueError, "oracle166 hash mismatch"):
+                validate_reviewed_gt(stale)
+
+    def test_task_prompt_errata_match_runtime_task_sources(self):
+        manifest = json.loads((DATA_DIR / "oracle166_history/2026-11-09-task-prompts.json").read_text())
+        lock = json.loads((REPO_ROOT / "docker/locks/reference.json").read_text())
+        self.assertEqual(lock["sources"]["toolathlon_gym"], manifest["gym_commit"])
+        gym = REPO_ROOT / "toolathlon_gym"
+        if not (gym / "README.md").exists():
+            self.skipTest("Initialize toolathlon_gym to verify ordinary/Oracle prompt parity")
+        for item in manifest["tasks"]:
+            task = (gym / item["gym_task"]).read_bytes()
+            self.assertEqual(hashlib.sha256(task).hexdigest(), item["corrected_task_sha256"])
+            oracle = (REPO_ROOT / item["corrected_source"]).read_bytes()
+            self.assertEqual(task.strip(), oracle.split(b"Task-Solving Rationable with Sub-task Decomposition:", 1)[0].strip())
 
     def test_cache_hashes_and_offline_gt_reuse_from_other_directory(self):
         for path in DEFAULT_CACHE.glob("*.json"):

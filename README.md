@@ -81,7 +81,7 @@ MS-Eval supports two interchangeable runtimes built from the same pinned depende
 ### 1. Build the environment
 
 ```bash
-git clone --recurse-submodules https://github.com/LINs-lab/MS-Eval.git
+git clone --recurse-submodules --branch fix/oracle26-audit-20261109 https://github.com/xilinqie/-FORK-MS-Eval.git MS-Eval
 cd MS-Eval
 ```
 
@@ -116,7 +116,7 @@ bash $P/spec/run.sh --backend $BACKEND             # MAD-SAE, 166 tasks
 bash $P/sa/run.sh --backend $BACKEND               # SA baseline, 166 tasks
 ```
 
-Results are saved under `results/$MODEL/spec/` and `results/$MODEL/sa/`. With Docker, you can try one task first by adding `--task canvas-course-comparison`. Other modes and options: [run guide](https://github.com/Danield21/toolathlon_gym/blob/main/run_sh_eval/README.md).
+Results are saved under `results/$MODEL/spec/` and `results/$MODEL/sa/`. With Docker, you can try one task first by adding `--task canvas-course-comparison`. Other modes and options: [run guide](https://github.com/xilinqie/-FORK-toolathlon_gym/blob/fix/task-answer-disclosure-20261109/run_sh_eval/README.md).
 
 ### 3. Compute metrics
 
@@ -139,7 +139,7 @@ python3 -m eval.summarize --root results > results/metrics.md
 | [`data/`](data/README.md)                                     | 166 task documents and task categories                           |
 | [`eval/`](eval/README.md)                                     | DA / OU / MSQ evaluators and released results                    |
 | [`docker/`](docker/README.md), [`enroot/`](enroot/README.md) | Docker and Enroot runtime builds                                 |
-| [`toolathlon_gym/`](https://github.com/Danield21/toolathlon_gym/blob/main/run_sh_eval/README.md)     | Submodule: benchmark environment, MCP servers, and run launchers |
+| [`toolathlon_gym/`](https://github.com/xilinqie/-FORK-toolathlon_gym/blob/fix/task-answer-disclosure-20261109/run_sh_eval/README.md)     | Submodule: benchmark environment, MCP servers, and run launchers |
 | [`kimi-code/`](https://github.com/Danield21/kimi-code/tree/tool-result-persistence-fix) | Submodule: Kimi-Code agent harness                               |
 | [`visualize_script/`](visualize_script/README.md)             | Scripts for the paper figures                                    |
 | `assets/`                                                    | Figures and case visualizations                                  |
@@ -156,12 +156,12 @@ MS-Eval builds on two open-source projects; we thank their authors for releasing
   - **Checklists:** revised the evaluation checks of 150 tasks, and the initial states or reference outputs of 61.
   - **MCP servers:** fixed and hardened 14 servers.
 
-Our modified versions are the two submodules of this repository, and `git clone --recurse-submodules` checks out the exact commits we evaluated. To use them on their own, take these branches:
+The two submodules pin exact source revisions. This fork includes the [four-task prompt cleanup](data/oracle166/ERRATA-2026-11-09-TASK-PROMPTS.md); the published results above describe the original revision and have not been rerun for these corrections. To use the submodules on their own, take these branches:
 
 | Submodule | Repository | Branch |
 | --- | --- | --- |
 | `kimi-code/` | [Danield21/kimi-code](https://github.com/Danield21/kimi-code/tree/tool-result-persistence-fix) | **`tool-result-persistence-fix`** (not `main`, an older upstream snapshot without our patch) |
-| `toolathlon_gym/` | [Danield21/toolathlon_gym](https://github.com/Danield21/toolathlon_gym) | **`main`** |
+| `toolathlon_gym/` | [xilinqie/-FORK-toolathlon_gym](https://github.com/xilinqie/-FORK-toolathlon_gym) | **`fix/task-answer-disclosure-20261109`** |
 
 ## 📝 Citation
 

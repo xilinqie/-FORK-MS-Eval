@@ -5,6 +5,7 @@ English | [简体中文](README.zh-CN.md)
 Reviewed golden labels used by the [DA evaluator](../README.md): one JSON file per task plus `_index.json`. Of the 166 tasks, 89 require delegation and 77 do not; together they define 265 golden sub-agent units.
 
 These are the **published-version labels**. The [2026-11-09 execution-guide corrections](../../../data/oracle166/ERRATA-2026-11-09.md)
+and [four-task prompt cleanup](../../../data/oracle166/ERRATA-2026-11-09-TASK-PROMPTS.md)
 do not constitute a new LLM review: the affected records point to exact historical
 source snapshots, preserving their source hashes, cache keys, labels and counts.
 Do not treat these labels or existing scores as a re-evaluation of the corrected guides.

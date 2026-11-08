@@ -79,7 +79,7 @@
   "node": "22.20.0",
   "uv": "0.12.5",
   "sources": {
-    "toolathlon_gym": "872ebef73f170a565136d4521ddb02b41872362e",
+    "toolathlon_gym": "c42a57d3100490ec0cd031f75ffa80babbc150bc",
     "kimi-code": "4aabe61aefb86e1b014ea2dc56308dda2b2e0971"
   },
   "database_seed_sha256": "9d48204b20dd0b474d2766e40ce2d53f0d68a5d69706709cdbbacc33d8fd8511",

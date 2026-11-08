@@ -62,7 +62,7 @@
   "task": "canvas-semester-summary-ppt",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/canvas-semester-summary-ppt.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/canvas-semester-summary-ppt.task.md",
     "oracle166_sha256": "e2b7e20776e8358a5a9d8bd1e2198777b331b5474090489dcd0751e6fb970442"
   },
   "label_cache_keys": [

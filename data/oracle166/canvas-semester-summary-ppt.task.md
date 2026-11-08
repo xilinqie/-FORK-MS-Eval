@@ -16,7 +16,7 @@ An overview slide showing the summary statistics (total courses, total students,
 
 One slide for each course showing the course name as title and its details (course code, total students, enrollments, assignments, average points possible).
 
-A final "Key Takeaways" slide identifying the largest course by student count, the smallest course by student count, and the course with the most assignments. For each, include both the course name and the specific numeric value (e.g. "Largest: CCC-2014J with 2498 students").
+A final "Key Takeaways" slide identifying the largest course by student count, the smallest course by student count, and the course with the most assignments. For each, include both the course name and the specific numeric value (e.g. "Largest: <course name> with <student count> students").
 
 Task-Solving Rationable with Sub-task Decomposition:
 To solve this task efficiently, combine the three small reads for each concrete Fall 2014 course and freeze deterministic extrema before either writer starts.

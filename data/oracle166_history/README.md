@@ -7,7 +7,12 @@ are byte-identical to their versions at MS-Eval commit
 defects for reproducibility and are **not** the corrected guides.
 
 See the [26-task errata](../oracle166/ERRATA-2026-11-09.md) and its
-[source manifest](2026-11-09.json). The current guides remain in
+[source manifest](2026-11-09.json), followed by the
+[four-task prompt errata](../oracle166/ERRATA-2026-11-09-TASK-PROMPTS.md) and
+[prompt manifest](2026-11-09-task-prompts.json). The `4c1bbd3/` archive covers
+29 distinct published contexts. The `5a0753a/` directory additionally preserves
+the finance-workshop guide after the first plan fix and before the prompt cleanup.
+The current guides remain in
 [`data/oracle166/`](../oracle166/README.md).
 
 Published golden records point at these snapshots where necessary. Their source

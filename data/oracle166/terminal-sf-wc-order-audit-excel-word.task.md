@@ -12,7 +12,7 @@ Create an Excel workbook called Order_Audit_Report.xlsx in your workspace with f
 
 The first sheet should be named DW_Summary and contain columns Status, Order_Count, and Total_Revenue. Include one row for each order status from the data warehouse: Cancelled, Delivered, Processing, and Shipped. Add a totals row at the bottom.
 
-The second sheet should be named Store_Summary and contain columns Metric and Value. Include rows for Total Products (82 products in the store), Total Orders, Total Customers, and Average Order Value from the online store.
+The second sheet should be named Store_Summary and contain columns Metric and Value. Include rows for Total Products, Total Orders, Total Customers, and Average Order Value from the online store.
 
 The third sheet should be named ShipMode_Breakdown and contain columns Ship_Mode, Order_Count, and Total_Revenue. Include rows for Economy, Express, Next Day, and Standard shipping modes from the data warehouse.
 

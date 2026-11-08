@@ -1,0 +1,79 @@
+{
+  "schema": "task-prompt-errata-v1",
+  "revision": "2026-11-09-task-prompts",
+  "base_commit": "5a0753ae6c3644e60bf5471efbb0f24c7c799935",
+  "original_gym_commit": "872ebef73f170a565136d4521ddb02b41872362e",
+  "gym_commit": "c42a57d3100490ec0cd031f75ffa80babbc150bc",
+  "gym_repository": "https://github.com/xilinqie/-FORK-toolathlon_gym",
+  "scope": "Remove direct answer disclosures in four task descriptions and repeated market-result hints in one Oracle plan. Published labels and scores remain historical; no benchmark rerun or relabeling.",
+  "tasks": [
+    {
+      "task": "canvas-semester-summary-ppt",
+      "gym_task": "tasks/finalpool/canvas-semester-summary-ppt/docs/task.md",
+      "original_task_sha256": "730648b8de985cf73d2306583ad03fee9b31ce359abdee399f1059f22172fd6b",
+      "corrected_task_sha256": "d0030dbf768fbfedcde52cf0416f0ee0add22996ae3ad1c7814f22e425d8465d",
+      "historical_source": "data/oracle166_history/4c1bbd3/canvas-semester-summary-ppt.task.md",
+      "historical_sha256": "e2b7e20776e8358a5a9d8bd1e2198777b331b5474090489dcd0751e6fb970442",
+      "before_source": "data/oracle166_history/4c1bbd3/canvas-semester-summary-ppt.task.md",
+      "before_sha256": "e2b7e20776e8358a5a9d8bd1e2198777b331b5474090489dcd0751e6fb970442",
+      "corrected_source": "data/oracle166/canvas-semester-summary-ppt.task.md",
+      "corrected_sha256": "1082f2ea4f5723eb1fb48101c3b4a1e838a747c0a02244b6b7800fa14e66bd97",
+      "plan_changed": false,
+      "published_label_cache_keys": [
+        "7de11a6cfda79038a26116c4036aef54e150878e9a01febf43ed95c24d337f78"
+      ],
+      "correction": "Replace the largest-course answer example with field placeholders."
+    },
+    {
+      "task": "terminal-sf-wc-order-audit-excel-word",
+      "gym_task": "tasks/finalpool/terminal-sf-wc-order-audit-excel-word/docs/task.md",
+      "original_task_sha256": "0ae87f1062604bb02b72f0d6a0f716ee1afef8015029fec94e17431a5067f489",
+      "corrected_task_sha256": "b1845b463ee51748107e16300a81a52025db6b95027df5b0568d062dc0df05e8",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-sf-wc-order-audit-excel-word.task.md",
+      "historical_sha256": "539994a61ca4472ab8f45870999e302e41fa70ca31b96a5dd4f46a6e3cf5bbcc",
+      "before_source": "data/oracle166_history/4c1bbd3/terminal-sf-wc-order-audit-excel-word.task.md",
+      "before_sha256": "539994a61ca4472ab8f45870999e302e41fa70ca31b96a5dd4f46a6e3cf5bbcc",
+      "corrected_source": "data/oracle166/terminal-sf-wc-order-audit-excel-word.task.md",
+      "corrected_sha256": "0d79ec9d6ab1dc5978da5e08d5189db8a73f761186bd146672c970a2ba8804ea",
+      "plan_changed": false,
+      "published_label_cache_keys": [
+        "ae8272336d024a790411c062b7c0be11c4e9d3c89a86eb71b2f535dd64de4eb1"
+      ],
+      "correction": "Remove the prefilled product count; retain complete pagination and reporting requirements."
+    },
+    {
+      "task": "terminal-wc-yf-ppt-notion-email",
+      "gym_task": "tasks/finalpool/terminal-wc-yf-ppt-notion-email/docs/task.md",
+      "original_task_sha256": "a041defa98a70a69d76f2d78cc1d6427af4adb8d88a257a5bc3c65843130e631",
+      "corrected_task_sha256": "250860c315e4214e3a3733571e7c2295fb6ed66d733c4c5be5870931bdbce292",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-wc-yf-ppt-notion-email.task.md",
+      "historical_sha256": "9fa5a4f665413863f5d52481fd04f3dceae115fb4dc29b79e166f0b9eb480cba",
+      "before_source": "data/oracle166_history/4c1bbd3/terminal-wc-yf-ppt-notion-email.task.md",
+      "before_sha256": "9fa5a4f665413863f5d52481fd04f3dceae115fb4dc29b79e166f0b9eb480cba",
+      "corrected_source": "data/oracle166/terminal-wc-yf-ppt-notion-email.task.md",
+      "corrected_sha256": "da15fb97f08b6d1d632ef3b4992a7a73b0911a608e08f7466bb0ef5aedf92b85",
+      "plan_changed": true,
+      "published_label_cache_keys": [
+        "b068fd817b0ba43b4c51804e70f671a21dc94f984e637091388d921187e77b04"
+      ],
+      "correction": "Derive price changes and category conclusions from data; remove the same preset results from the Oracle plan."
+    },
+    {
+      "task": "terminal-yf-canvas-excel-gcal-email",
+      "gym_task": "tasks/finalpool/terminal-yf-canvas-excel-gcal-email/docs/task.md",
+      "original_task_sha256": "53d9a14ef66d006c2529478342d569d2df6a826a09cd7e1151a411aea57f4d5d",
+      "corrected_task_sha256": "8e713849e41a54b5a9a36c580decb2d1ff573d50aecdec21fdd7289ffa7aa2e1",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-yf-canvas-excel-gcal-email.task.md",
+      "historical_sha256": "5322e6709a8ec2a95bee643ef01f12e31e46ca940f9a673cc16b29729fa06c93",
+      "before_source": "data/oracle166_history/5a0753a/terminal-yf-canvas-excel-gcal-email.task.md",
+      "before_sha256": "a57395f4729403a1ff0c698d900e55c40090edc9a37def3edcdf2cae92622f92",
+      "corrected_source": "data/oracle166/terminal-yf-canvas-excel-gcal-email.task.md",
+      "corrected_sha256": "f7ed875555f5140aff54058b9ad7136acbaa0ccaa5dc6de69e2a1a43193ec3b8",
+      "plan_changed": false,
+      "published_label_cache_keys": [
+        "fef404ada4649734eb3cb77918e87f433320213858b624fcb1d363cc443fada6"
+      ],
+      "correction": "Replace two answer-matching market events and unsupported news causes with a neutral description template."
+    }
+  ]
+}

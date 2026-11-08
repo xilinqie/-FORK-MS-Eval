@@ -62,7 +62,7 @@
   "task": "terminal-wc-yf-ppt-notion-email",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/terminal-wc-yf-ppt-notion-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/terminal-wc-yf-ppt-notion-email.task.md",
     "oracle166_sha256": "9fa5a4f665413863f5d52481fd04f3dceae115fb4dc29b79e166f0b9eb480cba"
   },
   "label_cache_keys": [

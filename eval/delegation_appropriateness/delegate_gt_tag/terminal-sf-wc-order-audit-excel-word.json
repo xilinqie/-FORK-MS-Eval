@@ -62,7 +62,7 @@
   "task": "terminal-sf-wc-order-audit-excel-word",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/terminal-sf-wc-order-audit-excel-word.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/terminal-sf-wc-order-audit-excel-word.task.md",
     "oracle166_sha256": "539994a61ca4472ab8f45870999e302e41fa70ca31b96a5dd4f46a6e3cf5bbcc"
   },
   "label_cache_keys": [

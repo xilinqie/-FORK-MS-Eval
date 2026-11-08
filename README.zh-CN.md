@@ -81,7 +81,7 @@ MS-Eval 提供两种可互换的镜像方案，基于同一套锁定的依赖构
 ### 1. 构建运行环境
 
 ```bash
-git clone --recurse-submodules https://github.com/LINs-lab/MS-Eval.git
+git clone --recurse-submodules --branch fix/oracle26-audit-20261109 https://github.com/xilinqie/-FORK-MS-Eval.git MS-Eval
 cd MS-Eval
 ```
 
@@ -116,7 +116,7 @@ bash $P/spec/run.sh --backend $BACKEND             # MAD-SAE，166 个任务
 bash $P/sa/run.sh --backend $BACKEND               # SA 基线，166 个任务
 ```
 
-结果保存在 `results/$MODEL/spec/` 和 `results/$MODEL/sa/` 下。使用 Docker 时，可加 `--task canvas-course-comparison` 先试跑一个任务。其他模式与参数见[运行指南](https://github.com/Danield21/toolathlon_gym/blob/main/run_sh_eval/README.zh-CN.md)。
+结果保存在 `results/$MODEL/spec/` 和 `results/$MODEL/sa/` 下。使用 Docker 时，可加 `--task canvas-course-comparison` 先试跑一个任务。其他模式与参数见[运行指南](https://github.com/xilinqie/-FORK-toolathlon_gym/blob/fix/task-answer-disclosure-20261109/run_sh_eval/README.zh-CN.md)。
 
 ### 3. 计算指标
 
@@ -139,7 +139,7 @@ python3 -m eval.summarize --root results > results/metrics.md
 | [`data/`](data/README.zh-CN.md)                                           | 166 个任务文档及任务分类                   |
 | [`eval/`](eval/README.zh-CN.md)                                           | DA / OU / MSQ 评测器与已发布结果           |
 | [`docker/`](docker/README.zh-CN.md)、[`enroot/`](enroot/README.zh-CN.md) | Docker 与 Enroot 两种运行环境的构建        |
-| [`toolathlon_gym/`](https://github.com/Danield21/toolathlon_gym/blob/main/run_sh_eval/README.zh-CN.md)           | 子模块：benchmark 环境、MCP 服务与启动脚本 |
+| [`toolathlon_gym/`](https://github.com/xilinqie/-FORK-toolathlon_gym/blob/fix/task-answer-disclosure-20261109/run_sh_eval/README.zh-CN.md)           | 子模块：benchmark 环境、MCP 服务与启动脚本 |
 | [`kimi-code/`](https://github.com/Danield21/kimi-code/tree/tool-result-persistence-fix) | 子模块：Kimi-Code Agent 框架               |
 | [`visualize_script/`](visualize_script/README.zh-CN.md)                   | 论文图表绘制脚本                           |
 | `assets/`                                                                | 图片与案例可视化                           |
@@ -156,12 +156,12 @@ MS-Eval 基于以下两个开源项目构建，感谢其作者的开源贡献。
   - **Checklist 口径**：修订了 150 个任务的评分检查项，以及 61 个任务的初始状态或参考答案；
   - **MCP server**：修复并加固了 14 个 MCP server。
 
-修改后的两个版本即本仓库的两个子模块，`git clone --recurse-submodules` 会检出我们评测时使用的确切提交。如需单独使用，请选择以下分支：
+两个子模块固定了确切的源代码版本。本 fork 包含[四题答案提示清理](data/oracle166/ERRATA-2026-11-09-TASK-PROMPTS.md)；上文论文结果对应原版本，尚未针对本次修订重新运行。如需单独使用，请选择以下分支：
 
 | 子模块 | 仓库 | 分支 |
 | --- | --- | --- |
 | `kimi-code/` | [Danield21/kimi-code](https://github.com/Danield21/kimi-code/tree/tool-result-persistence-fix) | **`tool-result-persistence-fix`**（不要用 `main`：它是较早的上游快照，不含我们的补丁） |
-| `toolathlon_gym/` | [Danield21/toolathlon_gym](https://github.com/Danield21/toolathlon_gym) | **`main`** |
+| `toolathlon_gym/` | [xilinqie/-FORK-toolathlon_gym](https://github.com/xilinqie/-FORK-toolathlon_gym) | **`fix/task-answer-disclosure-20261109`** |
 
 ## 📝 引用
 
