@@ -2,6 +2,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+**Version note:** [26 execution guides were corrected on 2026-11-09](oracle166/ERRATA-2026-11-09.md). Published labels/scores still use their pinned original contexts; corrected guides have not been relabeled or rerun.
+
 The 166 MS-Eval tasks and their categories.
 
 ```text

@@ -62,7 +62,7 @@
   "task": "wc-inventory-alert-gcal",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/wc-inventory-alert-gcal.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/wc-inventory-alert-gcal.task.md",
     "oracle166_sha256": "c06001dc331125608ff0be56fd7781ee7fd2cd312c302e9418dd9a0ec6bb0251"
   },
   "label_cache_keys": [],

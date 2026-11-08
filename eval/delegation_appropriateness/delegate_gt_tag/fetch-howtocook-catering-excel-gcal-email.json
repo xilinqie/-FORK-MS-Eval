@@ -62,7 +62,7 @@
   "task": "fetch-howtocook-catering-excel-gcal-email",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/fetch-howtocook-catering-excel-gcal-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/fetch-howtocook-catering-excel-gcal-email.task.md",
     "oracle166_sha256": "44e7013ca109eeca1396f9ac96219661bc9ff25963f9aa89a483017e65e36892"
   },
   "label_cache_keys": [],

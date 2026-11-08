@@ -5,14 +5,16 @@ After creating the presentation, also create an Excel file called Department_Bud
 Then create a Google Sheet named 'HR Department Tracker' (create it if it does not already exist) and populate it with the same department data, and send an email to hr.directors@company.com with subject HR Department Budget Summary Q1 2026 containing a brief overview of the findings.
 
 Task-Solving Rationable with Sub-task Decomposition:
-To solve this task efficiently, the main agent should first query the complete department table once, preserve exact department names such as HR and R&D, compute headcount and budget controls, and freeze alphabetically sorted rows. Then create the three independent deliverables in one wave.
+To solve this task efficiently, the main agent should first query the complete department table once, preserve exact department names such as HR and R&D, compute headcount and budget controls, and freeze alphabetically sorted rows. Create the presentation and cloud tracker in parallel, then have the main agent dispatch the Excel writer only after the presentation has been saved and validated.
 
-1. Wave 1 — dispatch exactly 3 coder sub-agents in parallel:
+1. Wave 1 — dispatch exactly 2 coder sub-agents in parallel:
 
    1. coder 0 (office-report-builder 0): One coder sub-agent owns `HR_Department_Overview.pptx` under one presentation ID. Use the literal source labels as slide text—especially the exact three-character string `R&D`; never expand it to Research and Development. Create the title slide, one slide per returned department with exact name/headcount/budget/location, and the final numeric summary. Use one bounded populate operation per slide, save once, extract the full deck text once, and return the path, slide count/titles, literal department-name coverage, and total checks.
 
-   2. coder 1 (office-report-builder 1): One coder sub-agent owns `Department_Budget_Analysis.xlsx` and writes the exact Department Summary and Summary sheets with literal values, alphabetical rows, Budget_Per_Employee, and the exact underscore metric labels. Use one bulk write per sheet and one read-back.
+   2. coder 2 (external-workflow-operator 0): One coder sub-agent owns exactly one `HR Department Tracker` cloud spreadsheet. Search the exact title, create only if absent, write the same literal source labels and rows once, and read it back once. Return the spreadsheet ID and validation to the main agent.
 
-   3. coder 2 (external-workflow-operator 0): One coder sub-agent owns exactly one `HR Department Tracker` cloud spreadsheet. Search the exact title, create only if absent, write the same literal source labels and rows once, and read it back once.
+After Wave 1, the main agent collects both results and requires the saved presentation path and successful slide/name/total checks. It may prepare the Excel rows while Wave 1 runs, but a failed or unresolved presentation operation blocks the Excel writer's dispatch.
 
-After Wave 1, the main agent checks that all three outputs contain every exact department label including `R&D` and that the totals agree, then sends exactly one email to `hr.directors@company.com` with subject `HR Department Budget Summary Q1 2026`. Do not run row-by-row revalidation or dispatch another wave.
+2. Wave 2 — after the main agent accepts the presentation receipt, dispatch exactly one coder 1 (office-report-builder 1), passing the canonical rows and verified presentation path. This sub-agent owns `Department_Budget_Analysis.xlsx` and writes the exact Department Summary and Summary sheets with literal values, alphabetical rows, Budget_Per_Employee, and the exact underscore metric labels. Use one bulk write per sheet and one read-back, then return the saved workbook path and validation.
+
+After Wave 2, the main agent checks that all three outputs contain every exact department label including `R&D` and that the totals agree, then sends exactly one email to `hr.directors@company.com` with subject `HR Department Budget Summary Q1 2026`. A failed or unresolved output blocks sending. Do not run row-by-row revalidation or dispatch an additional verification wave.

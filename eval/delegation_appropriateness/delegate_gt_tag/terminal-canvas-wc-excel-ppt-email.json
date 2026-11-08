@@ -62,7 +62,7 @@
   "task": "terminal-canvas-wc-excel-ppt-email",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/terminal-canvas-wc-excel-ppt-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/terminal-canvas-wc-excel-ppt-email.task.md",
     "oracle166_sha256": "f8ec4df9460d79948989e37753a50197ba1ad66d084a711dab0d380b3cfb4119"
   },
   "label_cache_keys": [

@@ -62,7 +62,7 @@
   "task": "canvas-quiz-performance-gcal-gform",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/canvas-quiz-performance-gcal-gform.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/canvas-quiz-performance-gcal-gform.task.md",
     "oracle166_sha256": "48919277f4df5b2569bfe358b428de2fa483b1ca7cb1d610f4094cdb714ce4f3"
   },
   "label_cache_keys": [],

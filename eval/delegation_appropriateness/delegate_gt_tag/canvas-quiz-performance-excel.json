@@ -62,7 +62,7 @@
   "task": "canvas-quiz-performance-excel",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/canvas-quiz-performance-excel.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/canvas-quiz-performance-excel.task.md",
     "oracle166_sha256": "15f6e00a088a518278657ab3b40ceae8879a5a5d51661a441de7edde48f34cb4"
   },
   "label_cache_keys": [],

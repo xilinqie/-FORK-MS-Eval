@@ -1,7 +1,11 @@
 # Oracle task documents
 
-This directory contains the **166 canonical `.task.md` task documents** used by MS-Eval. They provide task context and golden delegation guidance for the [golden delegation tags](../../eval/delegation_appropriateness/delegate_gt_tag/README.md).
+This directory contains the **166 current `.task.md` execution guides** for MS-Eval.
+The [2026-11-09 errata](ERRATA-2026-11-09.md) correct 26 orchestration plans without
+changing their original task descriptions. The [published golden delegation tags](../../eval/delegation_appropriateness/delegate_gt_tag/README.md)
+retain their original reviewed contexts through [historical source snapshots](../oracle166_history/README.md);
+they have not been regenerated for the corrected guides.
 
-Each filename defines a task ID by removing `.task.md`. The ID connects the task document, its golden-tag JSON, task-category lists, and execution summaries. Golden-tag records store the SHA-256 of the corresponding document in `source.oracle166_sha256`; changing task text requires a deliberate annotation update.
+Each filename defines a task ID by removing `.task.md`. The ID connects the task document, its golden-tag JSON, task-category lists, and execution summaries. Golden-tag records store the exact reviewed source path and SHA-256 in `source`; use those pinned paths when reproducing historical labels and scores. Corrected-guide evaluations require a separately reviewed annotation version.
 
 Browse tasks by [domain](../task_categories/cluster_by_domain/README.md) or by [delegation category](../task_categories/cluster_by_delegation/README.md). The category READMEs link here. Task documents are not duplicated inside the category directories.

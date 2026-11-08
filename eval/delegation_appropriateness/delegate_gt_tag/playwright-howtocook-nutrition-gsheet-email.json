@@ -62,7 +62,7 @@
   "task": "playwright-howtocook-nutrition-gsheet-email",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/playwright-howtocook-nutrition-gsheet-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/playwright-howtocook-nutrition-gsheet-email.task.md",
     "oracle166_sha256": "80901f3a4c9d6b4d7b23984f861da7bcfae4b87a9e1b88b692189e680121ce63"
   },
   "label_cache_keys": [

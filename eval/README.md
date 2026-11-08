@@ -2,6 +2,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+**Version note:** evaluation defaults reproduce the published labels using their pinned source contexts. The [2026-11-09 corrected execution guides](../data/oracle166/ERRATA-2026-11-09.md) are a separate revision and need new reviewed labels and runs before reporting revised scores.
+
 Compute **Delegation Appropriateness (DA)** and **Orchestration Utilities (OU)** from benchmark runs, then combine them into **MSQ**. Python 3.10+, standard library only. Run every command from the repository root.
 
 | Module | Output |

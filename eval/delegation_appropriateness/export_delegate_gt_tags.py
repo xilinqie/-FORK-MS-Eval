@@ -14,7 +14,9 @@ from pathlib import Path
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from eval.common.paths import DEFAULT_CACHE, DEFAULT_GT, DEFAULT_ORACLE, portable_path
+from eval.common.paths import (
+    DEFAULT_CACHE, DEFAULT_GT, DEFAULT_ORACLE, portable_path, repository_path,
+)
 from eval.delegation_appropriateness.delegate_llm_review import load_task_text, review_sides
 from eval.delegation_appropriateness.delegate_strict import (
     load_gt_index, load_gt_task, sha256_file, write_json,
@@ -24,17 +26,20 @@ from eval.delegation_appropriateness.reviewed_gt import (
 )
 
 
-def export(oracle_dir: Path, out_dir: Path, gt_path: Path = DEFAULT_GT,
+def export(oracle_dir: Path | None, out_dir: Path, gt_path: Path = DEFAULT_GT,
            cache: Path = DEFAULT_CACHE) -> dict:
     index = load_gt_index(gt_path)
     tasks = [row["task"] for row in index["tasks"]]
-    oracle_tasks = {p.name[:-8] for p in oracle_dir.glob("*.task.md")}
+    oracle_tasks = {p.name[:-8] for p in (oracle_dir or DEFAULT_ORACLE).glob("*.task.md")}
     if len(tasks) != 166 or len(set(tasks)) != 166 or set(tasks) != oracle_tasks:
         raise ValueError("expected the same 166 tasks in GT and oracle166")
     records, jobs = [], []
     for task in tasks:
         seed = load_gt_task(gt_path, task)
-        source = oracle_dir / f"{task}.task.md"
+        # A corrected execution guide is not a new review by the original LLM.
+        # Replay the exact recorded context unless the caller supplies an override.
+        source = (oracle_dir / f"{task}.task.md" if oracle_dir is not None
+                  else repository_path(seed["source"]["oracle166"]))
         if sha256_file(source) != seed["source"]["oracle166_sha256"]:
             raise ValueError(f"{task}: oracle166 hash mismatch")
         seed["source"]["oracle166"] = portable_path(source)
@@ -59,7 +64,7 @@ def export(oracle_dir: Path, out_dir: Path, gt_path: Path = DEFAULT_GT,
         exported.append(record)
     index = {
         **metadata(),
-        "oracle166": portable_path(oracle_dir),
+        "oracle166": portable_path(oracle_dir or DEFAULT_ORACLE),
         "n_tasks": len(exported),
         "n_need": sum(r["need_delegation"] for r in exported),
         "n_direct": sum(not r["need_delegation"] for r in exported),
@@ -81,7 +86,9 @@ def export(oracle_dir: Path, out_dir: Path, gt_path: Path = DEFAULT_GT,
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--oracle", type=Path, default=DEFAULT_ORACLE)
+    parser.add_argument("--oracle", type=Path,
+                        help="Override the recorded source directory; hashes must match the reviewed GT. "
+                             "By default, replay each record's pinned source (including historical snapshots).")
     parser.add_argument("--gt-path", type=Path, default=DEFAULT_GT,
                         help="Existing golden nodes, either legacy seeds or reviewed GT")
     parser.add_argument("--cache", type=Path, default=DEFAULT_CACHE)

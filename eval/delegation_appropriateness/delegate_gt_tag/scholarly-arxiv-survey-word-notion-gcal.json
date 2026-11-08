@@ -62,7 +62,7 @@
   "task": "scholarly-arxiv-survey-word-notion-gcal",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/scholarly-arxiv-survey-word-notion-gcal.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/scholarly-arxiv-survey-word-notion-gcal.task.md",
     "oracle166_sha256": "7fdd0fb87a465251e886629909f0da888594405b34b565006c4fc132eb97bc05"
   },
   "label_cache_keys": [

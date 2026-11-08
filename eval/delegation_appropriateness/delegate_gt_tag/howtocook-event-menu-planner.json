@@ -62,7 +62,7 @@
   "task": "howtocook-event-menu-planner",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/howtocook-event-menu-planner.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/howtocook-event-menu-planner.task.md",
     "oracle166_sha256": "7c26107ba0afaa90103d456850d2c3750ddd62d6bdec34aae2c546478c8d8ae1"
   },
   "label_cache_keys": [],

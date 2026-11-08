@@ -62,7 +62,7 @@
   "task": "canvas-at-risk-intervention",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/canvas-at-risk-intervention.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/canvas-at-risk-intervention.task.md",
     "oracle166_sha256": "0d042da9000162fc9c43b23022ea2c40a319c5a145b2ca81db4e3be9196e1670"
   },
   "label_cache_keys": [

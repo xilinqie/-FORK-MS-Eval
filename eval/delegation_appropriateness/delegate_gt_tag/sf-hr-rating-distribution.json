@@ -62,7 +62,7 @@
   "task": "sf-hr-rating-distribution",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/sf-hr-rating-distribution.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/sf-hr-rating-distribution.task.md",
     "oracle166_sha256": "3994e81d2df40e3c631c55e1f74936320ff949cdf68d7c721fe1c5eb53640b27"
   },
   "label_cache_keys": [],

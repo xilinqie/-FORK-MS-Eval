@@ -63,10 +63,12 @@ class DataIntegrityTests(unittest.TestCase):
         self.assertEqual((index["n_tasks"], index["n_need"], index["n_direct"]), (166, 89, 77))
         tasks = {item["task"] for item in index["tasks"]}
         self.assertEqual(tasks, {p.name[:-8] for p in (DATA_DIR / "oracle166").glob("*.task.md")})
+        revisions = json.loads((DATA_DIR / "oracle166_history/2026-11-09.json").read_text())
+        historical = {item["task"]: item["historical_source"] for item in revisions["tasks"]}
         for task in tasks:
             record = json.loads((DEFAULT_GT / f"{task}.json").read_text())
             source = record["source"]
-            self.assertEqual(source["oracle166"], f"data/oracle166/{task}.task.md")
+            self.assertEqual(source["oracle166"], historical.get(task, f"data/oracle166/{task}.task.md"))
             self.assertEqual(hashlib.sha256((REPO_ROOT / source["oracle166"]).read_bytes()).hexdigest(),
                              source["oracle166_sha256"])
         categories = TASK_CATEGORIES_DIR / "cluster_by_delegation"
@@ -83,6 +85,27 @@ class DataIntegrityTests(unittest.TestCase):
             domain_rows = list(csv.DictReader(handle, delimiter="\t"))
         self.assertEqual(len(domain_rows), 166)
         self.assertEqual({row["case_name"] for row in domain_rows}, tasks)
+
+    def test_oracle_errata_preserve_task_and_published_label_context(self):
+        manifest = json.loads((DATA_DIR / "oracle166_history/2026-11-09.json").read_text())
+        self.assertEqual(len(manifest["tasks"]), 26)
+        self.assertEqual(len({item["task"] for item in manifest["tasks"]}), 26)
+        marker = b"Task-Solving Rationable with Sub-task Decomposition:"
+        for item in manifest["tasks"]:
+            original = (REPO_ROOT / item["historical_source"]).read_bytes()
+            corrected = (REPO_ROOT / item["corrected_source"]).read_bytes()
+            self.assertEqual(hashlib.sha256(original).hexdigest(), item["historical_sha256"])
+            self.assertEqual(hashlib.sha256(corrected).hexdigest(), item["corrected_sha256"])
+            self.assertNotEqual(original, corrected)
+            self.assertEqual(original.split(marker, 1)[0], corrected.split(marker, 1)[0])
+            record = json.loads((DEFAULT_GT / (item["task"] + ".json")).read_text())
+            self.assertEqual(load_task_text(record), original.decode("utf-8"))
+            self.assertEqual(record["label_cache_keys"], item["published_label_cache_keys"])
+            # Current guides cannot silently inherit historical LLM provenance.
+            stale = copy.deepcopy(record)
+            stale["source"]["oracle166"] = item["corrected_source"]
+            with self.assertRaisesRegex(ValueError, "oracle166 hash mismatch"):
+                validate_reviewed_gt(stale)
 
     def test_cache_hashes_and_offline_gt_reuse_from_other_directory(self):
         for path in DEFAULT_CACHE.glob("*.json"):

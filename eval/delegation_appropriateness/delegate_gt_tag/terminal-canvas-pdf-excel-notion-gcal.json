@@ -62,7 +62,7 @@
   "task": "terminal-canvas-pdf-excel-notion-gcal",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/terminal-canvas-pdf-excel-notion-gcal.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/terminal-canvas-pdf-excel-notion-gcal.task.md",
     "oracle166_sha256": "1bb072bedf6cd923a156497054e37ea26185f2dedfdc69edbe12d3ad1002fdb6"
   },
   "label_cache_keys": [

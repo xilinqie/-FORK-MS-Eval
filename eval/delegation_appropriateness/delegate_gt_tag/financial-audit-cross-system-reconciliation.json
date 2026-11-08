@@ -62,7 +62,7 @@
   "task": "financial-audit-cross-system-reconciliation",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/financial-audit-cross-system-reconciliation.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/financial-audit-cross-system-reconciliation.task.md",
     "oracle166_sha256": "651d081fbc8df13d1d95f6ff3f22a0c09a7d46ffa90aa949cc4b379782f40903"
   },
   "label_cache_keys": [

@@ -62,7 +62,7 @@
   "task": "canvas-course-comparison-word",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/canvas-course-comparison-word.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/canvas-course-comparison-word.task.md",
     "oracle166_sha256": "8d29fd47dba91617e7444b732064483cb12375a608cb44e5a7d90482659ca58c"
   },
   "label_cache_keys": [

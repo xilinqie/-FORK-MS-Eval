@@ -62,7 +62,7 @@
   "task": "terminal-canvas-gform-gcal-excel-email",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/terminal-canvas-gform-gcal-excel-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/terminal-canvas-gform-gcal-excel-email.task.md",
     "oracle166_sha256": "a6c0567b2e43b67c09170c9d32ce8904bf18e4bdb44fb632b23886f7df37461d"
   },
   "label_cache_keys": [],

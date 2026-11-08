@@ -62,7 +62,7 @@
   "task": "yt-fireship-gform-survey-excel-gcal",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/yt-fireship-gform-survey-excel-gcal.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/yt-fireship-gform-survey-excel-gcal.task.md",
     "oracle166_sha256": "07674c1ccf4cb8fba518a9f6f8ddea699614e9346523e0a356c598656dcb0df2"
   },
   "label_cache_keys": [],

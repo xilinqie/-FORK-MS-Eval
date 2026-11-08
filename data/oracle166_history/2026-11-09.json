@@ -1,0 +1,269 @@
+{
+  "schema": "oracle-errata-v1",
+  "revision": "2026-11-09",
+  "base_commit": "4c1bbd3dc0d736623bba563e56cfd8666f85daac",
+  "gym_commit": "872ebef73f170a565136d4521ddb02b41872362e",
+  "scope": "Execution-plan corrections only; original task prefixes unchanged. Published labels and scores remain tied to their original contexts. Revised plans have not been rerun or relabeled.",
+  "tasks": [
+    {
+      "task": "arxiv-conference-prep",
+      "historical_source": "data/oracle166_history/4c1bbd3/arxiv-conference-prep.task.md",
+      "historical_sha256": "bf96d4ca7df5aeae7a2820c2eab4385f246569f5fe5d45dcd24a5892d1ee6b71",
+      "corrected_source": "data/oracle166/arxiv-conference-prep.task.md",
+      "corrected_sha256": "a23f0992b99fd2d936024a74d551579dcc3310a757e4c78362f08c69658da843",
+      "published_label_cache_keys": [
+        "5562fb2e1de110ad7ffc5819ce4b0d6a2c6343271933e01e4cbe5aaf75f9b788"
+      ],
+      "correction": "Create the reading-group event only after the presentation is complete."
+    },
+    {
+      "task": "canvas-at-risk-intervention",
+      "historical_source": "data/oracle166_history/4c1bbd3/canvas-at-risk-intervention.task.md",
+      "historical_sha256": "0d042da9000162fc9c43b23022ea2c40a319c5a145b2ca81db4e3be9196e1670",
+      "corrected_source": "data/oracle166/canvas-at-risk-intervention.task.md",
+      "corrected_sha256": "112b43fe71cc389b0cfd0e3b6916ccd5dcd3cd719ad3a8dccf9b9752a749edd5",
+      "published_label_cache_keys": [
+        "d1f5017dc99a70b4c830d791e06eb0f0ef0a34c378a7d6eefa93fbdf6ffbc57c",
+        "e4bf6bfb52f43e1efc2023a1957adb157493fc35bb6a313c87197e3a7953e9c6"
+      ],
+      "correction": "Separate the workbook and email stages so sending waits for the report receipt."
+    },
+    {
+      "task": "canvas-course-comparison-word",
+      "historical_source": "data/oracle166_history/4c1bbd3/canvas-course-comparison-word.task.md",
+      "historical_sha256": "8d29fd47dba91617e7444b732064483cb12375a608cb44e5a7d90482659ca58c",
+      "corrected_source": "data/oracle166/canvas-course-comparison-word.task.md",
+      "corrected_sha256": "ce94a92a0dae8798cec5d2fa50e26698073d3bf2a7aa1068d77e3bc2a617d0d7",
+      "published_label_cache_keys": [
+        "30f5ad880dbebae91112382de8a66469da2499c1476cddfffe27a1f6718ec1fe",
+        "72c09886f30badfb3fc314db5d4851bbd50ca753b200fee835e35b6835485439"
+      ],
+      "correction": "Discover and verify course codes and assignments; never put assignment IDs in course_code."
+    },
+    {
+      "task": "canvas-quiz-performance-excel",
+      "historical_source": "data/oracle166_history/4c1bbd3/canvas-quiz-performance-excel.task.md",
+      "historical_sha256": "15f6e00a088a518278657ab3b40ceae8879a5a5d51661a441de7edde48f34cb4",
+      "corrected_source": "data/oracle166/canvas-quiz-performance-excel.task.md",
+      "corrected_sha256": "6fb4971d513260b740bbd2b65d9dc981b0ecbe2c59a69186e4aae6527b7bdd5a",
+      "published_label_cache_keys": [],
+      "correction": "Wait for the Excel report before sending the quiz summary."
+    },
+    {
+      "task": "canvas-quiz-performance-gcal-gform",
+      "historical_source": "data/oracle166_history/4c1bbd3/canvas-quiz-performance-gcal-gform.task.md",
+      "historical_sha256": "48919277f4df5b2569bfe358b428de2fa483b1ca7cb1d610f4094cdb714ce4f3",
+      "corrected_source": "data/oracle166/canvas-quiz-performance-gcal-gform.task.md",
+      "corrected_sha256": "18f6d511f01ae5ea84f0bb8e216b7663cb8600b1c4ee305074694068c3da4841",
+      "published_label_cache_keys": [],
+      "correction": "Create the Form after the report; confirm tutoring events before announcing them."
+    },
+    {
+      "task": "fetch-howtocook-catering-excel-gcal-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/fetch-howtocook-catering-excel-gcal-email.task.md",
+      "historical_sha256": "44e7013ca109eeca1396f9ac96219661bc9ff25963f9aa89a483017e65e36892",
+      "corrected_source": "data/oracle166/fetch-howtocook-catering-excel-gcal-email.task.md",
+      "corrected_sha256": "eb98ef6e3e07917438544195e6ba572dd4c0b91767f927ee129a779debf5ef9a",
+      "published_label_cache_keys": [],
+      "correction": "Send the supplier and committee their two distinct required emails."
+    },
+    {
+      "task": "financial-audit-cross-system-reconciliation",
+      "historical_source": "data/oracle166_history/4c1bbd3/financial-audit-cross-system-reconciliation.task.md",
+      "historical_sha256": "651d081fbc8df13d1d95f6ff3f22a0c09a7d46ffa90aa949cc4b379782f40903",
+      "corrected_source": "data/oracle166/financial-audit-cross-system-reconciliation.task.md",
+      "corrected_sha256": "34b7b7f80eccdb0ad931fa38ba35c3ec8d4836d5305e1f636535748a08902003",
+      "published_label_cache_keys": [
+        "026847868ac459a68f002fab2c6ab1e249a915a5e51bf8b8bfdbc4a1f5bc551a"
+      ],
+      "correction": "Require evidence of a senior-finance recipient; report missing contacts instead of guessing."
+    },
+    {
+      "task": "gsheet-woocommerce-inventory",
+      "historical_source": "data/oracle166_history/4c1bbd3/gsheet-woocommerce-inventory.task.md",
+      "historical_sha256": "49ef60d9469e247e5553ccb3efdac4b6c5d08768d7c8cf1544e1f11ad8384e89",
+      "corrected_source": "data/oracle166/gsheet-woocommerce-inventory.task.md",
+      "corrected_sha256": "adc233955c7526bf96b68c148e65f462341e7d028a04d0cea66225ef5c850d25",
+      "published_label_cache_keys": [
+        "a95b9b342a03ef7f03fbf15677d9379b17616eafc6f8c4cffd6ccdcc41226c80"
+      ],
+      "correction": "Aggregate every category membership; use first-category selection only for stock-alert rows."
+    },
+    {
+      "task": "howtocook-event-menu-planner",
+      "historical_source": "data/oracle166_history/4c1bbd3/howtocook-event-menu-planner.task.md",
+      "historical_sha256": "7c26107ba0afaa90103d456850d2c3750ddd62d6bdec34aae2c546478c8d8ae1",
+      "corrected_source": "data/oracle166/howtocook-event-menu-planner.task.md",
+      "corrected_sha256": "e5e3265e52568f4fbcec1d79dfd2696efa833c53511ab298a635b3b261f26bf3",
+      "published_label_cache_keys": [],
+      "correction": "Wait for workbook completion before emailing the catering coordinator."
+    },
+    {
+      "task": "howtocook-weekly-gsheet-gcal",
+      "historical_source": "data/oracle166_history/4c1bbd3/howtocook-weekly-gsheet-gcal.task.md",
+      "historical_sha256": "16cfb05a512b57a82b8eaf207e8f295a56366c936b762e262ce8337d44591b71",
+      "corrected_source": "data/oracle166/howtocook-weekly-gsheet-gcal.task.md",
+      "corrected_sha256": "dfd473c87996f808da993dab14098e6d2bbb04365065540970a2cb501a25343c",
+      "published_label_cache_keys": [],
+      "correction": "Confirm the shared sheet and all seven events before sending the completion email."
+    },
+    {
+      "task": "playwright-howtocook-nutrition-gsheet-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/playwright-howtocook-nutrition-gsheet-email.task.md",
+      "historical_sha256": "80901f3a4c9d6b4d7b23984f861da7bcfae4b87a9e1b88b692189e680121ce63",
+      "corrected_source": "data/oracle166/playwright-howtocook-nutrition-gsheet-email.task.md",
+      "corrected_sha256": "4a891535355edfb96c51f33bb34acd288a639909e4743a65a55cb64570b74d88",
+      "published_label_cache_keys": [
+        "905bb8434aa64f14dcb7589ffe5684bd5cb58baeaddcd643727eacfd21a46ad5"
+      ],
+      "correction": "Wait for the shared sheet before creating Word, and verify outputs before notifying."
+    },
+    {
+      "task": "playwright-sf-hr-benefits-survey-gform-excel",
+      "historical_source": "data/oracle166_history/4c1bbd3/playwright-sf-hr-benefits-survey-gform-excel.task.md",
+      "historical_sha256": "d1931879d903ac8847da115ad7a26b4b91603d32c7c5d0149839636d2dd98535",
+      "corrected_source": "data/oracle166/playwright-sf-hr-benefits-survey-gform-excel.task.md",
+      "corrected_sha256": "997c694637089682fe3f7faa83d6e685b79300791a47fe8d09e74ca4851355a0",
+      "published_label_cache_keys": [],
+      "correction": "Restore Benefits_Analysis.xlsx, the five required choice questions and the HR email."
+    },
+    {
+      "task": "scholarly-arxiv-survey-word-notion-gcal",
+      "historical_source": "data/oracle166_history/4c1bbd3/scholarly-arxiv-survey-word-notion-gcal.task.md",
+      "historical_sha256": "7fdd0fb87a465251e886629909f0da888594405b34b565006c4fc132eb97bc05",
+      "corrected_source": "data/oracle166/scholarly-arxiv-survey-word-notion-gcal.task.md",
+      "corrected_sha256": "78ddba0b43aee1bf5623d58cd1ddb7d0e6fd6fc9d93fc85eb0ffe3a4c8e47c6f",
+      "published_label_cache_keys": [
+        "71461956d17da0491d4cfeb7ec00b4e806947be66467855e8ecf8bffd4ab0f1b"
+      ],
+      "correction": "Use Heading 2 for each method subsection under Heading 1 sections."
+    },
+    {
+      "task": "sf-hr-dept-budget-ppt-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/sf-hr-dept-budget-ppt-email.task.md",
+      "historical_sha256": "e8359eba19c428e1156e56308208f0a7139715ce3cc2159323371aa19f8c34f3",
+      "corrected_source": "data/oracle166/sf-hr-dept-budget-ppt-email.task.md",
+      "corrected_sha256": "8571d95f06bbdb7f9b7ae8b152ae9b7c78f4583c4c1aeb991b1b50cdfe9c98e0",
+      "published_label_cache_keys": [
+        "081e7d41ce9542364c74a57d1cbf98e84b94616a3c947851dc53a8fcfb54b765"
+      ],
+      "correction": "Create Excel only after the presentation; retain independent sheet work."
+    },
+    {
+      "task": "sf-hr-education-skills-gform-excel",
+      "historical_source": "data/oracle166_history/4c1bbd3/sf-hr-education-skills-gform-excel.task.md",
+      "historical_sha256": "4b34ae6ad0498c9ad9baebd9eeea81dd49f23125da01299c7eb855ada22d6ecb",
+      "corrected_source": "data/oracle166/sf-hr-education-skills-gform-excel.task.md",
+      "corrected_sha256": "90c73e234cc6ce6d8ac95da251c24fe84ff8e34a67dd600e06a5cc8801867b05",
+      "published_label_cache_keys": [],
+      "correction": "Create the training survey only after Excel is complete."
+    },
+    {
+      "task": "sf-hr-promotion-review",
+      "historical_source": "data/oracle166_history/4c1bbd3/sf-hr-promotion-review.task.md",
+      "historical_sha256": "d98aad60f105c3c370d6155f91a5a2979801d85a3215501f58b48d3cbe154131",
+      "corrected_source": "data/oracle166/sf-hr-promotion-review.task.md",
+      "corrected_sha256": "38079c076b958b78ef8d7926faa1b1df90819bb8461fc8d280661ebaed90a12a",
+      "published_label_cache_keys": [],
+      "correction": "Create the promotion report before sending its summary."
+    },
+    {
+      "task": "sf-hr-rating-distribution",
+      "historical_source": "data/oracle166_history/4c1bbd3/sf-hr-rating-distribution.task.md",
+      "historical_sha256": "3994e81d2df40e3c631c55e1f74936320ff949cdf68d7c721fe1c5eb53640b27",
+      "corrected_source": "data/oracle166/sf-hr-rating-distribution.task.md",
+      "corrected_sha256": "31cb13e6fd3dc6bdd4afd8ce05a7ee270548b775433bf74f475268b6d5c04bb2",
+      "published_label_cache_keys": [],
+      "correction": "Create the rating report before sending its summary."
+    },
+    {
+      "task": "sf-hr-worklife-notion-excel",
+      "historical_source": "data/oracle166_history/4c1bbd3/sf-hr-worklife-notion-excel.task.md",
+      "historical_sha256": "5fb24967d4d55961f130fcabf40467e9bbb07e8c2cadd8d4f72cce2584270fd5",
+      "corrected_source": "data/oracle166/sf-hr-worklife-notion-excel.task.md",
+      "corrected_sha256": "9ba4f37389769bc6183af9350207acbd7852697f1269c8a57375d4fb663ba902",
+      "published_label_cache_keys": [],
+      "correction": "Create the knowledge-base page only after Excel is complete."
+    },
+    {
+      "task": "supplier-contract-compliance-audit",
+      "historical_source": "data/oracle166_history/4c1bbd3/supplier-contract-compliance-audit.task.md",
+      "historical_sha256": "105bbc48556a89a6ef041397ac1fdffce0a43bcf2a0c8eaeaa08fd3b1d101857",
+      "corrected_source": "data/oracle166/supplier-contract-compliance-audit.task.md",
+      "corrected_sha256": "ea15b2613fb3696e6936908ce91d9cdbe450428b2a9e7b61d93626762d567978",
+      "published_label_cache_keys": [
+        "09b4ff6e67562a548bca3cfe67296b47d1f5f87275e4c776bf56db9e40eaf694"
+      ],
+      "correction": "Follow up every verified underperforming supplier; keep missing evidence separate."
+    },
+    {
+      "task": "terminal-canvas-gform-gcal-excel-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-canvas-gform-gcal-excel-email.task.md",
+      "historical_sha256": "a6c0567b2e43b67c09170c9d32ce8904bf18e4bdb44fb632b23886f7df37461d",
+      "corrected_source": "data/oracle166/terminal-canvas-gform-gcal-excel-email.task.md",
+      "corrected_sha256": "96cb49b3d8ea7b4e64adafcc70f3c2ed4f205b086f953c53c80244b5a28af328",
+      "published_label_cache_keys": [],
+      "correction": "Confirm all remediation sessions before emailing that they are scheduled."
+    },
+    {
+      "task": "terminal-canvas-pdf-excel-notion-gcal",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-canvas-pdf-excel-notion-gcal.task.md",
+      "historical_sha256": "1bb072bedf6cd923a156497054e37ea26185f2dedfdc69edbe12d3ad1002fdb6",
+      "corrected_source": "data/oracle166/terminal-canvas-pdf-excel-notion-gcal.task.md",
+      "corrected_sha256": "67b4ef11cfac049f1f04fa3b98b881473ddf5804f6520d32fcc427917f105688",
+      "published_label_cache_keys": [
+        "a991ae2291bc2ab28549337f438ada8d0419cd22aa7f72af35bf8a3b836dca92"
+      ],
+      "correction": "Compute all eight criteria from evidence; preserve ordered artifacts and create the summary last."
+    },
+    {
+      "task": "terminal-canvas-wc-excel-ppt-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-canvas-wc-excel-ppt-email.task.md",
+      "historical_sha256": "f8ec4df9460d79948989e37753a50197ba1ad66d084a711dab0d380b3cfb4119",
+      "corrected_source": "data/oracle166/terminal-canvas-wc-excel-ppt-email.task.md",
+      "corrected_sha256": "3dc063440869e953dcbde364bb5e01dd4269449a7a090ecf8456d369766d706a",
+      "published_label_cache_keys": [
+        "297ec5ab052c2232f6839f7e7b2c16eb90ba3b1a36624230701869ee2f86ee1a"
+      ],
+      "correction": "Enforce Excel then PPT then email; select students by qualifying purchase existence, not positive spend."
+    },
+    {
+      "task": "terminal-yf-canvas-excel-gcal-email",
+      "historical_source": "data/oracle166_history/4c1bbd3/terminal-yf-canvas-excel-gcal-email.task.md",
+      "historical_sha256": "5322e6709a8ec2a95bee643ef01f12e31e46ca940f9a673cc16b29729fa06c93",
+      "corrected_source": "data/oracle166/terminal-yf-canvas-excel-gcal-email.task.md",
+      "corrected_sha256": "a57395f4729403a1ff0c698d900e55c40090edc9a37def3edcdf2cae92622f92",
+      "published_label_cache_keys": [
+        "fef404ada4649734eb3cb77918e87f433320213858b624fcb1d363cc443fada6"
+      ],
+      "correction": "Have the delivered scripts compute tiers and market events from complete input rows."
+    },
+    {
+      "task": "wc-coupon-performance-notion-ppt",
+      "historical_source": "data/oracle166_history/4c1bbd3/wc-coupon-performance-notion-ppt.task.md",
+      "historical_sha256": "e24ad8478423413b826920a168ba15711d013ff5956c6a5120cba521ff074735",
+      "corrected_source": "data/oracle166/wc-coupon-performance-notion-ppt.task.md",
+      "corrected_sha256": "4a50af552c3b820682d63995e8d5153dbd94b2a47da3dc895dd214c3acc8c927",
+      "published_label_cache_keys": [],
+      "correction": "Create the presentation after Excel, retaining independent Notion work."
+    },
+    {
+      "task": "wc-inventory-alert-gcal",
+      "historical_source": "data/oracle166_history/4c1bbd3/wc-inventory-alert-gcal.task.md",
+      "historical_sha256": "c06001dc331125608ff0be56fd7781ee7fd2cd312c302e9418dd9a0ec6bb0251",
+      "corrected_source": "data/oracle166/wc-inventory-alert-gcal.task.md",
+      "corrected_sha256": "6a856d0db09604f0533165eb32ce9ed4da981891db981f593b12648ce2f1ad0e",
+      "published_label_cache_keys": [],
+      "correction": "Read the complete product catalog before filtering literal zero-stock rows."
+    },
+    {
+      "task": "yt-fireship-gform-survey-excel-gcal",
+      "historical_source": "data/oracle166_history/4c1bbd3/yt-fireship-gform-survey-excel-gcal.task.md",
+      "historical_sha256": "07674c1ccf4cb8fba518a9f6f8ddea699614e9346523e0a356c598656dcb0df2",
+      "corrected_source": "data/oracle166/yt-fireship-gform-survey-excel-gcal.task.md",
+      "corrected_sha256": "83bba2b18ed7b584db6af4531fde3339a3f22b46f4259c37ca8433522eb4ed05",
+      "published_label_cache_keys": [],
+      "correction": "Inspect the full April calendar before checking the exact standup occurrence."
+    }
+  ]
+}

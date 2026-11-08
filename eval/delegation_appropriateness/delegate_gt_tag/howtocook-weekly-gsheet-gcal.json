@@ -62,7 +62,7 @@
   "task": "howtocook-weekly-gsheet-gcal",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/howtocook-weekly-gsheet-gcal.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/howtocook-weekly-gsheet-gcal.task.md",
     "oracle166_sha256": "16cfb05a512b57a82b8eaf207e8f295a56366c936b762e262ce8337d44591b71"
   },
   "label_cache_keys": [],

@@ -62,7 +62,7 @@
   "task": "sf-hr-dept-budget-ppt-email",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/sf-hr-dept-budget-ppt-email.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/sf-hr-dept-budget-ppt-email.task.md",
     "oracle166_sha256": "e8359eba19c428e1156e56308208f0a7139715ce3cc2159323371aa19f8c34f3"
   },
   "label_cache_keys": [

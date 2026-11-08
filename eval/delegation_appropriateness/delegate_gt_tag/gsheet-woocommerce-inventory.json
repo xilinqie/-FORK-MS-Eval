@@ -62,7 +62,7 @@
   "task": "gsheet-woocommerce-inventory",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/gsheet-woocommerce-inventory.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/gsheet-woocommerce-inventory.task.md",
     "oracle166_sha256": "49ef60d9469e247e5553ccb3efdac4b6c5d08768d7c8cf1544e1f11ad8384e89"
   },
   "label_cache_keys": [

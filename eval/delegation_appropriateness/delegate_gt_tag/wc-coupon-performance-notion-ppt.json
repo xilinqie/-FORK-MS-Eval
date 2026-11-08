@@ -62,7 +62,7 @@
   "task": "wc-coupon-performance-notion-ppt",
   "need_delegation": false,
   "source": {
-    "oracle166": "data/oracle166/wc-coupon-performance-notion-ppt.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/wc-coupon-performance-notion-ppt.task.md",
     "oracle166_sha256": "e24ad8478423413b826920a168ba15711d013ff5956c6a5120cba521ff074735"
   },
   "label_cache_keys": [],

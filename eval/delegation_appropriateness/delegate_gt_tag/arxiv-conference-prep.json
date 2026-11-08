@@ -62,7 +62,7 @@
   "task": "arxiv-conference-prep",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/arxiv-conference-prep.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/arxiv-conference-prep.task.md",
     "oracle166_sha256": "bf96d4ca7df5aeae7a2820c2eab4385f246569f5fe5d45dcd24a5892d1ee6b71"
   },
   "label_cache_keys": [

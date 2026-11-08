@@ -62,7 +62,7 @@
   "task": "supplier-contract-compliance-audit",
   "need_delegation": true,
   "source": {
-    "oracle166": "data/oracle166/supplier-contract-compliance-audit.task.md",
+    "oracle166": "data/oracle166_history/4c1bbd3/supplier-contract-compliance-audit.task.md",
     "oracle166_sha256": "105bbc48556a89a6ef041397ac1fdffce0a43bcf2a0c8eaeaa08fd3b1d101857"
   },
   "label_cache_keys": [
