@@ -1,0 +1,81 @@
+{
+  "task_id": "customer-satisfaction-analytics-framework",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "参考方案以客服工单替代原题要求抽取的电商商品评论，无法完成商品评论覆盖及按商品、客户分群和地区的分析。它也只创建了问卷，未安排给近期购买者发送问卷、站内分发或持续部署，仍将这些未交付的阶段计为可完成。",
+  "interpretation": "完整落实指定意见的源数据与交付覆盖：真实电商评论全量加商品/顾客/地区/时间有据关联，工单仅补充服务指标；主agent验证表单后向有来源的近期购买者发送，并逐项核对网站弹窗、交易后提示与持续部署。给定能力不足的渠道不能伪造成部署，本候选显式保留未完成状态。保留一波三writer，仅为上述范围和终止合约增加必要交接。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "Query the verified review proxy `SUPPORT_CENTER.PUBLIC.TICKETS`",
+      "replacement": "the main agent gathers all product reviews and ratings through the exposed read-only `woo_products_reviews_list` capability",
+      "explanation": "删除工单充当商品评论proxy的前提；改取真实商品评论全量，原工单聚合保留为支持服务指标来源。"
+    },
+    {
+      "original": "Do not fabricate product/category/customer joins: if no key exists, label segment, region, and product-category views unavailable.",
+      "replacement": "Preserve all reviews, including ones lacking a join; report their unmatched counts and missing fields.",
+      "explanation": "增加商品/顾客/订单真实关联和join覆盖控制；没有关联证据仍明确不可用，不捏造分群和地区。"
+    },
+    {
+      "original": "Record website pop-up/automated-deployment blockers because no exposed tool implements them.",
+      "replacement": "For website pop-ups, post-transaction prompts, and continuous automated deployment, inspect only the actually exposed task-granted capabilities and task-visible channel configuration.",
+      "explanation": "把近期购买者邮件、站内弹窗、交易后提示、持续部署拆为独立动作和状态；没有能力则逐项阻断，不能以记录blocker当作交付完成。"
+    },
+    {
+      "original": "Concurrently, the main agent is the sole form owner.",
+      "replacement": "Phase labels organize responsibilities rather than impose a global execution barrier: form creation, review/product/customer/order reads and supplemental support aggregation may start independently in native parallel.",
+      "explanation": "保留原版问卷与数据读取的独立性；新增买家发现可与表单创建重叠，仅实际邀请/问卷响应等待真实formId，不因phase枚举强行串行。"
+    },
+    {
+      "original": "While Wave 1 runs, the main agent handles Phase 6 without another agent or Wave.",
+      "replacement": "the main agent waits for all five artifact identities and successful read-backs before distributing the completed findings, without another agent or writer wave.",
+      "explanation": "新增部署/分发完成条件牵连最终验收；不能仍在产物未完成时宣告Phase6结束。"
+    },
+    {
+      "original": "only when both contain none, use the deterministic role fallback `customer-experience@company.com` and state that routing assumption in the body.",
+      "replacement": "never invent a role-mailbox fallback.",
+      "explanation": "生成约定禁止虚构业务收件人；必要附带修正保留来源证实的邮件路由，未合并别人的标注。"
+    },
+    {
+      "original": "While Wave 1 runs, the main agent handles Phase 6 without another agent or Wave.",
+      "replacement": "The main agent may create and read back the review meeting while the writer wave runs, using the verified canonical findings and known deployment limitations; this event does not depend on final artifact identities.",
+      "explanation": "独立复核保留原计划会议与writer重叠，避免将需要产物回执的发现邮件屏障扩散到固定分析评审事件。"
+    }
+  ],
+  "preserved_requirements": [
+    "四个原调查维度与选项，create一次、按序加题、get_form读回、真实formId和所需flags。",
+    "原SUPPORT_CENTER.PUBLIC.TICKETS完整表count/null/rating、ISSUE_TYPE、月度、SHORT_DESCRIPTION聚合及TICKET_ID控制保留，但语义限定为支持服务。",
+    "真实商品评论情感/主题、商品品类/顾客分群/地区/时间满意度与索引、实际0–10响应的NPS、支持FCR/解决时间/质量。",
+    "历史趋势、季节/业务事件、产品生命周期、预测与业务影响仅用有据数据；证据不足显式pending。",
+    "satisfaction_analysis.xlsx、action_plans.xlsx原关键sheet/列及字面统计值，两个不同Word文件各>=60词，一个外部spreadsheet dashboard。",
+    "三名writer的原分工：office写两工作簿、office写两文档、external独占dashboard；主agent处理表单、调查发送、部署、利益相关者邮件和会议。",
+    "Phase6邮件/事件包含规定关键词；会议原已给时间策略、时区和查重规则保留。"
+  ],
+  "qualified_or_unimplemented": [
+    "给定external角色清单未提供网站弹窗、post-transaction或自动调查部署工具；候选仅在实际task-granted能力和配置存在时执行，否则具体阻断并禁止声明整体完成。",
+    "顾客身份、地区、分群、历史基线和真实调查响应可能不存在；无法按字面保证全部分析可得，不用工单proxy或虚构数据补齐。"
+  ],
+  "assumptions": [
+    "没有输入权重时，等权规范化索引仅作为公开说明的分析选择，不称为业务既定政策。",
+    "“近期购买者”的时间窗使用任务可见约定；无约定时请求输入而不擅定天数。",
+    "产品负责人版本可由详细报告中的对应产品章节和定向邮件呈现，保持原五份产物结构。",
+    "Phase 1/2 的叙述枚举不构成源读取屏障；正式调查邀请依赖真实表单，含报告访问引用的发现邮件依赖产物，评审会议可消费已冻结分析并与writer重叠。"
+  ],
+  "capability_conditions": [
+    "真实woo_products_reviews_list与商品/订单/顾客数据需暴露可分页读取和有据关联字段；缺字段时相关维度未完成。",
+    "需要近期窗口、可用购买者联系信息和工具返回的可访问表单信息才能发送调查。",
+    "必须有实际授予的网站弹窗/交易后提示/持续部署接口与触发配置，才可标记多渠道自动部署完成；缺少这些不能靠计划文本替代。",
+    "NPS需要真实0–10调查响应，趋势/预测需要足够的历史证据；否则保留缺失状态。",
+    "利益相关者收件人必须来源可证，不能沿用原版猜测的customer-experience邮箱。"
+  ],
+  "plan_summary": [
+    "主agent读可见输入，原生并行准备四题问卷、发现近期买家、抽取真实评论及支持聚合；调查发信等待已验证表单。",
+    "主agent完整抽取真实商品评论并做有据商品/客户关联，保留原工单聚合作服务指标，读取实际问卷响应。",
+    "形成统一分析数据及分发/部署状态，所有指标和叙述可追溯，缺失要求不记为完成。",
+    "一波三个原writer各写自己的本地/外部产物；主agent可同时建立评审事件，报告引用邮件等待相应产物完成再分发。",
+    "最终同时核验原五产物、原始评论覆盖、买家邀请和实际部署凭据；有缺项时清楚报告partial，不虚报框架已上线。"
+  ],
+  "expected_tradeoff": "真实评论及买家联系信息的读取与部署核验会增加成本，也可能揭示当前权限无法完成任务；预计能减少代理数据替代与虚报上线，但尚未执行，不能断言更优。",
+  "not_runtime_tested": true
+}

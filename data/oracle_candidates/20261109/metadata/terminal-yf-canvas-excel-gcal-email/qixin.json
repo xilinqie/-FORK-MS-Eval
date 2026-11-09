@@ -1,0 +1,64 @@
+{
+  "task_id": "terminal-yf-canvas-excel-gcal-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "题目要求 categorize_students.py 计算学生百分比分层、find_market_events.py 计算窗口内最大波动。编排把两项计算放在采集子任务里，再让脚本只输出预先算好的计数和事件；脚本没有执行原题要求的分析。",
+  "interpretation": "将两个分析脚本由打印预计算常量改为读取实际源数据并执行计算；两个采集角色仅交回完整原始证据或合法工具输出引用，所有持久化和运行由主agent负责。保留公开原版Canvas/market双采集器并行及主agent同期只读查日历，实际脚本计算和下游输出只等待其所需数据。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "use exactly one parallel domain wave of two computing collectors",
+      "replacement": "use exactly one parallel domain wave of two read-only collectors, one for Canvas submission evidence and one for market-price evidence.",
+      "explanation": "保留原版一波两个独立领域采集器并行，仅把计算职责从采集器改回任务要求的实际Python脚本；主agent仍拥有产物。"
+    },
+    {
+      "original": "Return ONLY the compact JSON {courses: [{course_id, course_name, tier_counts: {needs_support, developing, proficient}, total_students}], students: [{course_id, user_id, avg_pct, tier}]}.",
+      "replacement": "Return the complete source rows, or a manifest of complete task-workspace tool-produced output references containing those rows, plus page counts, row counts, schema, and completeness checks.",
+      "explanation": "分类脚本需要原始提交而不是已经算好的均值与档位；研究explore仍只读，若原工具已生成合法输出引用可交接，禁止自行写JSON。"
+    },
+    {
+      "original": "categorize_students.py (emitting the per-course tier counts it received)",
+      "replacement": "The script must derive and output each course's tier counts and totals from those calculated student records, rather than print supplied aggregate constants.",
+      "explanation": "主agent持久化原始Canvas数据，脚本实际计算每提交百分比、每生平均、档位及每课计数，再运行。"
+    },
+    {
+      "original": "Return ONLY the compact JSON {window: {start, end}, events: [{date, symbol, change_pct (2 decimals), description}]}",
+      "replacement": "Return the complete rows or complete task-workspace output references actually produced by the granted tool; do not return only the three winning events.",
+      "explanation": "行情采集交回完整OHLC及日期范围，使脚本能够实际选窗口、算涨跌幅和找前三，不再只输出已选结果。"
+    },
+    {
+      "original": "find_market_events.py (emitting market_events.json with the three frozen events)",
+      "replacement": "For each valid row in that window, the script computes pct = 100*(Close-Open)/Open, ranks all symbols' rows together by absolute unrounded change with deterministic ties by date then symbol, and selects exactly the top three.",
+      "explanation": "把行情分析职责落实到实际运行的Python脚本，保留原版30交易日、全球前三、确定性并列和两位小数口径。"
+    },
+    {
+      "original": "sole-write generate_outline.py and workshop_materials.txt with exactly three workshop sections and verified market examples, then read back.",
+      "replacement": "Finally, sole-write generate_outline.py so it actually reads market_events.json and produces workshop_materials.txt with exactly three workshop sections and relevant computed market-event examples. Run the script, then read the generated file back.",
+      "explanation": "核对原题最终脚本也必须读取JSON并运行；沿用主agent唯一文件所有者，不引入新产物或新角色。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读workshop_template.xlsx、workshop_guidelines.md、contact_list.json；任务工作区动态解析，角色无越界写入。",
+    "课程16/17名称、完整分页、每提交百分比后按学生平均、60/75档位、未评分行跳过；分类脚本实际运行并输出每课计数。",
+    "GOOGL/AMZN/JPM完整日OHLC，统一auto_adjust，按数据最新交易日向前窗口、跨三股绝对涨跌幅前三、确定性并列和两位小数；事件描述不虚构新闻原因。",
+    "两周窗口、纽约时区、工作日13:00–16:00无冲突、14:00–15:30三场及主题/档位一一对应、第二和第三为下一可用工作日；日历描述包括跨课人数。",
+    "Financial_Literacy_Workshops.xlsx三个精确表名和表头、Course_ID顺序、绝对涨跌幅降序、常量数值和完整读回。",
+    "两封邮件按学生→系主任顺序，使用联系人表精确地址和两个精确主题；最后generate_outline.py读取market_events.json并运行产生三节workshop_materials.txt。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "沿用公开原plan把“most recent 30 days of trading data”解释为以最新数据日期结束的30个交易日期；未改用当前墙钟或引入隐藏参考日期。",
+    "研究采集器只返回完整数据或已由工具合法产生的任务workspace输出引用；新增canvas_submissions.json和market_prices.json由主agent保存，是脚本可重算所需的中间数据，不是额外交付目标。",
+    "原题First/Next/Now在此列举独立输入与处理步骤，不据此添加Canvas采集→行情采集或两个脚本→只读日历检查的硬屏障；真正依赖是源数据→各自计算脚本、计数/日历可用性→事件，以及实际产物→完成验收。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent先读取格式、规则和联系人。",
+    "一波并行启动Canvas和行情两个只读explore，主agent同期读取日历；采集器仅交回完整记录或合法工具输出引用。",
+    "两份交接完成后由主agent保存Canvas/OHLC数据，实际编写并运行分类脚本和行情识别脚本，冻结计算结果。",
+    "主agent继续单独负责事件、工作簿、两封邮件及实际运行大纲脚本，并对全部产物验收。"
+  ],
+  "expected_tradeoff": "预期提升脚本交付的可重算性和与任务功能契约的一致性，同时保留原版独立采集及只读日历检查的重叠；原始数据交接和主agent运行计算可能增加上下文、存储或计算开销，需后续实验验证。",
+  "not_runtime_tested": true
+}

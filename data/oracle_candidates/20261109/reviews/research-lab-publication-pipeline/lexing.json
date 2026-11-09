@@ -1,0 +1,25 @@
+{
+  "task_id": "research-lab-publication-pipeline",
+  "annotator": "lexing",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "移除未经证实的research-lab-members@lab.example.com收件人回退；必须从任务可见文件或邮箱证明真实实验室成员/群组身份，缺地址时不发并保留未完成，独立日历分支可继续。同步changes精确原/新子串、解释、分类和条件。",
+    "补充整体完成边界：本地输出/中间packet及本地版本控制不能证明全员可访问中央仓库；候选不新增仓库实现，缺真实目标和访问证据时报告部分完成。同步metadata明示保留的任务缺口，避免把其他标注意见的实现混入本候选。"
+  ],
+  "remaining_conditions": [
+    "Bib、整组逐篇文档、Roadmap的独立写作必须消费主agent已完成的逐篇研究和gap analysis；未将研究和其消费者错误并行。",
+    "未新增task要求的全员可访问材料集中仓库实现。若既有可见证据无法证明该义务已满足，必须保持pending并报告部分完成；本地artifact/packet不能替代。",
+    "实际实验室收件人缺失时邮件未完成，不再使用示例地址伪造已发送给实验室。"
+  ],
+  "not_runtime_tested": true
+}

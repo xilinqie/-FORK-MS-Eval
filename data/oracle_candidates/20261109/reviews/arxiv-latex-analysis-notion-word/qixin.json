@@ -1,0 +1,20 @@
+{
+  "task_id": "arxiv-latex-analysis-notion-word",
+  "annotator": "qixin",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "ID/标题冲突须由用户或任务提供者澄清；不引入正确ID或外部常识替换。任何未决身份均阻断正式Notion/Word交付及Ready邮件，因此本候选不是保证原始冲突输入可完整执行。"
+  ],
+  "not_runtime_tested": true
+}

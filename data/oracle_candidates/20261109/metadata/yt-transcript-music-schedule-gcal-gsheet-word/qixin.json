@@ -1,0 +1,37 @@
+{
+  "task_id": "yt-transcript-music-schedule-gcal-gsheet-word",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "每个日历事件描述应同时写明 Show 1–4 的期数和本期精选 Afrobeat 播放列表。编排只要求按期编号并核对事件身份，没有要求写入或验收播放列表说明。",
+  "interpretation": "在每个日历事件的创建payload与get_event回读中明确同时要求对应Show期数和冻结Afrobeat播放列表说明；已存在的唯一目标事件若描述不完整，仅补其描述并再验。保持原版主agent直做、事件原生并行、不新增Word/Calendar并行分支。",
+  "interpretation_status": "explicit",
+  "change_type": "clarification_only",
+  "changes": [
+    {
+      "original": "Create only missing `Afrobeat Sunday Show` events natively in parallel on April 5/12/19/26 with exact UTC `start.dateTime`/`end.dateTime`, no local timezone, and Show 1–4 descriptions; retain each returned/reused ID and call `get_event`.",
+      "replacement": "Create only missing `Afrobeat Sunday Show` events natively in parallel on April 5/12/19/26 with exact UTC `start.dateTime`/`end.dateTime`, no local timezone. Supply a complete description for every event: the corresponding show number (Show 1 on April 5, Show 2 on April 12, Show 3 on April 19, Show 4 on April 26) and a brief note about the Afrobeat playlist that will be featured, grounded in the frozen playlist and naming supported featured tracks/artists rather than inventing a new playlist. A show number alone is not an acceptable description. Retain each returned/reused ID and call `get_event`; verify the exact date, 20:00–22:00 UTC interval, title, corresponding show number, and the nonempty featured-playlist note against the frozen playlist. If a uniquely matched target event already exists but its description lacks the required show number or playlist note, the main agent updates only that event's description through the task-approved calendar tool, preserving its identity and exact UTC interval, then calls `get_event` again. Do not alter non-target events or treat an incomplete description as a verified booking.",
+      "explanation": "在原有Show 1–4描述与get_event位置补足playlist note的内容契约和验收；为覆盖原版reuse路径，允许仅修正同一目标ID的不完整描述，避免重复建事件。"
+    }
+  ],
+  "preserved_requirements": [
+    "读取broadcast_guide.md/show_config.json，完整April日历与精确标题cloud spreadsheet检索，重复标题阻断。",
+    "视频7ZQzGq32kAY先metadata后完整timed transcript游标，保留证据与不确定性，不使用fallback playlist。",
+    "同一chronological playlist驱动Sheet/Word/events；Radio_Broadcast_Schedule仅一个，Playlist和Show_Schedule精确schema，四个Sunday状态行与20:00–22:00 UTC。",
+    "四个Afrobeat Sunday Show事件精确日期和UTC存储、不附本地时区、目标事件ID保留及回读。",
+    "Radio_Show_Script.docx精确标题/Opening Monologue/Track Introductions/Closing，全部冻结track介绍且满足任务至少八首要求，不伪造曲名。",
+    "station@radioafrica.fm的精确主题完成邮件，必须在Spreadsheet/Word/四个事件描述均核对完成后发，Sent去重，仅主agentclaim_done。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "原任务只要求说明featured playlist，不要求为四期分别重新选不同歌单；各期说明复用同一有证据的canonical playlist，不虚构期别曲目差异。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "保持主agent读取视频、日历和表格现状并冻结统一播放列表。",
+    "保留Sheet与Word的原有制作流程。",
+    "创建或复用四个目标事件，为每项写入并验收Show编号与playlist note，必要时只补目标描述。",
+    "完整对账后发送原有完成邮件并声明完成。"
+  ],
+  "expected_tradeoff": "可能减少事件描述遗漏，增加少量描述payload与必要的目标事件回读/修正；这是合约澄清，不宣称新增编排拓扑或更高运行成功率。",
+  "not_runtime_tested": true
+}

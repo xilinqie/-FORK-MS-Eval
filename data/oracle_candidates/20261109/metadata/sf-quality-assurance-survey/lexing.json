@@ -1,0 +1,47 @@
+{
+  "task_id": "sf-quality-assurance-survey",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Also review the QA checklist and create a Google Form titled \"QA Self Assessment Survey\"  和 Create an Excel workbook 可以并行",
+  "interpretation": "完整落实工作簿与Form并行：共同的分析、QA checklist和agents表teams准备好后，主agent原生交错两条正式写入/回读分支，Form无需等工作簿文件。题面Finally是枚举连接词，五题固定且teams来自agents表，不构成消费Excel的硬依赖。公开原版已有原生并行，本候选明确依赖及owner，不宣称新增并行拓扑；portal→票单则由明确After reviewing保留。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "In parallel, run four compact set-based Snowflake results over the complete ticket population:",
+      "replacement": "Finish reviewing these portal targets before querying the ticket data.",
+      "explanation": "题面明确first step访问portal且After reviewing再拉票单，作为候选的前置硬约束；不是把数据读取继续提前。"
+    },
+    {
+      "original": "Interleave independent workbook/Form calls when ready and finish without a Wave or repeated source read.",
+      "replacement": "Once the frozen analysis and checklist context are ready, advance these two independent branches concurrently in the main agent:",
+      "explanation": "原本已有主agent原生并行，不虚称其缺失。新文本明确工作簿与Form正式创建/建题/回读均可交错，保持无委派。"
+    },
+    {
+      "original": "Independently create `QA Self Assessment Survey` exactly once, retain `formId`, and sequentially add:",
+      "replacement": "Its fixed questions and team options do not consume the workbook file or its read-back, so do not wait for workbook completion.",
+      "explanation": "只保留共享分析/teams与真实formId依赖；不把Finally当工作簿完成屏障，正式Form写入完整参与并行。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读portal主页面和standards页面取得全部目标，之后读取全部票单。",
+    "REPORTER集合为权威agent集合，不用agents表或CSV roster筛票；teams来自agents表。",
+    "未舍入值比较阈值，等于通过，Agents_Below_Response_Target对中优先级响应阈值。",
+    "QA_Assessment.xlsx三个指定sheet、完整agent/issue覆盖、排序、舍入、所有失败领域、六项Summary和数值字面量。",
+    "QA Self Assessment Survey五题，精确teams及四个response选项，前四必填、末题可选，仅单选或开放文本。",
+    "主agent单写文件与Form，创建一次、真实formId、回读、不增验证波次。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "题面Finally按叙述枚举理解：Form使用固定题干和agents表team options，未引用工作簿文件；分析与checklist已准备好后，两个输出没有相互消费关系。",
+    "QA checklist仍需在冻结评分结果前读完；After reviewing the quality targets明确约束portal→票单，不因输出并行而移除此门槛。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent先portal后票单；文档读取与四类Snowflake聚合可独立并行。",
+    "冻结指标、checklist上下文和team options后，工作簿写入/回读与Form创建/顺序建题/回读原生并行。",
+    "各分支保持自身创建→填充→回读依赖，主agent等待两个输出验证完成后一次最终核对。"
+  ],
+  "expected_tradeoff": "明确独立分支可能减少执行时的意外串行等待，原版已允许原生交错，因此不预设更快或新拓扑收益；结果需实验验证。",
+  "not_runtime_tested": true
+}

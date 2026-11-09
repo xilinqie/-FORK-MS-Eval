@@ -1,0 +1,42 @@
+{
+  "task_id": "wc-inventory-reorder-forecast",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "事件写入契约只列出了标题和时段，漏掉题目明确要求写进每条事件描述的当前库存和供应商交付周期。最后的事件验收也只检查产品和日期，无法发现这两项缺失。",
+  "interpretation": "对事件写入与验收合约作明确补充：每条事件描述来自同一Product_ID数据行，包含当前库存与供应商交付周期；读回逐字段比较，复用旧事件也不能绕过描述核验。保持主agent全程执行及原查询/计算/工作簿结构。",
+  "interpretation_status": "explicit",
+  "change_type": "clarification_only",
+  "preserved_requirements": [
+    "原版主agent无委派；读取reorder_policy.pdf、sales_velocity.xlsx模板和lead_times API。",
+    "完整分页发布且库存>0的商品；完成/处理中订单全部行项；公共历史跨度、销量/天、safety stock=5、horizon=90、缺销量No和N/A。",
+    "重订日期=today+days_until-lead_time，<=today移至明天，不虚构lead time或除零。",
+    "Inventory_Forecast.xlsx两个原表/原列、全部合格商品、Yes子集重订表与字面值。",
+    "每个需要重订商品的Reorder标题和日期09:00–10:00，原policy时区规则、查重与ID读回，主agentclaim_done。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "描述采用可读固定模板是候选实现选择；原题要求信息内容，没有限定其标点或确切英文模板。"
+  ],
+  "capability_conditions": [
+    "若已有目标事件缺少或含错误描述，运行时需有任务授予的事件更新能力；若没有则报告该条未完成，不新建重复事件冒充修复。"
+  ],
+  "plan_summary": [
+    "原商品/订单读取、计算冻结和工作簿生成保持。",
+    "主agent由每条Yes数据构造含Product_ID、当前库存和交付天数的描述，并写入新事件或核对/修正可复用事件。",
+    "逐事件读回标题、时段、日期、库存、交付周期，与工作簿同一行比较后完成。"
+  ],
+  "expected_tradeoff": "拓扑不变，增加描述字段的明确写入与读回比较；可能减少缺字段而带来少量核验/修正开销，需执行后评估。",
+  "changes": [
+    {
+      "original": "Create only missing events natively in parallel with `start:{dateTime:\"[date]T09:00:00\"}` and `end:{dateTime:\"[date]T10:00:00\"}`, omitting `timeZone` unless the policy supplies one.",
+      "replacement": "build the exact event summary `Reorder: <Product_Name>` and description `Product ID: <Product_ID>. Current stock: <Current_Stock> units. Supplier lead time: <Lead_Time> days.`",
+      "explanation": "在原create事件句对应处补齐task明示的描述字段，数据来自现有冻结表。"
+    },
+    {
+      "original": "verify Product_ID/name/date coverage equals the workbook subset before `claim_done`.",
+      "replacement": "Also compare every returned event's summary, 09:00–10:00 interval, Current_Stock, and Lead_Time description values against its source row.",
+      "explanation": "原coverage验收保留并扩充描述字段，修复意见指出的验收盲点。"
+    }
+  ],
+  "not_runtime_tested": true
+}

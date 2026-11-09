@@ -1,0 +1,23 @@
+{
+  "task_id": "terminal-wc-pw-pricing-excel-word-gcal",
+  "annotator": "lexing",
+  "reviewer": "audit02（独立复核）",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": false,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "撤销仅依据Start/Next枚举增加的本店目录完成后才读竞品的屏障；主agent接手源采集后仍以原生并行推进独立来源。",
+    "撤销仅依据Finally增加的Excel/Word完成后才派日历owner的屏障；恢复原有三个writer并行消费冻结类别/价差。metadata的解释、changes、限制、步骤摘要及预期代价均同步。"
+  ],
+  "remaining_conditions": [
+    "本候选未修复原版把gap先舍入一位小数再判定严格±10%阈值的算法；后续执行仍可能在阈值附近给出不满足task实际均价差判定规则的Recommendation。按该候选对应的删除Wave 1意见保留，不合并同题另一条raw gap修订；因此不声明其完整任务算法正确。"
+  ],
+  "not_runtime_tested": true
+}

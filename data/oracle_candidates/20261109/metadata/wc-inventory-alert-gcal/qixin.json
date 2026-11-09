@@ -1,0 +1,46 @@
+{
+  "task_id": "wc-inventory-alert-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求拉取完整目录并以 stock_quantity=0 为准。方案先按库存状态筛选，可能漏掉数量为零但状态为可延期交货等商品，也未要求对筛选结果翻到最后一页。",
+  "interpretation": "取消库存状态预筛选，使用实际工具最大页容量遍历完整目录至末页，再仅以数值stock_quantity=0筛选，覆盖状态为backorder等但数量为零的商品；保留主agent直接执行。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "Query the WooCommerce product endpoint with the out-of-stock filter at its maximum page size and retain only rows whose literal `stock_quantity` is `0`.",
+      "replacement": "Retrieve the complete product catalog with `woo_products_list`, using the maximum page size supported by the exposed tool and increasing the page number from 1 through a short or empty terminal page. Do not apply a stock-status filter or any other filter that excludes part of the catalog.",
+      "explanation": "精确落实完整目录及翻至末页，工具参数以运行时公开schema为准，不臆造上限值。"
+    },
+    {
+      "original": "retain only rows whose literal `stock_quantity` is `0`.",
+      "replacement": "Only after all pages have been collected, retain every product whose numeric `stock_quantity` is exactly zero, regardless of its `stock_status`; missing or null quantities are not zero.",
+      "explanation": "库存数量是唯一选择判据，状态不作为前置排除条件；明确null不等于零。"
+    },
+    {
+      "original": "In one native-parallel batch, search the exact 2026-03-10 09:00–10:00 America/New_York interval for every required `Restock: ...` title, create only missing events, and read each resulting event by ID.",
+      "replacement": "Independent product branches may proceed in parallel, but no create precedes its own absence check and no read precedes a returned ID.",
+      "explanation": "保留跨商品并行，澄清同一分支内部实际依赖；完整目录可能出现同一截断标题，故同时用描述中的Product ID匹配以覆盖每个商品。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整WooCommerce商品目录和stock_quantity=0定义，不把缺失数量或其他库存状态替代为零。",
+    "out_of_stock_report.txt唯一主agent写入，按ID排序、完整商品名/SKU、首个类别或Uncategorized及精确分隔格式保留。",
+    "每个缺货商品一条2026-03-10 America/New_York 09–10时事件，商品名截断50字符、精确描述保留。",
+    "全部事件成功后仅一封purchasing@ourstore.com→warehouse@ourstore.com邮件，精确主题、逐商品行及总数保留。",
+    "不增加子agent，不访问源服务实现/隐藏GT，不改变harness权限。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "使用暴露工具schema允许的最大页容量；不假定未给出的具体容量常数。",
+    "完整目录为空或无数量零商品时，空报告、零事件和总数零邮件是“每个缺货商品”要求的自然边界处理。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "1. 主agent无库存状态过滤完整分页，确认页覆盖后按数量零生成唯一ID清单。",
+    "2. 同一冻结清单生成本地报告、精确事件和邮件；每个事件搜索→条件创建→真实ID回读，商品间并行。",
+    "3. 所有事件与目录完整性确认后发单封汇总，主agent核对总数再声明完成。"
+  ],
+  "expected_tradeoff": "待实验验证：完整分页通常比状态预筛选读取更多数据，但避免遗漏数量零且状态不同的商品；完整性收益和调用成本需要实验衡量。",
+  "not_runtime_tested": true
+}

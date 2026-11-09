@@ -1,0 +1,46 @@
+{
+  "task_id": "canvas-quiz-performance-gcal-gform",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求完成报告后再创建 Google Form，参考编排却在读取 CSV 时就调用 create_form，报告还没生成便产生了外部写入。应把问卷创建放在工作簿生成之后。",
+  "interpretation": "保留无委派、主agent原生并行的结构；把create_form从CSV起始批次移到工作簿写入和回读成功之后。问卷文本和日历只读预检仍可提前准备。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Start the CSV read, create_form(title=\"Quiz Improvement Feedback\") exactly once, and the three exact calendar searches natively in parallel.",
+      "replacement": "Start the CSV read and the three exact calendar searches natively in parallel; prepare the fixed Form questions without calling create_form yet.",
+      "explanation": "移除导致早建表单的起始写入，保留独立读取并行。"
+    },
+    {
+      "original": "The main agent is the sole writer of Quiz_Performance_Report.xlsx.",
+      "replacement": "Wait for successful workbook creation, complete population, and matching read-back of both sheets before calling create_form(title=\"Quiz Improvement Feedback\") exactly once.",
+      "explanation": "以原工作簿责任句为锚点补充明确依赖；表单必须收到完成报告证据后才创建。"
+    },
+    {
+      "original": "Read candidates to verify recipients, send once only if absent, and copy the canonical overall/highest/lowest facts plus all three tutoring titles/dates into the body.",
+      "replacement": "Send once only if absent and after the report is complete and all three retained events have been read back successfully, so the message's statement that the sessions have been scheduled is supported.",
+      "explanation": "保留邮件查重与内容；为任务中“已经安排辅导”的声明补必要成功条件，不把另一标注者的并行建议合并进来。"
+    }
+  ],
+  "preserved_requirements": [
+    "CSV仍是唯一测验数据源，不额外调用LMS或派发子agent。",
+    "严格score > points_possible/2计算通过率，四个测验行及五个Course Summary指标、两位小数、常量数字、均分升序和加权总体均分保留。",
+    "唯一主agent写Quiz_Performance_Report.xlsx；表单固定标题、两道必选单选和可选文本题及原选项保留。",
+    "三场2026年3月12/19/26日15–17时课程事件、精确邮件收件人/主题保留。",
+    "仍保留Sent候选读取、精确去重、禁止模糊创建重试及最终一致性检查。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "使用原版允许的UTC时间表示；不改为新的时区约定。",
+    "报告成功回读作为“完成报告”的可检查完成条件，比仅获得空工作簿创建ID更可靠。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "1. 主agent并行读取CSV与预检日历，冻结指标并继续三个独立事件分支。",
+    "2. 写入并回读报告；成功后主agent创建并完善Form。",
+    "3. Sent查重可提前进行；报告及事件完成证据到齐后发邮件，最终核对全部产物。"
+  ],
+  "expected_tradeoff": "待实验验证：表单开始时间推迟到报告完成，但避免违反明确顺序；保留日历和查重并行以限制额外等待。",
+  "not_runtime_tested": true
+}

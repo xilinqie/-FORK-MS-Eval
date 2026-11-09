@@ -1,0 +1,35 @@
+{
+  "task_id": "howtocook-event-catering-excel-word",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a Google Form，似乎可以和Create a Word document并行",
+  "interpretation": "原版已经将Word和Form写成独立分支；本候选保留无子agent结构，明确主agent同批发起就绪工具调用、分支内部依赖和三产物完成后邮件门槛。属于对已有并行关系的执行合约澄清，不声称新增编排拓扑。",
+  "interpretation_status": "explicit",
+  "change_type": "clarification_only",
+  "changes": [
+    {
+      "original": "Create `Catering_Plan.xlsx`, `Catering_Proposal.docx`, and the Form `Menu Approval Survey` as independent output branches.",
+      "replacement": "Create `Catering_Plan.xlsx`, `Catering_Proposal.docx`, and the Form `Menu Approval Survey` as independent output branches owned solely by the main agent. Once the eight-dish table is frozen, launch ready Word and Form calls in the same native-parallel batch; neither branch waits for the other branch to finish. Within each branch, wait for its own create result before using the returned document or Form identifier, and serialize dependent edits to that same resource. Interleave ready calls from these two branches until both are complete, with workbook calls also eligible when independent. Do not send the final email until the workbook, Word document, and Form have all completed their required verification.",
+      "explanation": "把已有独立分支写成可执行的原生并行安排；只落实乐星提出的Form/Word并行，不增加writer子agent。"
+    }
+  ],
+  "preserved_requirements": [
+    "仍先浏览HowToCook类别并选择八道菜，覆盖开胃菜、主菜与汤或甜点，八份recipe详情原生并行。",
+    "30人规模、Menu/Ingredients及所有指定列、字面数值、正成本、同名菜与配料、原版八菜共享数据保持。",
+    "Word文件及Executive Summary/Menu Overview/Preparation Timeline保持；原task对全部所选菜品及简述的要求仍绑定执行。",
+    "Form仅创建一次且保留原版三条明确问题；向client@corporate.com发送一次指定主题邮件，等待三项产物核验。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版已有独立输出，本候选不把它误称为原版缺乏并行；只明确工具批次和资源内串行。",
+    "不合并同题其他标注者关于Word菜单覆盖验收的修订；原plan的相关文字保留，原task完整菜单概览要求不变。"
+  ],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保持唯一执行者，冻结八菜表。",
+    "原生并行推进Word/Form，资源内create及后续编辑保留依赖。",
+    "一次核验每项产物，三分支完成后发送邮件。"
+  ],
+  "expected_tradeoff": "待实验验证：显式工具批次可能改善并行执行稳定性，但原版已允许独立分支，收益可能仅来自澄清而非拓扑变化。",
+  "not_runtime_tested": true
+}

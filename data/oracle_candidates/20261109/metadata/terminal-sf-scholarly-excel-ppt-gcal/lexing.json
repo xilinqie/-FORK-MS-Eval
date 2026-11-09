@@ -1,0 +1,75 @@
+{
+  "task_id": "terminal-sf-scholarly-excel-ppt-gcal",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Search the research paper database 和 Write and run a second Python script called match_recommendations.py. 可以并行",
+  "interpretation": "把“检索与Write and run匹配脚本并行”限定为文献检索与脚本编写/准备并行：新增一个只读学术研究分支，主agent同时取数、分析并准备匹配脚本。保留公开原版中独立仓库查询和论文检索的重叠；匹配执行必须join真实sales_gaps与论文输出，不能宣称计算独立于论文。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "the main agent completes this compact aggregate/research task directly; do not dispatch sub-agents.",
+      "replacement": "Use one read-only academic-literature-researcher sub-agent so that paper retrieval can overlap with preparation of the matching script.",
+      "explanation": "用一个只读学术分支实现明确的检索/编写重叠，主agent保留所有本地与外部写入职责。"
+    },
+    {
+      "original": "Write and run analyze_sales_gaps.py, match_recommendations.py and generate_summary.py in dependency order.",
+      "replacement": "While that search is in progress, the main agent writes match_recommendations.py in the workspace.",
+      "explanation": "把脚本编写从数据就绪后的执行阶段分开，只并行无输入依赖的准备工作。"
+    },
+    {
+      "original": "Match at least one paper-backed action to every underperforming region/gap and owner from the roster.",
+      "replacement": "Only after both the validated sales_gaps.json and the completed relevant_papers.json are available, run match_recommendations.py.",
+      "explanation": "明确执行屏障，真实研究交接由主agent持久化；只读researcher不写JSON。"
+    },
+    {
+      "original": "No source/writer/audit wave is allowed.",
+      "replacement": "Beyond the single read-only research branch, do not dispatch source, writer or audit agents.",
+      "explanation": "仅为指定意见放开一条研究分支，其余主agent单写和无writer/auditor波次保持。"
+    },
+    {
+      "original": "In the same ready-source phase, call Scholarly separately for sales optimization and customer segmentation strategies",
+      "replacement": "In the same ready-source phase, run two concurrent branches. The research search topics and the script's input contract are known from the task; searching papers does not require the completed sales-gap calculation.",
+      "explanation": "保留原版独立研究与数仓来源并行；不因题面段落/枚举顺序而要求研究等analyze_sales_gaps完成。正式匹配仍join两份真实输入。"
+    },
+    {
+      "original": "Write and run analyze_sales_gaps.py, match_recommendations.py and generate_summary.py in dependency order.",
+      "replacement": "The main agent writes and runs generate_summary.py once the validated sales_gaps.json and research_recommendations.json are ready,",
+      "explanation": "保留原版脚本真实依赖顺序；题面Finally不新增summary等待Excel/PPT的硬门槛，总体完成仍等全部产物。"
+    },
+    {
+      "original": "List events in the two weeks after task launch, enumerate weekday 90-minute slots fully within 09:00-17:00 in the environment timezone, choose the first conflict-free slot,",
+      "replacement": "List events in the two weeks after task launch using valid ISO `timeMin` and `timeMax` bounds and an explicit positive `maxResults`.",
+      "explanation": "独立静态复核按固定能力补最小兼容：list_events默认10条且无分页，达到limit时增大limit重查；其contained-range语义不能单独证明跨窗口占用事件覆盖，记录限制并核对有实际证据的边界事件，不修改工具或预断无冲突。源码sources/capabilities/calendar_index.ts:277–283、293–303、359–364、489–505，固定gym提交872ebef73f170a565136d4521ddb02b41872362e。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读strategy_brief.txt、sales_team_roster.csv、historical_benchmarks.json；五个region/owner/target。",
+    "全历史订单不加日期过滤，区域/客户分群聚合、带类别top5/bottom5产品；不返回订单明细。",
+    "analyze_sales_gaps.py与sales_gaps.json；对历史季度基准作同比估计，五区域当前收入中位数以下才Priority Focus。",
+    "两个指定论文主题；只纳入abstract支持的销售/区域/CLV建议；无关论文只排除、不删除。",
+    "match_recommendations.py读取真实gap与论文；research_recommendations.json每个识别出的低绩效区域/分群缺口至少1条有论文标题/关键发现/影响的建议。",
+    "Q1 Sales Strategy Review未来两周第一个工作日09—17内90分钟空闲段，保留title/time检查、一次创建与get_event。",
+    "Sales_Strategy_Analysis.xlsx四指定表与列、5区域行、literal numbers、roster owner和具体research_basis。",
+    "Sales_Strategy_Presentation.pptx恰6指定slides及当日日期；最终generate_summary.py/ executive_summary.txt含总收入、Priority数量及建议数量。"
+  ],
+  "qualified_or_unimplemented": [
+    "不能实现match_recommendations.py的正式运行与尚未完成的真实文献检索完全独立并行；该脚本读取论文信息的硬依赖不允许解除。",
+    "原版已将仓库查询与Scholarly置于同ready-source phase，本候选保留该并行；新增的是学术子agent与主agent脚本准备重叠，不宣称原版所有读取串行。",
+    "两周首个空闲时段仍受固定日历服务contained-range语义限制；已补返回上限与范围说明，未宣称工具的跨边界覆盖缺陷已修复。"
+  ],
+  "assumptions": [
+    "将“可以并行”解释为能重叠代码准备与检索，而不是允许无论文结果先生成建议。"
+  ],
+  "capability_conditions": [
+    "固定list_events缺省maxResults为10且无pageToken；候选显式增大limit以取全同一两周窗口结果。该服务按start>=timeMin且end<=timeMax筛选，不保证跨窗口事件的overlap覆盖。实验前需确认是否存在跨两周边界的占用事件或有任务可见ID可进一步核查；只记录与处理实际可证实的边界问题，不假设存在而强制每次失败。固定源码sources/capabilities/calendar_index.ts:277–283、293–303、359–364、489–505；未运行日历操作。"
+  ],
+  "plan_summary": [
+    "主agent读取初始文件后，同时启动只读论文检索分支与自身的数仓查询/销售缺口分析。",
+    "主agent在检索期间准备match脚本，不以脚本编写冒充运行；研究agent返回真实论文且不写本地文件。",
+    "主agent保存真实论文包并与真实gap完成join后运行匹配；总结脚本仅等待这两个JSON。",
+    "主agent继续独占事件、工作簿及6页演示的写入，全部产物核对后才整体完成。"
+  ],
+  "expected_tradeoff": "检索等待期可被脚本编写利用，但新增agent交接与论文包序列化有开销；不能预设更快或更准确，且匹配执行的真实依赖不会消失。",
+  "not_runtime_tested": true
+}

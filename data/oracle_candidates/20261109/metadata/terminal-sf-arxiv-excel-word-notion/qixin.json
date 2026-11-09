@@ -1,0 +1,61 @@
+{
+  "task_id": "terminal-sf-arxiv-excel-word-notion",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求 Word 逐部门呈现七个部门的人数和流失风险比例，并列出各部门的策略与优先级。编排的 Word 交付合同只要求至少提到五个部门，允许遗漏两个部门的分析和建议。",
+  "interpretation": "核心修正是把 Word 的“至少提到五部门”改为七部门逐一呈现人数/风险比例和策略/优先级，并增加七部门分析及建议双覆盖验收。保留原版两波和第一波两个独立 explore 并行；不因 Next 枚举词串行化论文检索。只保留必要权限/单一协调者修正：只读 explore 不写 JSON，主 agent 负责持久化和脚本；主 agent 作为同一协调者创建/填写 Notion 并汇总产物。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "it must name at least five departments and all priority levels, then read back once.",
+      "replacement": "Data Analysis must present all seven departments—Engineering, Finance, HR, Operations, R&D, Sales, and Support—with each department's headcount and flight-risk percentage.",
+      "explanation": "指定意见的核心修正：覆盖全部七部门且逐部门填写人数和比例，不能仅出现五个名称。"
+    },
+    {
+      "original": "it must name at least five departments and all priority levels, then read back once.",
+      "replacement": "Recommendations must list a specific strategy and its assigned priority for each of the same seven departments, matching the canonical Action_Plan rows.",
+      "explanation": "落实七部门建议与优先级合同，保持统一行动表；全部优先级以阈值说明保留，不凭空指定不存在的类别。"
+    },
+    {
+      "original": "After Wave 2, the main agent performs one compact cross-output check of seven department names, priorities, strategies, owners, and numeric values and finishes without a repair or verification wave.",
+      "replacement": "Specifically check that every department has a Data Analysis entry and a Recommendations entry in Word, not only a name mention, and that its values/strategy/priority agree with the canonical tables and Excel.",
+      "explanation": "把原有跨输出核验具体化为七部门双覆盖验收，不增加验证 agent。"
+    },
+    {
+      "original": "The Notion coder solely owns `Retention Action Items`: exact-title search and duplicate gate, create at most one database with the exact schema, and upsert exactly one page per seven literal department names",
+      "replacement": "In parallel with these two independent local-artifact writers, the main agent alone coordinates and writes `Retention Action Items`.",
+      "explanation": "必要的所有权修正：原题明确同一 coordinator 创建数据库、加七页并汇总最终产物，而 external 角色无本地汇总写权限。将这三项统一给主 agent，保留两个 office writer 并行、Notion 单库查重/七页/回读规则，不增新阶段。"
+    },
+    {
+      "original": "After Wave 1, the main agent validates both compact results, writes and runs `flight_risk_analysis.py` and `synthesis.py` once each, and freezes one seven-department action table with literal priorities, strategies, costs, and owners.",
+      "replacement": "After Wave 1, the main agent validates both compact results and persists the retrieved aggregate input and research evidence inside the workspace.",
+      "explanation": "明确只读 explore 到主 agent 的持久化交接；两个脚本仍由主 agent 在第一波完成后执行，synthesis 消费第一 JSON 的真实依赖保留。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读 retention_targets.pdf、analysis_methodology.md、department_contacts.json；七个确切部门、目标和负责人。",
+    "保留一个企业分析 explore 和一个学术研究 explore；一次 set-based Snowflake 读取，风险条件 satisfaction<=4 且 performance>=4，保留七部门指标与总体控制。",
+    "主 agent 编写并通过命令行各运行一次 flight_risk_analysis.py/synthesis.py，生成对应 JSON；研究恰三篇相关论文并读摘要，排除无关内容。",
+    "Retention_Strategy.xlsx 三 sheet、row1 表头、紧随数据行、七部门/三论文、所有数值字面值及两位展示精度、1–10 整数适用性评分。",
+    "风险优先级 >8.3 High、7.9–8.3 含端点 Medium、<7.9 Low；七部门成本/策略/负责人统一冻结。",
+    "Word 精确标题及四节完整内容，七部门数据与建议、三篇研究；原单一 Word writer 和一次回读保留。",
+    "Retention Action Items 同一数据库、完整属性类型/选项、七页、Not Started、负责人来源、策略与 Excel 一致；原精确查重和单库限制保留。",
+    "主 agent 最后汇总全部本地产物并跨输出验收，不增加 repair/verification wave，只有主 agent 声明完成。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "原题 Next search 是叙述枚举，论文查阅不消费 HR 查询或第一脚本结果，故保留原版两 explore 并行；真正的合流点是 synthesis 同时需要 flight_risk_analysis.json 与研究结果。",
+    "原题 single coordinator 按同一实际负责人创建数据库、添加七页并汇总产物解释，由主 agent 承担；原第三个 Notion coder 的必要工作完整保留。",
+    "保留原版聚合查询路线：把由 Snowflake 检索到的部门计数/总和作为脚本输入，使脚本可重新计算风险比例和满意度，不伪造逐员工原始行或隐藏参考值。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主 agent 读三个背景文件，第一波两个只读 explore 并行取得七部门聚合与三篇论文证据。",
+    "主 agent 持久化返回数据，依次运行两个脚本，并冻结七部门行动表与三篇研究表。",
+    "第二波两个 office writer 并行生成 Excel 和全面覆盖七部门的 Word；主 agent 同时作为唯一 Notion 协调者创建/填充同一数据库。",
+    "主 agent 汇总文件和 JSON，核对 Word 七部门双覆盖与跨输出一致性后结束。"
+  ],
+  "expected_tradeoff": "七部门双覆盖合同可能减少 Word 漏项；保留独立研究并行，不新增研究等待阶段。统一协调者增加主 agent 的外部写入工作，实际完整性、成本和时延均需实验验证。",
+  "not_runtime_tested": true
+}

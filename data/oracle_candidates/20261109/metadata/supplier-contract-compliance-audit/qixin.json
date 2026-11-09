@@ -1,0 +1,65 @@
+{
+  "task_id": "supplier-contract-compliance-audit",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "编排只安排给合同金额最高的一家证据缺失供应商开会，没有根据已核实的表现为每家不达标供应商安排跟进，也没有建立原题要求的合同集中版本化仓库。证据缺失可以如实记录，但与实证不达标需要分开处理。",
+  "interpretation": "用规范证据集定义每家实证不达标供应商并逐家安排跟进，删除“只选金额最高证据缺失者”替代所需会议的路径。Wave1同一office owner实际建立可检索、保留真实版本的本地集中合同仓库，读回索引/历史/内容；不把模板、空仓库或本地暂存宣称为真实外部仓库。为遵守角色工具权限，将原本误交给office的Snowflake检索移至主agent。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "one evidence-collector/dataset-builder keeps the heavy inventory out of the main context and freezes ONE canonical audit dataset (audit_data.json)",
+      "replacement": "one workspace evidence-collector/dataset-builder establishes the central versioned contract repository and freezes ONE canonical audit dataset (audit_data.json)",
+      "explanation": "为该人指出的仓库缺交付增加同一owner的实际目录、版本化副本、索引和验证，不新造不存在的远程服务。"
+    },
+    {
+      "original": "searches the granted Snowflake schemas for supplier/contract/performance tables",
+      "replacement": "The office-report-builder must not call Snowflake or acquire tools outside its role.",
+      "explanation": "sources/harness显示office没有Snowflake工具，必要地把该源读取交给主agent并向office交接证据，避免新增仓库流程沿用不可执行职责。"
+    },
+    {
+      "original": "Choose the single evidence-gap supplier with highest annual contract value, breaking ties by supplier name.",
+      "replacement": "For calendar follow-up, the main agent schedules one supplier-specific meeting for EVERY distinct verified underperforming supplier in the canonical dataset.",
+      "explanation": "从单一缺证者改为所有经合同与表现证据确认不达标者；不能用缺证替代不达标。"
+    },
+    {
+      "original": "The main agent then checks five-supplier coverage, packet consistency, exactly two separate supplier recipients, all file receipts, and the supplier-specific event receipt; no second agent wave, duplicate writer, or repair agent is allowed.",
+      "replacement": "Report partial completion and precise missing controls when a required repository, source, routing, or meeting obligation cannot be verified.",
+      "explanation": "新增仓库/每家会议验收，保留原两波，改正结尾no second agent wave与已有Wave2冲突为不追加writer wave；缺材料不能假称所有供应商均合规或会议已覆盖。"
+    }
+  ],
+  "preserved_requirements": [
+    "五家supplier_list.csv联系人；全部真实active合同/服务协议、供应商/服务类别/起始日组织、条款与履约证据。",
+    "合同集中可检索与版本控制；原文件不改，真实版本路径/哈希/历史读回，不伪造历史。",
+    "缺证和实证不达标分开、原中性评分惯例明确标注、不能伪造breach/趋势/续期/成本/根因。",
+    "两个xlsx各固定单sheet、两个不同docx、真正compliance_report.pdf五项交付与读回；三个文件owner并行。",
+    "至少两家供应商报告邮件，保留原按金额选两家、真实PDF附件及独立地址/去重原则；业务stakeholder只用有依据地址。",
+    "为每家核实不达标供应商安排改进会议，保留原可见日程优先/缺省首次七天后无冲突工作日规则。",
+    "主agent外部写入，office仅本地编写，不加repair或额外writer wave。"
+  ],
+  "qualified_or_unimplemented": [
+    "若未取得真实合同或表现，不能凭Evidence Not Available生成“实证不达标”会议；保持该供应商评价/跟进覆盖待核，并可另列证据请求。",
+    "原题未指定机构或远程仓库，本候选选择工作区真实版本化合同库；若可见输入另指定外部目标，必须取得真实目标及获授版本工具，否则只算本地暂存。",
+    "缺少任务要求的business-stakeholder地址或特定会议参数时只报缺项，不虚构邮箱/归档地址/权限。"
+  ],
+  "assumptions": [
+    "将未指定平台的central repository实现为工作区内可检索的版本化副本、索引和追加历史；明确只是一处本地合同库，不宣称已有机构服务。",
+    "“每家不达标”以至少一个有合同与实际表现证据的差距为准；缺证不是该条件。"
+  ],
+  "capability_conditions": [
+    "真实active合同、履约指标和可见关联键是否齐全将决定能否完成全覆盖评价；无证据不能补造。",
+    "若有明确外部仓库要求，需真实授权目的地与已暴露版本操作；本地版本库不会冒充外部归档。",
+    "原PDF创建能力及邮件附件接口必须实际可用，否则保留报告并记录交付失败；不尝试越权修复工具。",
+    "业务stakeholder联系人须可见有据；固定会议约束若冲突需明确列出。"
+  ],
+  "plan_summary": [
+    "主agent读取供应商和仓库证据、确认PDF路径，向office提供合法输入。",
+    "Wave1唯一office建立实际版本合同库，解析输入并生成含实证不达标集合和缺证状态的audit_data.json。",
+    "主agent验收来源、仓库、五家覆盖并冻结数据。",
+    "Wave2三名office各自唯一负责2xlsx、2docx、1pdf并核验。",
+    "主agent发证据支持的报告邮件，并为每个实证不达标供应商逐一安排无冲突会议。",
+    "按仓库版本回执和逐供应商会议清单最终验收；缺证/缺能力只能部分完成。"
+  ],
+  "expected_tradeoff": "本候选增加真实合同版本库及可能多场会议，提高义务覆盖的代价是更多文件/外部操作；将仓库读取移到主agent还会改变少量上下文负荷，效果待实验验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "sf-hr-worklife-notion-excel",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求 Excel 创建后再建立知识库页面。参考编排把两项写入并行启动，工作簿未创建成功时也可能发布页面。",
+  "interpretation": "把原版工作簿和页面的原生并行写入改为工作簿实际完成后发布页面；保持紧凑SQL聚合、主agent直接完成与两产物验收后发邮件。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "then create WL_Balance_Report.xlsx and exactly one HR Wellbeing Dashboard page with native parallel tool calls in the same response.",
+      "replacement": "Only after the workbook has been successfully created, populated, and read back, create exactly one HR Wellbeing Dashboard page.",
+      "explanation": "将原版同时创建改为工作簿成功后才创建页面，阻断工作簿失败时页面发布。"
+    },
+    {
+      "original": "Preserve alphabetical departments, raw ranking/tie evidence, exact metric labels, and cross-output values; verify both outputs before sending the required email.",
+      "replacement": "Verify both outputs before sending the required email to hr_director@company.com with a subject referring to the wellbeing analysis and a body summarizing the top-level findings across departments.",
+      "explanation": "保留两项产物完成后邮件的已有依赖，展开原题邮箱及正文要求；前文保留排序、舍入、加权与并列口径。"
+    }
+  ],
+  "preserved_requirements": [
+    "按部门聚合员工数、工作生活平衡均值及满意度均值，并保留公司级聚合核对；全公司平均为员工数加权结果。",
+    "WL_Balance_Report.xlsx保留Department Analysis与Findings两表、原题全部字段和指标名，部门字母顺序及两位小数。",
+    "Combined_Score为部门Avg_WLB和Avg_Job_Satisfaction的简单平均；保留原始排名及舍入后并列可任选一部门规则。",
+    "页面名HR Wellbeing Dashboard，正文包括两个整体均值及各自最佳部门；最终邮件给hr_director@company.com，主题引用wellbeing analysis。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent聚合并冻结单一指标集。",
+    "唯一写入者先生成并读回两表，再创建和读回知识库页面。",
+    "两输出验证后发送总结邮件；无子agent。"
+  ],
+  "expected_tradeoff": "预期避免在工作簿失败或尚未完成时发布页面；页面创建将不再与工作簿重叠，时间代价尚未运行测量。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,42 @@
+{
+  "task_id": "sf-hr-promotion-review",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求生成报告后再发送邮件。参考编排把创建工作簿和发邮件安排在同一并行响应，未等待报告成功便可能对外发送。",
+  "interpretation": "维持主agent单独完成的原结构，只为邮件发送增加工作簿成功创建且范围核对通过的前置条件；邮件正文准备可以早于该条件，实际发送不能提前。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "in the same native-parallel response send exactly one email",
+      "replacement": "Successful file creation and both reconciled ranges are required before the email may be sent; if creation or validation fails, do not send the email.",
+      "explanation": "修正原题After creating the report与同响应发送的冲突，不增加子agent。"
+    },
+    {
+      "original": "Read the two populated ranges back once, reconcile them to the query, and finish.",
+      "replacement": "Only after the report has passed those checks, send exactly one email",
+      "explanation": "将原有范围读回前移至邮件发送之前，沿用同一冻结数据包。"
+    },
+    {
+      "original": "Do not search Sent folders, retry folder aliases, read the sent message back, or add a verification wave.",
+      "replacement": "Do not search Sent folders, retry folder aliases, read the sent message back, or add a verification wave.",
+      "explanation": "保留原版无关的发送检查与波次限制，未合并其他人的意见。"
+    }
+  ],
+  "preserved_requirements": [
+    "performance_rating>=4且years_of_experience>=5；按员工原始聚合计算加权汇总而非均值的均值。",
+    "Promotion_Candidates.xlsx的By Department、Summary及全部指定列/指标；部门字母顺序；薪资/评级2位、经验1位小数，literal values。",
+    "hr-director@company.com、Promotion Cycle: Eligible Candidates Summary及总人数、人数最高部门简述。",
+    "主agent拥有全部写入，不派agent，不加验证波次；原有不搜索Sent/不回读邮件限制保留。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent查询并冻结部门与公司聚合。",
+    "单写工作簿并读回两表与查询核对。",
+    "只有文件及检查成功才发送一次邮件，收到成功结果后完成。"
+  ],
+  "expected_tradeoff": "预计能阻止未成功产出报告就通知HR；因发送等待报告核对，延迟可能上升，效果待验证。",
+  "not_runtime_tested": true
+}

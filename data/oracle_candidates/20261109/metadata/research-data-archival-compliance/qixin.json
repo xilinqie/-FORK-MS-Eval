@@ -1,0 +1,61 @@
+{
+  "task_id": "research-data-archival-compliance",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "方案只从三个数据集的本地材料提取保留年限，并生成清单、权限流程和版本控制说明，没有安排独立核验适用的机构及资助方政策，也没有实际建立和验证受限访问、机构仓库版本化等控制。记录异地备份受阻可以保留为部分完成，不能据此确认整个归档流程完成。",
+  "interpretation": "维持主agent无委派结构，将本地元数据中的保留年限从“权威结论”降为待核声明，增加独立权威政策适用性核验；把权限、机构仓库版本化、登记和异地备份变成有真实目标/能力/读回证据的动作。缺能力时只交部分结果并列待办，禁止用流程说明替代控制落地或无条件claim_done。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "For each dataset freeze its exact project key, funder, PI, retention years, sensitivity",
+      "replacement": "Preserve source-reported claims separately from independently verified requirements.",
+      "explanation": "新增政策证据层，保留原本地清单信息但不将自报retention years视作独立认证。"
+    },
+    {
+      "original": "create the compliance documentation package (archival plan, data dictionary, provenance/preservation/access procedure, sponsor checklist, researcher training guidance, version-control instructions, and a certification separating verified compliance from gaps) for every dataset and sponsor.",
+      "replacement": "Store the archival documentation using the actual repository's versioning mechanism, retaining the returned version IDs and provenance.",
+      "explanation": "原句只给版本控制说明，本候选增加实际授权仓库中的版本操作、真实ID与内容读回；缺失能力明确留待，不自造系统。"
+    },
+    {
+      "original": "originals untouched, workspace-only backups labeled as local simulations, and an off-site capability blocker recorded unless an authorized remote target is actually visible",
+      "replacement": "A workspace-only copy is a local preservation copy or simulation, not an institutional deposit or off-site backup.",
+      "explanation": "保留原来诚实记录异地受阻的做法，并区分本地副本、机构登记/权限、真实异地复制各自的验收条件。"
+    },
+    {
+      "original": "Call claim_done; do not add a separate verification phase.",
+      "replacement": "If a required control remains blocked, report partial completion with the completed artifacts and exact outstanding dependencies, without declaring the entire archival workflow complete.",
+      "explanation": "取消无条件完成路径；把该人的部分完成意见落实为明确终态约束。"
+    }
+  ],
+  "preserved_requirements": [
+    "原三组NSF/NIH/DOE项目路径、源文件只读保留、工作区清单与逐数据集目录及集中registry。",
+    "所有项目的格式/大小/创建日期/数据类型、变量字典、研究协议、采集/分析/处理/质保溯源及长期保存计划。",
+    "机构与各适用资助方的保留、共享、开放访问、敏感数据限制及可复现文档要求。",
+    "实际访问控制、机构研究数据管理登记、机构仓库文档版本化、异地备份；缺失不得用本地模拟替代。",
+    "逐资助方checklist、如实限定的认证、培训文档、领导及资助方通信、研究团队会议。",
+    "主agent全程唯一owner，先清单→政策→保存规划→真实控制→认证→通信，不新增子agent或修复环境。"
+  ],
+  "qualified_or_unimplemented": [
+    "实际受限访问、机构登记/版本化、异地复制只能在真实目标和获授工具存在时落实。输入包未证明这些能力存在，候选提供阻塞分支，不承诺全部完成。",
+    "独立核验指独立权威证据，不解读为必须新增一个政策子agent；无政策文档或获授读取通道时不能凭常识替代。",
+    "无法核实政策/控制时仅生成限定性合规评估，不生成虚假的全面合规认证。"
+  ],
+  "assumptions": [],
+  "capability_conditions": [
+    "各项目适用的权威机构政策、资助方条款及有效日期/保留起算证据能由任务可见材料或获授只读工具取得。",
+    "实际机构仓库和研究数据管理目标、获准主体及可读回的访问控制/登记/版本操作是否暴露，必须从本次任务能力和输入确认。",
+    "真实异地目标、授权复制通道与访问/文件完整性读回能力是否存在；本地副本不能替代。",
+    "领导/资助方收件人及团队会议参数必须有可见证据，缺项保持pending。"
+  ],
+  "plan_summary": [
+    "主agent清点全部可见研究数据，保留原三项目及源文件。",
+    "逐项目独立核验政策版本、适用性和元数据差异。",
+    "准备逐项目保存文档及可核查registry/copy证据。",
+    "在已获授真实目标上落实ACL、登记、版本化与异地复制并读回，缺能力独立记录。",
+    "生成限定性认证/培训资料、发送真实状态通信、安排有依据的会议。",
+    "最终仅对全部已验证或有证据不适用的义务声明完成，否则报告部分完成。"
+  ],
+  "expected_tradeoff": "较原计划增加政策核验和真实控制读回，可能暴露环境本就不可完成的阶段并增加步骤；预期减少虚假完成，未运行验证。",
+  "not_runtime_tested": true
+}

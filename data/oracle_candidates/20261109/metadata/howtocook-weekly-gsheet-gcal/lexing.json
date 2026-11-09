@@ -1,0 +1,49 @@
+{
+  "task_id": "howtocook-weekly-gsheet-gcal",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a Google Sheet，Schedule seven dinner preparation events in Google Calendar可以并行",
+  "interpretation": "原版已经用主agent原生并行建Google Sheet和日历。结合该标注者delegation=1，将意见解释为把两个写入分支分别交给external子agent并行执行；不声称原版缺并行。",
+  "interpretation_status": "inferred",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "To solve this task efficiently, complete it directly in the main agent; the category lists and 21 one-record detail calls are compact and need no delegation. HowToCook is read-only.",
+      "replacement": "To solve this task efficiently, the main agent performs the compact recipe collection and calculation directly, then delegates the two independent external output branches. HowToCook is read-only.",
+      "explanation": "保留主agent采集计算，将委派仅用于同学提及的两个外部交付分支。"
+    },
+    {
+      "original": "From that table start three independent branches in one native-parallel response:",
+      "replacement": "Output wave — dispatch exactly 2 coder sub-agents in parallel, both using the external-workflow-operator role:",
+      "explanation": "原生并行改为两个独立external coder。云表不是本地xlsx，按harness权限不分派给office角色。"
+    },
+    {
+      "original": "and exhaust Sent-mail search for recipient `meal_planning@service.com` and exact subject `Weekly Meal Plan Ready`, sending it only if absent.",
+      "replacement": "Once both outputs are confirmed, send the required email only if absent, summarize the seven-day meal plan, and state that the Google Sheet and calendar events have been created.",
+      "explanation": "结构调整后主agent承担邮件，等待真实ID/回读结果才能声明两分支完成；这是任务要求的必要依赖，不归因于其他标注者意见。"
+    }
+  ],
+  "preserved_requirements": [
+    "三类查询与21个详情调用仍由主agent原生并行完成；21个唯一菜谱和Day/Meal_Type固定分配保留。",
+    "英文菜名、≤5/6–10/>10步骤对应Easy/Medium/Hard及15/30/60分钟规则保留。",
+    "Weekly Meal Plan唯一云表、精确五列、21数据行和七个4月7–13日18–19时晚餐事件保留。",
+    "事件描述与云表共用同一英文菜名；不添加未指定时区。",
+    "精确邮件地址/主题和仅发送缺少邮件的去重规则保留。",
+    "两个external coder分别拥有云表/日历权限，主agent唯一发信和声明完成；不假设子agent互通。"
+  ],
+  "qualified_or_unimplemented": [
+    "“可以并行”原版已经满足；候选没有纠正一个不存在的串行事实，而是改变并行执行者。",
+    "原理由未明确说必须两个子agent，新增两个external coder是结合该人的A=1作出的解释，不等于人工已确认这个具体实现。"
+  ],
+  "assumptions": [
+    "根据delegation=1将并行意见解释为需要两个独立子agent；若只按字面意见，该处也可以只是澄清原生并行。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "1. 主agent保留原有菜谱查询、详情读取和21行冻结计算。",
+    "2. 两个external coder并行分别写云表与七日历事件；主agent同时只读查重邮件。",
+    "3. 主agent等待两份真实ID及回读证据、核对菜名/时间后发送缺少的完成邮件。"
+  ],
+  "expected_tradeoff": "待实验验证：独立代理可能隔离外部写入上下文，但会增加启动、交接及主agent协调成本；原版已有并行，因此不能预设吞吐提升。",
+  "not_runtime_tested": true
+}

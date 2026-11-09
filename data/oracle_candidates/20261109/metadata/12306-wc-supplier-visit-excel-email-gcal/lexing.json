@@ -1,0 +1,53 @@
+{
+  "task_id": "12306-wc-supplier-visit-excel-email-gcal",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Wave 2可以分成2个，Add two calendar和Create an Excel workbook",
+  "interpretation": "将“Wave 2可以分成2个”落实为同一输出波次中的两个专属子任务：office coder独占Excel，external coder独占两条日历事件。原版已由主agent与Excel原生并行创建事件，本候选改变的是执行所有者和明确回执，而非声称此前没有并行。 独立邀请保留原生并行；仅引用实际工作簿的采购summary等待其成功回执，不把Finally解释成所有邮件必须串行。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "2. Wave 2 — dispatch exactly 1 coder sub-agent:",
+      "replacement": "2. Wave 2 — dispatch exactly 2 coder sub-agents in parallel, both receiving the frozen canonical plan:",
+      "explanation": "按指定意见把日历写入从主agent移入独立external coder，与唯一Excel writer同波并行。"
+    },
+    {
+      "original": "After Wave 2, the main agent must read back all retained event/message IDs and verify that workbook suppliers, times, cities, two events, two invitations, and procurement summary agree. It must perform final artifact and external-state checks before completion.",
+      "replacement": "   2. coder 1 (external-workflow-operator 0): Own only the two supplier-visit calendar events.",
+      "explanation": "新增日历owner，以原结尾为锚点；日历权限属于external角色，不把外部写入交给office角色。"
+    },
+    {
+      "original": "Normalize every product's stable ID, name, total_sales, stock, SKU, and supplier metadata into one runtime-unique JSON file and return its path, SHA-256, page/row/null/duplicate controls, plus the five selected compact rows described below; do not return the full catalog in chat.",
+      "replacement": "Normalize every product's stable ID, name, total_sales, stock, SKU, and supplier metadata read-only. Return page/row/null/duplicate controls, the five selected compact rows described below, and existing tool-produced workspace output references sufficient for the main agent to retain the complete catalog. If a page has no output reference, return its required structured records without truncation. Do not create or modify a file; the main agent owns any intermediate JSON persistence.",
+      "explanation": "原commerce explore写JSON与固定harness只读权限冲突，必要地改为返回记录/已有工具输出引用，由主agent持久化及读回哈希；未改选品口径。"
+    },
+    {
+      "original": "The procurement message may reference the fixed filename `Supplier_Visit_Plan.xlsx` while its sole writer runs.",
+      "replacement": "Prepare the procurement summary in parallel, but wait for the workbook owner's successful creation and read-back receipt before sending a missing summary that references that workbook.",
+      "explanation": "邮件仍由主agent负责；仅引用实际工作簿的summary接入文件成功回执。两供应商邀请保留原并行，不额外等待日历/工作簿；Finally不自动产生邀请→summary的硬依赖。该完成状态门槛是生成约定要求的必要兼容修正，不合并其他标注者的人员或品类意见。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整商品分页与稳定ID/SKU关联；按有原文城市证据的供货关系选五行并覆盖上海、广州；保留原版库存优先级和排序。",
+    "两条2026-03-10北京南出发高铁路线：最短时长、并列取较早出发，保留一等座票价及到达时间。",
+    "Supplier_Visit_Plan.xlsx的Products、Travel_Plan、Visit_Schedule精确表名/列、至少五条拜访、两条铁路行、字面数值和到达后30分钟缓冲。",
+    "两条亚洲上海时区日历事件；两位指定供应商的邀请及最后给procurement@company.com的汇总。",
+    "Workbook与日历各单一owner，邮件仍由主agent写入；原版来源与城市/时间共享数据包不变。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "把“分成2个”解释为同波两个明确子任务，而非将Excel和日历串行成两波；这与原版两项输出数据独立相容。",
+    "仅落实该人的分工建议；未另行重构原版选品算法或推断两地出行人员。",
+    "计划邀请只消费已冻结的城市/时刻，不声称日历已写入，故不依赖两个writer完成；summary仅在正文声明某外部动作完成时才消费对应回执。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读配置、指南及指定供应商来信，冻结原规则。",
+    "两个只读explore分别完成商品与铁路来源；主agent保存返回数据并统一安排会议时间。",
+    "Wave 2由Excel owner和日历owner并行，各自读回并返回真实路径/ID。",
+    "主agent在两个owner运行时并行处理两邀请；采购summary等待实际工作簿回执，最后汇合全部产物/邮件证据并验收。"
+  ],
+  "expected_tradeoff": "独立日历owner可能减少主agent外部调用调度负担，但增加一次子agent上下文与回执交接；仅summary等待工作簿，邀请仍可并行，效果需实验验证。",
+  "not_runtime_tested": true
+}

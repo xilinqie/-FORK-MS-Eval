@@ -1,0 +1,43 @@
+{
+  "task_id": "sf-sales-trend-word-pdf",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求 PDF 与 Word 包含相同数据和章节，并列出 2025 年全部 12 个月。编排对 PDF 只要求至少十个月份标签，验收也未逐月核对两份表格，允许缺两个月的 PDF 通过。",
+  "interpretation": "修正PDF生成及验收合约，将“至少十个月份标签”改为与Word相同的全部十二个月、五列表格和完整章节；逐月逐值交叉核对两格式。保留主agent、一次汇总查询和DOCX/PDF独立构建，没有人为制造新编排拓扑。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "the full title, at least ten month labels, totals, best/worst values, H1/H2 values, difference, and percentage",
+      "replacement": "a five-column table containing every month from `2025-01` through `2025-12` exactly once in chronological order with all four corresponding monthly values",
+      "explanation": "将错误的至少十月标签阈值改为原题全部12月的完整数据表。"
+    },
+    {
+      "original": "Read the PDF through the PDF tool and require those values and sections before completion.",
+      "replacement": "Compare each of the twelve month keys and all four values per row against both the frozen packet and the read-back Word table, preserving the specified money formats and integer counts.",
+      "explanation": "强化验收为每行五字段及两种格式一致，避免只查到少量标签/汇总就通过。"
+    },
+    {
+      "original": "this is a real report containing the full title, at least ten month labels, totals, best/worst values, H1/H2 values, difference, and percentage, not a renamed file or blank placeholder.",
+      "replacement": "Require matching report title/introduction, Summary values, and Trend Analysis data and conclusions in both formats.",
+      "explanation": "明确PDF必须与Word包含同标题、指定引言、Summary及Trend Analysis，不仅保留数字片段；保持真实可抽取PDF要求。"
+    }
+  ],
+  "preserved_requirements": [
+    "动态工作区及Sales_Trend_Analysis.docx/pdf两个文件名；不派子agent，不增加波次。",
+    "只查询SALES_DW.ANALYTICS.MONTHLY_REVENUE一次，固定五字段、2025全年、十二唯一月份及完整结果。",
+    "未舍入值计算年度收入、订单、年收入/12、最佳最差月、H1/H2、差额与变化百分比；仅显示货币两位、百分比一位。",
+    "Word指定总标题、逐字引言、五列十二行表、五个Summary独立行及Trend Analysis均保留。",
+    "PDF仍由授权python_execute及可用PDF库/真实直接writer生成，保留分页与可抽取文本；两支就绪时仍可交错执行。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent一次取全年十二行并冻结统一计算包。",
+    "主agent按原方案独立生成DOCX和真实PDF，二者使用同一完整报告合约。",
+    "回读Word表格和PDF全部页，逐月逐值及逐章节核对；任一遗漏/重复/不可读阻断完成。"
+  ],
+  "expected_tradeoff": "更严格的逐月核对可能提高缺失月份的检出率，但会增加PDF抽取和对照工作；不预设其在实际轨迹上的效果。",
+  "not_runtime_tested": true
+}

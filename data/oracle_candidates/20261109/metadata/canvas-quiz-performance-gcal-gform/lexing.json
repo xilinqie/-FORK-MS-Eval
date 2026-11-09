@@ -1,0 +1,53 @@
+{
+  "task_id": "canvas-quiz-performance-gcal-gform",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Schedule three tutoring sessions in the calendar.可以和create a Google Form 并行",
+  "interpretation": "把指定意见落实为报告完成后同时启动表单与日历两个独立external writer。原版已有主agent原生并行，因此不宣称原版没有并行；候选改变的是分支owner与显式依赖。题面“After the report”要求先完成工作簿，邮件必须等待已排课事件的真实回读确认。",
+  "interpretation_status": "qualified",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "the main agent must complete this compact four-quiz task directly; do not dispatch sub-agents.",
+      "replacement": "the main agent owns the CSV analysis, workbook, and final email, then dispatches one wave of exactly two external-workflow-operator sub-agents for the independent form and calendar branches.",
+      "explanation": "用两名有外部写入权限的子agent承接指定的并行分支；主agent保留计算、文件和邮件。"
+    },
+    {
+      "original": "Start the CSV read, create_form(title=\"Quiz Improvement Feedback\") exactly once, and the three exact calendar searches natively in parallel.",
+      "replacement": "Do not create the Google Form until this report is complete and its read-back succeeds.",
+      "explanation": "为满足原任务After the report的硬约束，把正式Form创建后置；这不是把其他人的意见混入，而是并行候选必须保留的题面依赖。"
+    },
+    {
+      "original": "The three event branches are independent and should use native-parallel search/create/read batches.",
+      "replacement": "The three event branches are independent: use native-parallel search/create/read batches, while keeping search before create and get_event after each retained/created ID.",
+      "explanation": "保留原版事件内部原生并行与每个事件的真实先后依赖。"
+    },
+    {
+      "original": "Read candidates to verify recipients, send once only if absent, and copy the canonical overall/highest/lowest facts plus all three tutoring titles/dates into the body.",
+      "replacement": "Do not send a completion summary until the report, form, and all three scheduled events have successful read-backs.",
+      "explanation": "新增显式等待，防止邮件将尚未成功创建的课程说成已排课；其余查重和至多一次发送保留。"
+    }
+  ],
+  "preserved_requirements": [
+    "CSV全量按quiz_title分组；分数直接与points_possible/2作严格大于比较。",
+    "工作簿两个指定sheet、列名、升序、五项Summary、规定舍入与字面量；总体均分按所有提交计算。",
+    "报告完成后创建Quiz Improvement Feedback，三题的题型、选项、必填状态与顺序。",
+    "三次2026年3月12/19/26日15:00–17:00课程与确切标题；UTC为题面允许表示。",
+    "ccc.instructor@university.edu及确切主题、成绩发现和已排课信息，查重与回读。"
+  ],
+  "qualified_or_unimplemented": [
+    "并行从报告成功完成后开始，不能按“可以并行”提前创建Form。",
+    "原版本身已有原生并行；本候选是独立子agent职责分离，不把已有并行当成缺失。"
+  ],
+  "assumptions": [
+    "将指定人的并行意见及delegation=1解释为允许两个独立external writer；该人没有指定具体agent数量。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取CSV，计算并冻结指标，完成并回读工作簿。",
+    "一个波次同时派发Form writer和calendar writer，二者各自唯一拥有对应外部资源。",
+    "主agent可并行查Sent，等待真实事件及Form回读后再发送结果邮件并最终核验。"
+  ],
+  "expected_tradeoff": "两个独立外部writer可能缩短报告后的外部操作耗时，但增加派发和交接成本；是否优于原生并行需实验验证。",
+  "not_runtime_tested": true
+}

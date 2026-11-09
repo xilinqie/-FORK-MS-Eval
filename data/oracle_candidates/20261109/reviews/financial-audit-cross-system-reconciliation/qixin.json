@@ -1,0 +1,22 @@
+{
+  "task_id": "financial-audit-cross-system-reconciliation",
+  "annotator": "qixin",
+  "reviewer": "audit17",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "必须由任务可见输入确定安全存储目标和授权财务访问主体，并有真正获授的写入及有效权限检查能力；当前角色工具清单未证明外部归档/ACL能力，缺失时归档明确未完成。",
+    "财务收件人身份及地址必须由任务输入或相关邮箱证据确认；不能使用senior-finance@company.com猜测值，无法确认时不发送完整附件。",
+    "只能使用实际授予的导出路径；附件接口确实接受文件路径并读取字节，但仍须使用该邮件工具可读的真实工作区产物，不能以文件名或占位文件替代。"
+  ],
+  "not_runtime_tested": true
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "wc-tax-compliance-excel-gcal-gform",
+  "annotator": "qixin",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "sources/capabilities/calendar_index.ts固定版本的CreateEventSchema（312–319）要求dateTime，插入路径（149–156）及formatEvent（31–37）均未实现date-only全天状态。当前固定能力不能创建并验证真正全天事件；候选允许Excel/Form完成但必须拒绝整体claim_done。",
+    "候选的date-only或其他全天分支仅在实际任务暴露并可读回的工具合同支持时成立；不得扩权、改harness、直连数据库、调用额外HTTP API或以24小时时段冒充。"
+  ],
+  "not_runtime_tested": true
+}

@@ -1,0 +1,57 @@
+{
+  "task_id": "yt-transcript-notion-song-report-gcal-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a page，Create an Excel workbook，Check the shared calendar 这三者可以并行",
+  "interpretation": "将页面/数据库创建、Excel创建和共享日历检查明确设为依赖同一已冻结数据、互不等待的三条原生并行分支。保留原版无子agent和单一规范状态，按实际产物依赖再汇合发通知；不把同题其他人的内容补充意见合并为本候选改动。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Keeping transcript interpretation, workbook rows, Notion entries, events, and emails in one canonical state prevents track/artist truncation at handoff.",
+      "replacement": "Keep transcript interpretation, workbook rows, Notion entries, events, and emails in one canonical state, then use native parallel tool calls for the independent Notion, workbook, and calendar branches.",
+      "explanation": "保留原版主agent和共享规范状态，明确三条分支用原生工具并行；指定意见仅要求并行，不额外推断必须增加子agent。"
+    },
+    {
+      "original": "Call `list_events(timeMin=<March 2026 ISO start>, timeMax=<March 2026 ISO end>, maxResults=<sufficient cap>, orderBy=\"startTime\")` once, inspect exact titles and overlaps with the three original `America/New_York` slots locally, and freeze the three literal publication rows, allowed genre options, and conflict notes.",
+      "replacement": "Neither the workbook branch nor the Notion branch waits for the other's output, and the calendar check waits for neither artifact.",
+      "explanation": "原版日历检查位于研究前，本候选将它明确放到与Notion和工作簿并行的独立分支；保留一次检查、精确时间/标题/冲突检查及原固定出版日期。"
+    },
+    {
+      "original": "The main agent is the sole writer of `Song_Analysis_Report.xlsx` and the `Afrobeat Mix 2024 - Blog Analysis` page/database.",
+      "replacement": "Once the canonical tables are frozen, start the following three independent branches in the same native-parallel tool-call response.",
+      "explanation": "原版统一主agent依次叙述的两种写入拆成独立就绪分支；各资源仍只有主agent一名写入者，不制造多人同时写同一文件或页面。"
+    },
+    {
+      "original": "Create only missing publication events, using exact ISO `start.dateTime`/`end.dateTime` and `timeZone=\"America/New_York\"` in both objects, retain returned/reused IDs, and call `get_event` on each.",
+      "replacement": "Searches must precede their conditional creates, and read-backs must use IDs actually returned or verified by the search.",
+      "explanation": "强调并行发生在三个资源分支之间，保留日历分支内部检查→缺失创建→真实ID读回的依赖，不能把这些依赖工具同时发出。"
+    },
+    {
+      "original": "then only after workbook/Notion/event readback send at most one missing `Afrobeat Mix Analysis Report Ready` message with verified counts and schedule.",
+      "replacement": "After all three branches return successful read-backs, reconcile them against the canonical state.",
+      "explanation": "新增并行分支汇合点，保留原版报告就绪邮件等待全部产物读回的已有约束；艺术家请求也放在汇合之后，避免错误完成声明。"
+    }
+  ],
+  "preserved_requirements": [
+    "保留视频ID7ZQzGq32kAY、配置和编辑指南读取、完整英文与定时转录分页游标遍历、全时间线分段、身份依据和不确定性记录。",
+    "保留至少12条有证据的非重叠正时长曲目以及原版至少4个支持的artist字符串检查；题中艺人示例仅作待验证候选，不向候选注入隐藏GT。",
+    "原题知识库页面名、概览内容要求、歌曲数据库Song_Title/Artist/Start_Time_Sec/Duration_Sec/Genre_Tag属性及Afrobeats/Afropop/Highlife/Other选项继续有效。",
+    "Song_Analysis_Report.xlsx保留Tracklist、Artist_Stats、Publication_Plan全部原题表头和字面数值；艺术家数量与时长从曲目表重算。",
+    "三篇文章保持March 15/22/29 2026、AfroBeats Today平台和Scheduled状态；日历保持指定三标题、纽约时区10:00–11:00，先查再仅创建缺失事件并读回真实ID。",
+    "原题两封邮件的地址、精确主题、艺人授权与传记请求、完成通知的轨数和出版日程均继续作为任务契约；Sent查重及就绪通知等待所有产物读回不变。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "“这三者可以并行”按独立资源分支的原生工具并行落实；未将A项标签推断为必须创建三个子agent。",
+    "为最小必要结构变化，同题qixin关于概览和艺人邮件措辞的意见未作为额外修订依据；候选仍受原任务正文的这些内容要求约束。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent完成配置读取、视频/转录收集和统一曲目/艺人/出版表冻结。",
+    "同时启动工作簿、Notion页面数据库、日历检查三分支；每个资源由主agent单写，分支内创建依赖查询和真实ID。",
+    "三分支读回汇合后对账，再按原有查重契约发送两封邮件；仅主agent声明完成。"
+  ],
+  "expected_tradeoff": "预期在不增加跨agent交接的情况下重叠三种工具的等待时间；原版较早的日历预检被移到产物波，实际总延迟和错误率是否改善需实验验证。",
+  "not_runtime_tested": true
+}

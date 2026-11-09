@@ -1,0 +1,47 @@
+{
+  "task_id": "sf-hr-compensation-pdf-notion",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a PDF file和create an Excel file可以同时进行",
+  "interpretation": "将同一冻结统计包的PDF和Excel写作拆给两个office coder并行执行，主agent仍负责查询、冻结、交叉核对及最终知识库页；两文件各自单写入者，知识库依赖两者完成。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "complete it directly in the main agent and dispatch no sub-agent",
+      "replacement": "use one writer wave with two independent local artifact owners",
+      "explanation": "落实并行建议，新增两个本地文书角色；不会把知识库写入交给office角色。"
+    },
+    {
+      "original": "the main agent is the sole writer of both files through one bounded `python_execute` workflow",
+      "replacement": "dispatch exactly 2 coder sub-agents in parallel after the packet is frozen",
+      "explanation": "用同一不可变数据包分开写两个独立文件，各自保留原Python生成和回读，不存在同文件竞争。"
+    },
+    {
+      "original": "Finally exhaust exact-title knowledge-base search",
+      "replacement": "Do not proceed to the final knowledge-base action while either required file is incomplete.",
+      "explanation": "并行扩展后显式保留原题Finally知识库步骤的完成依赖。"
+    }
+  ],
+  "preserved_requirements": [
+    "保留HR_ANALYTICS.PUBLIC.EMPLOYEES两条全量分组SQL、所需聚合、未舍入排名及按字母破同分。",
+    "保留部门/学历排序、两位薪资、PDF题名/部门名/2026-03-06、准确文件名及全部列。",
+    "保留xlsx两sheet名称、字面数值、openpyxl与ReportLab流程及各自回读。",
+    "保留Compensation Analysis 2026查重、单页、最高部门均薪及最多人数学历、完整页面回读。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "起点仅为公开原版sources/tasks/sf-hr-compensation-pdf-notion/plan.md（MS-Eval 4c1bbd3dc0d736623bba563e56cfd8666f85daac）。",
+    "将“可以同时进行”实现为两个office coder的明确并行，不声称原来主agent绝无原生并行能力。"
+  ],
+  "capability_conditions": [
+    "运行时两个office coder须实际获授python_execute，并分别具备openpyxl/ReportLab；若子角色无该能力，报告缺失，不改harness。"
+  ],
+  "plan_summary": [
+    "主agent按原顺序执行两组SQL并持久化一个冻结包。",
+    "两个office coder并行单写Excel/PDF，分别回读。",
+    "主agent等待两者校验后单写知识库并完成。"
+  ],
+  "expected_tradeoff": "两文书生成可重叠，但增加委派、冻结包和结果交接成本；在紧凑数据上是否优于原单工作流须实验比较。",
+  "not_runtime_tested": true
+}

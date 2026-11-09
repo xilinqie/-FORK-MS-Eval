@@ -1,0 +1,50 @@
+{
+  "task_id": "yt-fireship-ppt-gcal-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "工作单一",
+  "interpretation": "“工作单一”结合该标注者同题delegation=0，推断其希望取消单个Coder的委派。候选把原Coder完整的频道扫描、月度筛选和演示写入全部移交主agent，保留其后的日历原生并行及最终邮件依赖。",
+  "interpretation_status": "inferred",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "use one wave with exactly one Coder sub-agent.",
+      "replacement": "complete it directly in the main agent; do not dispatch sub-agents or add a source, writer or verification wave.",
+      "explanation": "按单一工作且A=0推断无委派候选；不删除原子agent承担的任何必要工作。"
+    },
+    {
+      "original": "Use one Coder sub-agent to own one complete read-only Fireship channel catalog session and `Fireship_2025_Digest.pptx`.",
+      "replacement": "The main agent owns one complete read-only Fireship channel catalog session.",
+      "explanation": "频道扫描由主agent执行，避免把仅本地工具office coder当成视频数据工具owner。演示仍由同一主agent单写。"
+    },
+    {
+      "original": "After Wave 1, the main agent validates all six selections, then issues six `list_events` calls natively in parallel",
+      "replacement": "After validating all six selections and the saved deck, the main agent issues six `list_events` calls natively in parallel",
+      "explanation": "取消跨agent交接，保留六事件原生并行、准确slot与PPT就绪依赖。"
+    },
+    {
+      "original": "Only after deck and event inventory agree, check Sent mail and send one missing exact-recipient/subject email listing all six month/title/integer-view pairs.",
+      "replacement": "Only after deck and event inventory agree, check Sent mail and send one missing exact-recipient/subject email to team@company.com with subject Fireship 2025 Monthly Digest Ready.",
+      "explanation": "保留最终邮件屏障及去重，补明原题给定的recipient/subject，无新增外部写入。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整Fireship频道list会话分页，2025年1—6月全部视频，各月计数与最高观看数，稳定ID tie-break，不虚构空月。",
+    "Fireship_2025_Digest.pptx恰7页，指定总标题和6个完整月份标题；月页含视频全名、整数views、分钟时长1位小数、当月视频数。",
+    "六个原题准确日期均09:00—09:30 America/New_York，Monthly Tech Digest Review - [Month Year]及视频标题描述。",
+    "list_events/create_event原生并行、只建缺失事件、逐ID get_event核对。",
+    "team@company.com与指定邮件主题，邮件覆盖1—6月标题和整数views；deck/event一致后才检查Sent并发送/读回。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "“工作单一”未逐项指定改法；无委派实现来自该人的B理由和同题A=0记录，仅是候选解释，不代表人工已确认具体实现。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent接管全部视频分页、6月筛选与7页PPT创建。",
+    "主agent核对deck后并行检查/补建六事件并逐ID核对。",
+    "deck与事件一致后发送或复用唯一指定邮件并回读，主agent完成。"
+  ],
+  "expected_tradeoff": "取消唯一子agent交接可能节省委派开销，但完整频道扫描进入主agent上下文可能增加负载；收益待实验验证。",
+  "not_runtime_tested": true
+}

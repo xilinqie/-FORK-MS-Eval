@@ -1,0 +1,65 @@
+{
+  "task_id": "research-lab-publication-pipeline",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求获取可用的补充材料，并把论文和补充材料整理到实验室成员可访问的集中仓库。方案只安排读取全文、记录材料缺失和生成本地分析文件，缺少补充材料的获取、集中归档及访问核验。",
+  "interpretation": "只落实qixin指出的可用补充材料获取、集中归档与成员访问核验缺口。保留公开原版的主agent直做、限定检索流程和四类本地产物，新增真实材料下载/状态manifest、集中目录以及真实共享目标/成员权限证据。不采纳同题其他人的writer拆分建议。",
+  "interpretation_status": "qualified",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "For every selected publication with verified metadata, retrieve/read the available local full text or LaTeX sections and record unavailable PDFs/supplements honestly.",
+      "replacement": "For each available referenced item, use only the granted retrieval/download operations to obtain the actual material, not merely its title or a statement that it exists.",
+      "explanation": "从只记录缺失扩展为逐个识别并实际获取可用数据集、代码和补充分析；不可用、受限、失败和工具不支持分别记录。"
+    },
+    {
+      "original": "The main agent is the sole writer of all local deliverables:",
+      "replacement": "The main agent is the sole owner of a centralized literature_repository directory inside the resolved workspace, organized by normalized publication ID with a paper and supplementary-material area per publication.",
+      "explanation": "以原单写入者约束为锚新增材料集中归档；不引入新agent，不允许工作区外存取。"
+    },
+    {
+      "original": "Read the CSV, BibTeX, every manuscript and the roadmap back.",
+      "replacement": "Verify the shared root and representative material retrieval through the granted read-back operations, and verify that permissions or documented group coverage include all laboratory members.",
+      "explanation": "原验收只有本地文件，新增集中仓库的可取回与真实实验室成员覆盖核验，目录存在不等于成员可访问。"
+    },
+    {
+      "original": "If no valid laboratory-member address is exposed in task files or mailbox, use the operational group alias research-lab-members@lab.example.com required to fulfill the task and state that assumption in the body; do not silently skip the email.",
+      "replacement": "Use a laboratory-member address or laboratory group address actually established by the task-visible files or authorized mailbox metadata; do not infer lab membership from an invented fallback address.",
+      "explanation": "为实现指定的成员访问核验，不能将原plan假定的别名作为真实成员或共享证据；实际收件人/覆盖范围缺失时明确未完成，不伪造成功。"
+    },
+    {
+      "original": "Completion requires external read-back of a valid recipient email and retained event plus every local artifact.",
+      "replacement": "Completion requires every local artifact, actual retrieval or honest unavailable-material records, verified laboratory access to the centralized collection, external read-back of the real recipient email, and the retained event.",
+      "explanation": "把新增的材料取得与共享核验纳入完成条件；真实不可用的可选材料仍允许诚实说明，工具/输入缺失不得假称已共享。"
+    }
+  ],
+  "preserved_requirements": [
+    "保持不委派、动态workspace、读取config.json/data.csv/research_data.xlsx全部页、本地list_papers与原bounded search/refinement规则，使用运行时过去三年窗口、规范化ID/标题去重。",
+    "不使用public curl，不虚构论文/DOI/venue，不以五条BibTeX门槛截断文献数据库。",
+    "literature_database.csv至少title/author/year及原列、字面值，bibliography.bib每选中文献一条且至少五条；每篇manuscript_<stable-id>.docx保持原九类分析标题。",
+    "research_roadmap.docx不少于400字符、Future Directions和Recommendations，基于真实文献与实验室项目分析差距、趋势、合作与跨学科机会。",
+    "本地产物与共享材料核验后再发Research Roadmap Update和安排未来无冲突的Research Roadmap Discussion，保留去重、回读、不重试歧义写入。"
+  ],
+  "qualified_or_unimplemented": [
+    "当前sources未提供真实共享目标、成员名单/组覆盖、仓库上传和ACL核验能力证据；候选明确条件化执行，不保证仅凭现有本地文件工具完成共享。",
+    "若仅能读取全文而不能取得某个可用补充文件的实际内容，须区分unsupported-download与资源确实不存在，不能以缺失备注代替未执行的可用材料获取。",
+    "原版fallback别名无任务来源，不能作为“所有成员可访问”依据；为落实访问核验仅使用真实可证目标，否则报告未完成。"
+  ],
+  "assumptions": [
+    "将“集中仓库”先落实为workspace内按论文ID归档的唯一集合；只有共享目录的授权证据或合法发布后的权限证据成立，才称为实验室可访问仓库。"
+  ],
+  "capability_conditions": [
+    "需从task-visible配置/文档或授权服务元数据确定真实共享仓库目标以及实验室成员或组覆盖。",
+    "需实际暴露能获取所引用补充材料内容的授权操作；仅返回摘要/引用时不能宣称已下载。",
+    "若workspace本身没有已证实的实验室共享访问，需task-approved上传/共享及权限或成员覆盖核验能力；缺失时共享要求明确未完成。"
+  ],
+  "plan_summary": [
+    "主agent保持原检索和筛选流程，逐篇识别论文与补充材料来源。",
+    "主agent通过已授权工具取得真实可用文件，单写入集中目录和manifest。",
+    "主agent查明实际共享目标/成员覆盖，发布或验证已有共享目录并保留访问证据。",
+    "主agent完成原CSV/BibTeX/逐篇分析/roadmap，联合核验本地文件、真实材料和共享访问。",
+    "仅满足前置条件后并行执行原邮件与日历流程，由主agent作最终声明。"
+  ],
+  "expected_tradeoff": "新增材料获取、文件清单与权限核验可能提高任务覆盖和可追溯性，但会增加检索/下载/验收调用，并可能暴露固定工具无法完成共享的阻断；未经运行验证。",
+  "not_runtime_tested": true
+}

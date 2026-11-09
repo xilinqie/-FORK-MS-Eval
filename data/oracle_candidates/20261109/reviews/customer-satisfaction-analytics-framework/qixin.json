@@ -1,0 +1,27 @@
+{
+  "task_id": "customer-satisfaction-analytics-framework",
+  "annotator": "qixin",
+  "reviewer": "second02",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "明确phase标签不建立全局串行屏障：表单、真实评论/商品/顾客/订单采集和工单聚合保留原生并行，买家发现不等待表单，实际邀请与调查响应才等待真实formId。",
+    "恢复评审事件与writer的独立重叠；包含已完成报告访问引用的发现邮件仍等待相关产物，部署能力缺失不阻塞独立分析且不被记作框架完成。",
+    "同步metadata，区分已实现的真实评论/分发流程与仍需能力支持的渠道部署。"
+  ],
+  "remaining_conditions": [
+    "固定角色工具清单未提供网站弹窗、交易后提示、持续自动调查部署能力；候选保留具体阻断路径，不能仅因表单/一次邮件/报告存在就声称上线完成。",
+    "评论→商品/客户/分群/地区关联、近期购买窗口与实际客户地址须来自任务数据；无法获取时相关维度或买家分发保留未完成。",
+    "NPS需要实际0–10调查响应，趋势/预测需要足够历史证据；候选禁止虚造响应或以工单替代评论，故这些证据缺口不能由静态计划消除。",
+    "利益相关者必须有来源可证的地址，完成报告的可访问引用或附件也需真实交付；候选不再使用原版猜测邮箱。"
+  ],
+  "not_runtime_tested": true
+}

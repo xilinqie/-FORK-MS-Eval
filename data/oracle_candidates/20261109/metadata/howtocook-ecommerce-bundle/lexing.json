@@ -1,0 +1,47 @@
+{
+  "task_id": "howtocook-ecommerce-bundle",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "look up our online store's product catalog，search the recipe database for recipes似乎可以放到一起",
+  "interpretation": "将“放到一起”明确为同一个主agent负责商品、菜谱共同采集阶段并原生并行调用，金价作为独立源一起推进。公开原版已经具备这个owner及并行关系，因此本候选只澄清职责与真实依赖，不声称新增拓扑。商品分类ID→商品列表、菜谱ID→详情、目录与详情→最终配对是实际门槛；First/Second/Third仅为来源枚举，不形成跨独立来源的完成门槛。",
+  "interpretation_status": "qualified",
+  "change_type": "clarification_only",
+  "changes": [
+    {
+      "original": "In the first native-parallel source response, call `woo_products_categories_list` and query exact recipe categories `饮品`, `主食`, and `荤菜` while retrieving daily history for `GC=F`.",
+      "replacement": "Keep catalog lookup and recipe selection together under this single owner as one native-parallel source-collection stage, alongside the independent gold-history lookup.",
+      "explanation": "用原有同一主agent和原生并行回应“放到一起”，明确共同采集阶段；此并行本来就存在，未新增子agent或虚构结构变化。"
+    },
+    {
+      "original": "In the next native-parallel response, call `woo_products_list(category=<literal Home Appliances category ID as a string>, page=1, perPage=100)` and retrieve only the three selected exact recipe IDs.",
+      "replacement": "Advance each branch as its own prerequisite IDs become available: product lookup waits for the actual Home Appliances category ID, and each recipe-detail lookup waits for its selected exact recipe ID; neither waits for the gold history.",
+      "explanation": "澄清各源只等待自己的真实ID依赖，产品、三个菜谱分类及金价可并行，未因叙述枚举增加串行门槛。"
+    },
+    {
+      "original": "Freeze three explicit recipe-to-product pairings whose product names exactly match the catalog",
+      "replacement": "Wait for both the complete catalog and the three genuine recipe-detail records before finalizing any recipe-to-product pairing.",
+      "explanation": "新增明确join条件：配对消费真实商品与菜谱详情，不能在两者就绪前提交；最终工作簿继续等全部三类来源。"
+    }
+  ],
+  "preserved_requirements": [
+    "所有Home Appliances产品、真实分类ID、完整分页、regular_price与库存，禁止用sale/current price。",
+    "饮品、主食、荤菜各1个来源确证菜谱，中文原名/类别、完整配料和难度。",
+    "GC=F最近5个交易日，日期降序，收盘两位小数。",
+    "Bundle_Pricing.xlsx准确三表/列；产品价格升序；Recipe Bundles恰3行；配对商品来自目录；regular_price×0.85并保留两位小数。",
+    "主agent单写工作簿、范围回读、无验证波次。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版已包含同一owner和原生并行，本候选是clarification_only，不能将其描述为原版未并行或全新编排拓扑；不因A项delegation=1而强加意见未指定的子agent。"
+  ],
+  "assumptions": [
+    "“放到一起”解释为统一采集职责与原生并行，不要求把跨服务操作交给工具权限不足的新角色。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent统一管理商品、三类菜谱及金价来源，无子agent交接。",
+    "独立来源原生并行；后续商品分页和菜谱详情只等待各自实际ID。",
+    "目录与详情均完成后冻结3个配对；三类来源齐备后由主agent单写三表工作簿并读回。"
+  ],
+  "expected_tradeoff": "拓扑与原版基本一致，可能只减少对并行边界及统一owner的理解歧义；不预设有速度或准确率增益，差异需后续实验验证。",
+  "not_runtime_tested": true
+}

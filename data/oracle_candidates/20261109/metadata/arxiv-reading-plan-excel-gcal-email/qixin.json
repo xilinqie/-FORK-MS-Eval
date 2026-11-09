@@ -1,0 +1,44 @@
+{
+  "task_id": "arxiv-reading-plan-excel-gcal-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "只提供 ID 的清单无法直接在 arXiv 工具里查出题名。参考编排仅写逐篇取元数据，漏掉先列出库内题名、再按题名关键词搜索并用 ID 回匹配的前置步骤，无法可靠取齐八篇。",
+  "interpretation": "按意见补入“列库内题名/摘要→题名关键词搜索→返回ID回匹配”的真实工具前置链；仍由主agent完成，保持八篇冻结表及Excel→日历→邮件依赖。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "For each paper, retrieve its metadata/abstract through the arXiv tools once, freezing literal titles/dates.",
+      "replacement": "First call the repository's list-papers operation to obtain all stored titles and abstracts. Then issue keyword searches using distinctive title words from that inventory, retrieve the full returned metadata, and match each returned arXiv ID exactly to paper_ids.txt.",
+      "explanation": "用题面给出的检索能力替换模糊逐篇查询；先有题名，再检索元数据，不能直接把ID当关键词。"
+    },
+    {
+      "original": "freezing literal titles/dates",
+      "replacement": "Freeze exactly one verified metadata/abstract record for each of the eight requested IDs",
+      "explanation": "冻结前明确八个ID全部匹配，无匹配则阻断写入，避免错篇或缺篇。"
+    },
+    {
+      "original": "one row per paper in source order",
+      "replacement": "then restore the original paper_ids.txt order",
+      "explanation": "库内返回顺序不能替代原ID清单，回匹配后恢复原排期顺序。"
+    }
+  ],
+  "preserved_requirements": [
+    "保留公开原版无委派拓扑；主agent原生并行仅限取得inventory之后的独立关键词查询。",
+    "Reading_Plan.xlsx两表、准确八行、全部列名、完整作者、原摘要前100字符、主分类及YYYY-MM-DD不变。",
+    "2026-03-09起连续八个周一10:00–11:30 UTC，事件名称/描述格式不变。",
+    "保留明确发件人/收件人和主题、总论文数/日期范围/至少三论文，产物完成后才发信与claim_done。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "最小改写起点仅为sources/tasks/arxiv-reading-plan-excel-gcal-email/plan.md，固定公开MS-Eval提交4c1bbd3dc0d736623bba563e56cfd8666f85daac；未用26题修订。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读清单/规范。",
+    "列库题名摘要后按题名搜并用ID回匹配；冻结完整八篇，恢复源顺序。",
+    "依次单写Excel、八事件、邮件并核对后完成。"
+  ],
+  "expected_tradeoff": "额外列库和必要的关键词精炼可能增加调用，但预计减少ID查询失败和错篇；效果须后续实验验证。",
+  "not_runtime_tested": true
+}

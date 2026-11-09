@@ -1,0 +1,60 @@
+{
+  "task_id": "canvas-course-comparison-word",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求从 Canvas 查询两个学期并按课程前缀匹配。编排直接固定六个配对及每门课的作业 ID，没有运行时发现和核验完整作业清单；部分交接还把作业 ID 数组填作 course_code，无法按真实课程代码可靠验收和配对。",
+  "interpretation": "从公开原plan改为主agent运行时枚举2013J/2014J课程并按前缀求交集；每课explore枚举完整作业清单并返回真实course_code。固定12个collector及六行下游改为动态2N个collector/N行，保留一次汇总验收与三个独立writer。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "The valid paired prefixes are AAA, BBB, DDD, EEE, FFF, and GGG; CCC has no Fall 2013 counterpart and is excluded.",
+      "replacement": "Do not assume a fixed set of prefixes, course IDs, assignment IDs, or pair count.",
+      "explanation": "删除人工意见指出的静态六配对前提，以主agent全量课程清单决定纳入和排除。"
+    },
+    {
+      "original": "1. Wave 1 — dispatch exactly 12 explore sub-agents in parallel, one course collector per literal course below.",
+      "replacement": "1. Wave 1 — dispatch exactly 2N explore sub-agents in parallel, one `enterprise-data-analyst` for each distinct course in the frozen manifest.",
+      "explanation": "运行时课程数决定collector数；每课角色与两波结构保留。"
+    },
+    {
+      "original": "course_code:\"[1, 2, 3, 4, 5, 6]\"",
+      "replacement": "A course code must remain the actual Canvas code; never substitute an assignment-ID list.",
+      "explanation": "修复交接字段含义。"
+    },
+    {
+      "original": "for every literal assignment_id in [1,2,3,4,5,6]",
+      "replacement": "Exhaust `canvas_list_assignments` for that course, retaining the unique literal assignment IDs and pagination/total-count evidence.",
+      "explanation": "按实际作业清单查询，而非硬编码assignment ID；完整汇总不足时才分页取提交。"
+    },
+    {
+      "original": "exact nine headers, six sorted rows, three metrics from the canonical payload",
+      "replacement": "write N sorted rows from the canonical payload.",
+      "explanation": "动态清单必须传递到全部产物、行数和验收范围，不能仅改前端发现。"
+    },
+    {
+      "original": "Then call `canvas_get_course(course_id=1)` once, verify the code, and fold the metadata read into the same handoff.",
+      "replacement": "Call `canvas_get_course` for the assigned ID and verify the returned string `course_code` and course name against the manifest. Read and validate `total_students` from that course metadata as its enrollment count; the listing manifest need not contain this field.",
+      "explanation": "独立复核修正交接内部一致性：manifest只承诺课程ID/代码/名称/学期，不能要求把total_students与未保存的manifest字段比较；招生数仍从每课正式metadata读取并验证。"
+    }
+  ],
+  "preserved_requirements": [
+    "仅纳入两个学期共同前缀；均分为全部非空submission score简单平均，非学生等权或作业等权。",
+    "保留total_students、作业计数、2014−2013变化方向、课程名排序、成绩两位与平均招生变化一位小数。",
+    "Excel两个指定sheet和九列、三项Summary；Word固定标题逐对叙述及总结；云表固定名称、Comparison Data与Excel数据一致。",
+    "保留三个独立产物owner、云资源唯一ID与重复阻断、读回验收；explore始终只读。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [
+    "若课程列表对同前缀同学期返回多个候选，需明确对应关系；若真实数据没有配对或某课完全无已评分提交，原任务未规定空值汇总口径，必须报告而不能伪造。",
+    "完整assignment summary须覆盖全量且精度足够；否则使用已授权提交分页。无法取得完整统计时返回缺失项。"
+  ],
+  "plan_summary": [
+    "主agent发现两个学期并冻结动态配对manifest。",
+    "2N个只读collector分别核课程真实代码、全量作业与提交统计。",
+    "主agent一次核验并计算规范payload，再启动原有三个单写入者。"
+  ],
+  "expected_tradeoff": "待实验验证：增加课程/作业发现调用和覆盖核对，预期减少静态ID及交接类型错误；动态agent数量可能增加协调成本，未验证性能优劣。",
+  "not_runtime_tested": true
+}

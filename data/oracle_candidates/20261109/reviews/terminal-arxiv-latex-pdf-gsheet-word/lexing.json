@@ -1,0 +1,23 @@
+{
+  "task_id": "terminal-arxiv-latex-pdf-gsheet-word",
+  "annotator": "lexing",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "补明extract_methods.py必须通过任务获授terminal工具实际运行，以兑现题面Run this script using the terminal；同步metadata的精确changes记录。"
+  ],
+  "remaining_conditions": [
+    "对应“并行执行”意见仅能落实为并行编写及独立准备：extract可运行时score同时编写，但score的实际运行必须等待成功提取和已验证methodology_analysis.json；不能宣称两程序无条件同时运行。",
+    "研究角色仅返回完整源payload或合法结果引用，由主agent保存.tex；不能恢复原版Explore落盘指令，引用不可用时应使用完整payload而非截断预览。"
+  ],
+  "not_runtime_tested": true
+}

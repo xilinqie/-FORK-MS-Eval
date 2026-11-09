@@ -1,0 +1,20 @@
+{
+  "task_id": "howtocook-diet-gform-notion-excel",
+  "annotator": "lexing",
+  "reviewer": "audit01",
+  "review_type": "static_independent_review",
+  "status": "pass",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "删除错误新增的三产物完成→邮件发送门槛：该邮件仅描述倡议和已选菜谱，不是完成通知。保留三个适配角色的writer并行，主agent同响应发事实汇总，全部产物与邮件成功后才整体完成；同步metadata。"
+  ],
+  "remaining_conditions": [],
+  "not_runtime_tested": true
+}

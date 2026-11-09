@@ -1,0 +1,64 @@
+{
+  "interpretation": "只针对qixin的B理由修正公开原版中的三个合同错误：改回Benefits_Analysis.xlsx；五道题全部按题面必答单选且无开放文本；补HR领导邮件及其完成验收。保留原版无子agent的总体结构，不采用其他标注者候选。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "In the same orchestration response as the web read, the main agent runs one set-based Snowflake query",
+      "replacement": "Start the independent web and warehouse reads in native parallel.",
+      "explanation": "独立复核恢复原版两源并行；题面First/Then是枚举，数据库聚合不消费竞争页结果，不为本条合同修正新增无关等待。"
+    },
+    {
+      "original": "(satisfaction ratings and open text per the guide)",
+      "replacement": "Set required=true on every question; do not add an open-text question or substitute a checkbox question.",
+      "explanation": "以题面五个精确单选题及选项为准，移除与其冲突的open text；guide仅补充评估框架。"
+    },
+    {
+      "original": "<agent_workspace>/Benefits_Benchmark_Report.xlsx",
+      "replacement": "<agent_workspace>/Benefits_Analysis.xlsx",
+      "explanation": "修正最终工作簿名，三sheet及题面列名/数字口径保持。"
+    },
+    {
+      "original": "One reconciliation turn over the form read-back and workbook read-back, then call claim_done.",
+      "replacement": "After the form has been created and verified, the main agent may send the required email from the frozen gap analysis while the independent workbook branch finishes; it does not claim that the workbook is complete.",
+      "explanation": "补齐HR邮件与真实survey完成依赖；邮件概述冻结gap且称问卷已创建，不消费workbook，所以不等无关工作簿。"
+    },
+    {
+      "original": "One reconciliation turn over the form read-back and workbook read-back, then call claim_done.",
+      "replacement": "Run one final reconciliation turn covering the form ID and five required questions, the exact Benefits_Analysis.xlsx path and all three sheet read-backs, and the email ID/content.",
+      "explanation": "把完成条件从两产物扩展到原task要求的form、workbook、email三者。"
+    },
+    {
+      "original": "From that payload, the main agent directly and independently creates every deliverable:",
+      "replacement": "From the verified canonical payload, the main agent starts the independent Form and workbook branches in native parallel.",
+      "explanation": "独立复核恢复原Form/workbook独立输出，合同修正不应顺带将二者串行。"
+    }
+  ],
+  "preserved_requirements": [
+    "主agent-only；先读Benefits_Review_Guide.pdf，网页固定URL、一轮navigate+snapshot的bounded extraction及失败阻断。",
+    "全部competitor网页读取与七部门set-based聚合保持原生并行；两类来源齐备后冻结输出payload，不返回员工明细。",
+    "Google Form准确标题和五条准确题干：七部门选择、三项1–5满意度、四选一优先福利；全部required单选。",
+    "Benefits_Analysis.xlsx三张sheet精确表头、Our Company=80/20/4.0、公司/部门字母排序和literal numeric cells。",
+    "部门均值两位小数；以已四舍五入的job satisfaction>=6.55判High，否则Moderate。",
+    "仅competitor的marketaverage一位、Gap=OurValue-MarketAverage一位；负值High、0至1.0含边界Medium、>1.0 Low。",
+    "邮件hr_leadership@company.com，主题Benefits Competitiveness Analysis & Survey Launch，正文概述真实gaps并说明问卷已创建。",
+    "全部输出回读齐全后仅主agent claim_done。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "First浏览/Then查询仅为叙述枚举，无数据依赖；Google Form与workbook也独立。只有宣称survey已创建的邮件必须等form回执，整体完成等待三个产物。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读guide，原生并行浏览固定网页与完成七部门聚合查询。",
+    "冻结competitor/Our Company、部门评分、三类gap及五题schema。",
+    "主agent从冻结payload原生并行创建五道必答单选Form和准确命名的三表workbook。",
+    "Form成功后发送/保留唯一HR邮件，工作簿可继续独立写入；三产物回执齐备后统一验收。"
+  ],
+  "expected_tradeoff": "待实验验证：候选补齐必需邮件动作并显式核验题型与文件名，保留原版独立取源和产物并行；新增验证与发送可能增加成本，不预设净性能收益。",
+  "task_id": "playwright-sf-hr-benefits-survey-gform-excel",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求 Benefits_Analysis.xlsx、五道必答单选题，以及发给 HR 领导的汇总邮件。编排改用了另一个工作簿名，问卷安排包含开放文本，且验收只覆盖问卷和工作簿，完全漏掉邮件。",
+  "not_runtime_tested": true
+}

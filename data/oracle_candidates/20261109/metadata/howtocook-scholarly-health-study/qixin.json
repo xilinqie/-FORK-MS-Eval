@@ -1,0 +1,49 @@
+{
+  "task_id": "howtocook-scholarly-health-study",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "营养数据子任务只返回字段结构、覆盖计数与缺失情况，没有交接每种食材的每百克热量和宏量营养数值；主 Agent 随后却要据该交接计算营养。此外 Excel 第三表被写成笼统汇总，未要求逐道菜连接支持研究。",
+  "interpretation": "从公开原版补齐营养reference交接的实际数值及计算可追溯性，明确Combined Analysis逐菜连接研究；保持原版三个只读研究分支同波并行和两个本地产物writer。文献检索主题由题面独立给定，不因单独Then引入选菜完成门槛；逐菜研究关联在三个真实结果齐备后由主agent完成。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "returns its exact ingredient schema (per-100g calories, protein, fat, carbs keys) plus the count of covered ingredients and any missing/ambiguous entries.",
+      "replacement": "return its exact ingredient schema and the complete ingredient-level numeric reference table.",
+      "explanation": "交接不再仅有结构/计数，须逐食材携带每100g热量与宏量营养实际数值；explore仍只读。"
+    },
+    {
+      "original": "It freezes one canonical packet of five dish rows, the nutrition schema, and the paper list.",
+      "replacement": "Freeze one canonical packet containing the complete ingredient-level numeric reference table and schema, the five recipe/ingredient mappings and quantity-scaled calculations, five final dish rows, the 3-5 paper records, and exactly one Combined Analysis row for each selected dish.",
+      "explanation": "主agent持有完整可计算输入，并一次完成营养与逐菜研究关联的binding handoff。"
+    },
+    {
+      "original": "the dish nutrition table (dish, category, calories, protein, fat, carbs, calorie-density rating), the paper evidence table, and a summary sheet",
+      "replacement": "Recipe Nutrition with Dish_Name, Category, Estimated_Calories, Protein_g, Fat_g, Carbs_g, Health_Rating; Research Summary with Paper_Title, Authors, Year, Citation_Count, Key_Finding; Combined Analysis with Dish_Name, Health_Rating, Supporting_Research.",
+      "explanation": "用题面三张表的确切名称/列和逐菜支持研究替代笼统summary，并补对应回读验收。"
+    }
+  ],
+  "preserved_requirements": [
+    "5道菜且至少3类，按参考食材数据估算热量和宏量营养。",
+    "相关学术论文3–5篇，保留题名、作者、年份、引用量和发现，不纳入无关论文。",
+    "Health_Diet_Analysis.xlsx三表确切名称/列，所有要求的数值均为字面量。",
+    "Combined Analysis逐菜同名同评级，Supporting_Research链接真实选用论文和相关发现。",
+    "Chinese_Cuisine_Health_Report.docx确切标题及Introduction、Recipe Analysis、Literature Review、Conclusions四节。",
+    "研究角色只读；主agent持久化完整packet；两份本地文件各由一个office writer独写。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "热量密度的分母、必要的单位换算和估计规则需基于可用配方信息明确记录；题面未给固定分级阈值，采用一致且公开说明的规则。",
+    "题面的Then search按叙述连接理解：Chinese diet/Asian cuisine nutrition检索主题已知，检索不消费选菜结果；真正依赖发生在主agent用菜谱、营养和文献结果进行逐菜计算/关联时。"
+  ],
+  "capability_conditions": [
+    "若参考表实际缺少被选食材的数值，或配方数量无法有依据换算，须返回具体缺项并停止宣称完成，不能用0或虚构数值填补。"
+  ],
+  "plan_summary": [
+    "营养reference、选菜与文献检索三个只读分支同波并行。",
+    "主agent等待三份完整交接，合并实际数值，完成量纲换算、逐菜营养计算及研究关联后冻结共同packet。",
+    "两名office writer并行生成Excel和Word，主agent核对数值、五条研究链接及文档后完成。"
+  ],
+  "expected_tradeoff": "完整数值与逐菜研究链接可能降低下游缺数据或泛化总结风险，但增加handoff大小；保留原有研究并行拓扑，效果需实验验证。",
+  "not_runtime_tested": true
+}

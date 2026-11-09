@@ -1,0 +1,46 @@
+{
+  "validation": "offline_integrity_and_provenance",
+  "base_revision": "4c1bbd3dc0d736623bba563e56cfd8666f85daac",
+  "gym_revision": "872ebef73f170a565136d4521ddb02b41872362e",
+  "checks": 2989,
+  "passed": 2989,
+  "errors": [],
+  "warnings": [
+    "howtocook-event-catering-excel-word/lexing: scoped candidate retains a documented original task-contract defect",
+    "terminal-wc-pw-pricing-excel-word-gcal/lexing: scoped candidate retains a documented original task-contract defect",
+    "yt-transcript-music-schedule-gcal-gsheet-word/lexing: scoped candidate retains a documented original task-contract defect"
+  ],
+  "counts": {
+    "tasks": 71,
+    "originals": 71,
+    "alternatives": 80,
+    "total_candidates": 151,
+    "by_annotator": {
+      "qixin": 48,
+      "lexing": 30,
+      "weiyi": 2
+    },
+    "tasks_by_rejecting_annotators": {
+      "1": 62,
+      "2": 9
+    },
+    "change_types": {
+      "mixed": 27,
+      "orchestration_change": 31,
+      "contract_correction": 16,
+      "clarification_only": 6
+    },
+    "interpretations": {
+      "qualified": 17,
+      "explicit": 55,
+      "context_resolved": 2,
+      "inferred": 6
+    },
+    "static_reviews": {
+      "pass": 57,
+      "pass_with_conditions": 23
+    }
+  },
+  "runtime_experiments_performed": 0,
+  "scope": "Counts, source labels, exact preserved task prefixes, original controls, provenance quotes, independent static reviews, hashes and unrun matrix; not empirical plan validity."
+}

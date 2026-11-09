@@ -1,0 +1,49 @@
+{
+  "task_id": "gsheet-woocommerce-inventory",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题只对 Restock Alerts 规定多分类商品取第一分类。参考编排把这个规则用于 Category Inventory 汇总，会把商品从其余所属分类漏掉，影响各类商品数、库存及均价，并同步到共享表。",
+  "interpretation": "把“多分类取第一项”严格限定在Restock Alerts显示列；Category Inventory按每个商品的全部所属分类分别计数、累计库存与计算均价，并让Excel及共享表复用同一修正payload。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "first listed category for products with multiple categories",
+      "replacement": "include each distinct product once in every distinct category in its category-name list",
+      "explanation": "落实指定意见的核心规则：按全部所属分类统计，而非把商品分配到首分类。"
+    },
+    {
+      "original": "literal numeric values, first-category semantics, exact sorts",
+      "replacement": "literal numeric values, all-membership category aggregation, first-category display only in Restock Alerts, and the exact sorts",
+      "explanation": "把最终写表阶段的笼统first-category限制改为表级语义，防止主agent再误改汇总。"
+    },
+    {
+      "original": "and persist the complete projection once to a runtime-unique products_raw.json.",
+      "replacement": "The main agent, as sole persistence owner, saves the returned projection once to a runtime-unique products_raw.json",
+      "explanation": "原版explore写文件违反固定harness只读权限；必要扩散修复为主agent持久化，研究角色仅返回结构化资料/合法工具结果引用。"
+    }
+  ],
+  "preserved_requirements": [
+    "保留完整分页catalog、无status/category过滤、产品去重和缺值控制，不写源商店。",
+    "保留八分类、Category Inventory四列及名称排序、均价两位小数；Restock Alerts只取库存<10、首分类显示、库存及产品名排序。",
+    "GC=F五个最近交易日、新到旧与三张Excel表不变。",
+    "Excel完成→Inventory Dashboard同八行同步→warehouse@company.com Low Stock Alert，最终资源均主agent单写。",
+    "保留原两研究角色+一计算coder分工，无计划agent和验证wave。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "改写仅源于固定公开原版sources/tasks/gsheet-woocommerce-inventory/plan.md（MS-Eval 4c1bbd3dc0d736623bba563e56cfd8666f85daac），不读取其他候选或26题修订。",
+    "按原题“across the category”解释为全部成员统计；同一商品的重复category标签仅计一次，跨分类重复计入是预期。",
+    "独立静态复核按GENERATION §4保留原版WooCommerce与金价来源并行：题面First/Next是叙述枚举，两来源不消费彼此输出；仅Excel完成后云表同步是明确after门槛。"
+  ],
+  "capability_conditions": [
+    "explore必须返回主agent能读取的完整结构化投影或合法工具结果引用；不能假设其具有文件写权限，也不能仅给未创建的路径。"
+  ],
+  "plan_summary": [
+    "两个只读来源agent并行取得catalog和五日金价，主agent持久化返回结果。",
+    "计算coder按全部分类成员聚合，首分类规则只用于告警列。",
+    "主agent依序单写Excel、共享表和邮件，复用同一冻结payload。"
+  ],
+  "expected_tradeoff": "每分类统计将覆盖多分类商品，类别计数总和可能高于产品总数；主agent持久化增加交接开销，是否影响效率须实验验证。",
+  "not_runtime_tested": true
+}

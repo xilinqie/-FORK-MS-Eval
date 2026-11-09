@@ -1,0 +1,46 @@
+{
+  "task_id": "howtocook-diet-gform-notion-excel",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "create a Google Form，Create a Notion page，create an Excel file可以分开",
+  "interpretation": "把指定的 Form、Notion、Excel 分别交给三个独立单写入者，同波执行：外部 Form coder、外部 Notion coder、本地 Excel coder。保留原版主 agent 先冻结六菜谱、再启动独立输出及事实汇总邮件的结构；原版已有主 agent 原生并行，本候选改变的是委派和交接，不声称原版无并行。First/Then 按此题的叙述枚举处理，不额外要求菜谱查询等待问卷完成；邮件仅描述计划和选中菜谱，不额外增加等待三产物完成的前提。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "To solve this task efficiently, complete it directly in the main agent; do not dispatch sub-agents.",
+      "replacement": "To solve this task efficiently, give the Form, Notion page, and workbook separate single-writer owners while the main agent coordinates source selection and the final email.",
+      "explanation": "落实三个输出分开负责，主 agent 保留原有来源查询、规范数据与邮件职责。"
+    },
+    {
+      "original": "From those rows, start the independent form, Notion, workbook, and email branches in the same orchestration response.",
+      "replacement": "1. Wave 1 — dispatch exactly 3 coder sub-agents in parallel, giving each its output contract and giving the recipe writers the same immutable six rows:",
+      "explanation": "把原来主 agent 的三种独立产物分支改为同波三个适配权限的 writer；邮件仍由主 agent 在同一调度响应中发送事实汇总，不添加题面未要求的完成通知屏障。"
+    },
+    {
+      "original": "Do not search Sent mail or add writer/verification agents.",
+      "replacement": "Do not search Sent mail or add verification agents.",
+      "explanation": "按指定意见增加必要 writer，保留禁止 Sent 搜索及额外验证 agent 的无关限制。"
+    }
+  ],
+  "preserved_requirements": [
+    "仅用任务可见工作区，不假定 /workspace。",
+    "四个 Form 问题的原文、选项、单选/文本类型与前三必填末题选填；同一 Form 顺序添加。",
+    "早餐、素菜、主食三类各选两个不同 ID，保留原版两轮批量读取与六个有来源的规范行，不混入隐藏 GT。",
+    "Notion 每菜谱一个含名称、类别、简述的显式块；Excel 两 sheet、指定 Recipes 表头、三类计数为字面 2、无总计行/公式。",
+    "仅指定邮箱及主题，邮件说明计划并列出六道菜；各输出一次回读、主 agent 一致性核对、不增加验证波。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "“可以分开”结合该标注者 delegation=1 解释为三个独立 writer 的责任拆分。",
+    "题面 First/Then 未伴随必须按所列顺序执行的 workflow 声明，也未要求菜谱选择消费问卷响应；按更新约定将其视为叙述枚举，保留原版并行输出结构，不添加 Form 完成到菜谱查询的硬屏障。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主 agent 保留原有两轮批量查询，选择六道菜并冻结规范数据。",
+    "同一波三个 writer 分别创建 Form、Notion 和 Excel；外部资源用 external，本地工作簿用 office，各资源单写入者。",
+    "主 agent 与三个writer同响应发送菜谱选择汇总；等待三份产物回读和邮件结果后统一核对并完成。"
+  ],
+  "expected_tradeoff": "独立 writer 可能隔离三种工具上下文并重叠产物写入耗时，但增加委派开销；与原版主 agent 原生并行相比是否有收益需实验验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,22 @@
+{
+  "task_id": "research-lab-publication-pipeline",
+  "annotator": "qixin",
+  "reviewer": "audit17",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "补充材料必须实际取回并区分不可用、受限、失败与工具不支持；只得到摘要/引用不得声称下载PDF、数据或代码。当前静态材料未证明全部所需下载能力。",
+    "集中目录存在不等于实验室可访问：必须有真实共享目标、成员或组覆盖、授权上传/共享及访问证据。未满足时只保留本地成果并明确共享要求未完成，不得声明整体成功。",
+    "实验室邮件目标必须由任务文件或授权服务证据支持；候选已禁止用虚构默认别名证明成员访问或共享。"
+  ],
+  "not_runtime_tested": true
+}

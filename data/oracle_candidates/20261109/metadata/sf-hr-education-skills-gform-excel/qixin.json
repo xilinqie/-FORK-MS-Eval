@@ -1,0 +1,43 @@
+{
+  "task_id": "sf-hr-education-skills-gform-excel",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求创建 Excel 后再创建 Training Interest Survey；编排在读取数据时就创建表单，此时工作簿尚未生成，违反明确的交付顺序。",
+  "interpretation": "删除在读取分支中并行创建 Form 的安排，改为 policy → SQL → Excel 完成及回读 → Form 创建及核验 → 邮件的单主 agent 顺序；保持原版无需委派、一次聚合和其他计算口径。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "Read `Training_Policy.pdf` and run one set-based SQL query that returns every department–education row plus the department totals needed for the second sheet.",
+      "replacement": "Read `Training_Policy.pdf` first for policy context; its budget figures are background only and need not appear in the analysis file. Then run one set-based SQL query over `HR_ANALYTICS.PUBLIC.EMPLOYEES`",
+      "explanation": "显式展开原题先 policy 后查询的顺序，保留一条 set-based 查询返回两 sheet 所需数据。"
+    },
+    {
+      "original": "In parallel with that read branch, create `Training Interest Survey` exactly once and add the four questions in the stated order;",
+      "replacement": "Only after the Excel file has been created successfully and its read-back verified, create `Training Interest Survey` exactly once.",
+      "explanation": "核心修正：以 Excel 实际完成为 Form 创建的前置条件，不能仅准备过数据就建 Form。"
+    },
+    {
+      "original": "Verify the workbook and Form once, then send one email to `training@company.com`",
+      "replacement": "Finally, after both artifacts have been verified, send one email to `training@company.com`",
+      "explanation": "将原有一次核验按依赖分别放在 Excel 和 Form 后，最终邮件仍等待两者。"
+    }
+  ],
+  "preserved_requirements": [
+    "主 agent 完成、没有子 agent；Training_Policy.pdf 先读，预算仅背景。",
+    "HR_ANALYTICS.PUBLIC.EMPLOYEES 的三个指定列；每个 department-education 组合；按部门和教育字母排序。",
+    "HR_Education_Analysis.xlsx 两指定 sheet、4/7 列精确表头、平均绩效两位、高学历占比一位；Diploma 只进总人数。",
+    "表单准确名称、四题顺序、两组各四个精确选项；创建恰一次。",
+    "工作簿与 Form 各核验一次、最后指定收件人邮件、包含 education analysis findings 的原有约束。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主 agent 读政策并执行一次聚合，创建及回读 Excel。",
+    "Excel 成功后主 agent 创建和核验 Form；失败时阻断后续创建。",
+    "两产物成功后发送教育分析邮件。"
+  ],
+  "expected_tradeoff": "增加 Excel 到 Form 的等待会减少并行重叠，但候选按原题顺序约束执行；实际成功率和耗时仍待实验。",
+  "not_runtime_tested": true
+}

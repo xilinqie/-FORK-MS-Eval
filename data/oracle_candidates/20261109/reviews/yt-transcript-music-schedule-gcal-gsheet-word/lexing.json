@@ -1,0 +1,20 @@
+{
+  "task_id": "yt-transcript-music-schedule-gcal-gsheet-word",
+  "annotator": "lexing",
+  "reviewer": "audit02（独立复核）",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": false,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "本候选未修复原版事件仅明确Show 1–4编号、未明确写入和验收featured Afrobeat playlist说明的合约缺口；后续执行仍可能不满足task每个事件描述同时包含期数与精选播放列表说明的要求。按该候选对应的Word/calendar并行意见保留，不合并同题另一条事件描述意见。"
+  ],
+  "not_runtime_tested": true
+}

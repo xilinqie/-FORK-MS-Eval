@@ -1,0 +1,63 @@
+{
+  "task_id": "wc-product-review-excel-notion",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求把分析发给产品团队，并在正文写评级最高和最低的类别。编排邮件只有分类汇总，没有附工作簿或可访问链接，也没有发送工作簿中的 Top Products 分析，收件人拿不到完整报告。",
+  "interpretation": "原邮件已有最高/最低类别及完整分类汇总，保留这些内容；补交完整两表分析，首选实际验证后的xlsx附件，附件工具不支持时完整内嵌两表，不能以仅含类别的Notion链接代替Top Products。相应把邮件owner从与文件并行改到两产物回执之后；总数按原实际1 Explore+3 Coder为4名，不继承原开头错误的3名计数。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "The first agent computes the complete store join once; the two artifact writers then run in parallel from one canonical category table.",
+      "replacement": "The first agent computes the complete store join once; the workbook and Notion writers consume one canonical category/top-product payload.",
+      "explanation": "保留join和两独立产物并行，明确邮件也需Top Products而非只有分类数据。"
+    },
+    {
+      "original": "2. Wave 2 — dispatch exactly 3 Coder sub-agents in parallel:",
+      "replacement": "2. Wave 2 — dispatch exactly 2 Coder sub-agents in parallel:",
+      "explanation": "文件和Notion仍并行；既有邮件角色移到随后独立Wave3，等待可发送的真实工作簿。"
+    },
+    {
+      "original": "body built ONLY from the frozen tables — the total product/review counts, the highest-rated and lowest-rated categories with their average ratings and five-star rates, and the complete per-category breakdown.",
+      "replacement": "Deliver the full analysis, including Top Products, by attaching the verified `Product_Review_Analysis.xlsx` through the actual task-granted email attachment interface.",
+      "explanation": "保留原已有的最高/最低摘要和分类内容，新增真实完整报告传递；不把原理由误读成原计划完全没有极值摘要。"
+    },
+    {
+      "original": "Read back all three outputs.",
+      "replacement": "checks that the Top Products analysis in the verified workbook is included in the delivered attachment or inline content.",
+      "explanation": "新增传递完整性验收：受众确实得到第二表；无附件能力时内嵌完整表，不虚构链接。"
+    },
+    {
+      "original": "and return the database ID, property names and final row count.",
+      "replacement": "and return the database ID, property names, final row count, and the compact final-query rows needed for the main agent's category/value reconciliation.",
+      "explanation": "保留同一次最终Notion查询，只补充该查询的行值交接，使主agent能够执行原已要求的逐类别一致性验收；不新增逐页读回。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整产品/评论分页、无额外状态筛选、Product_ID关联、各实际类别归属和重复/关联控制。",
+    "Category Analysis六列、类别排序、平均2位/五星比例1位；Top Products四列、至少3评论、前10、50字符截断及rating/review sort。",
+    "固定Product_Review_Analysis.xlsx和Product Review Insights数据库名，后者五个属性精确类型且每类别一条。",
+    "原分类摘要、最高/最低类别、总产品/评论数、固定product_team@store.com和主题。",
+    "Explore只读且不写JSON；office唯一写本地xlsx；external分别唯一写Notion与邮件。",
+    "Sent分页/读回、至多一次发送、源/文件/数据库/邮件一致性，最终波次后不再调用dispatch。"
+  ],
+  "qualified_or_unimplemented": [
+    "task只说Email the analysis，没有强制附件类型；本候选优先附件，工具缺附件接口时用完整两表正文交付，因此无需虚构可访问链接。",
+    "精确收件人/主题的既有邮件若内容不全，候选不把它当完成，也不自动重发产生重复；交主agent报告真实冲突。"
+  ],
+  "assumptions": [
+    "将“把分析发给产品团队”落实为同时交付Category Analysis和Top Products；附件或完整内嵌均能实现该覆盖。"
+  ],
+  "capability_conditions": [
+    "真实邮件发送接口是否支持工作区文件附件及相应读回需在运行时确认；若不支持，候选给出两表完整内嵌的已定义替代路径，不假设云托管。"
+  ],
+  "plan_summary": [
+    "Wave1唯一Explore完整采集关联并返回分类/前十表，主agent核验冻结。",
+    "Wave2 office写并读回完整两表xlsx，external写并查询Notion，二者并行。",
+    "主agent接受产物回执及真实xlsx路径。",
+    "Wave3原邮件external角色发送完整报告，验证附件或两表正文及最高/最低摘要。",
+    "主agent复核受众收到Top Products，全部满足后声明完成。"
+  ],
+  "expected_tradeoff": "把邮件发送置于工作簿之后可能增加关键路径时延；附件或完整表正文增加交付信息但保留原分析，不预言实际成功率或性能提升。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,20 @@
+{
+  "task_id": "scholarly-arxiv-survey-word-notion-gcal",
+  "annotator": "qixin",
+  "reviewer": "audit17",
+  "review_type": "static_independent_review",
+  "status": "pass",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "补齐原任务Download and read及固定read_paper的真实前置条件：主agent并行调用已授权download_paper取得各论文就绪回执，之后才派五名只读reader。真实handler检查is_downloaded，学术角色白名单没有download_paper，不能让reader越权修复。同步metadata并将change_type改为mixed；Heading 1/2修正、三writer结构及Notion/日历职责保持。"
+  ],
+  "remaining_conditions": [],
+  "not_runtime_tested": true
+}

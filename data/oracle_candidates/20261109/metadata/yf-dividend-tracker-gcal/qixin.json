@@ -1,0 +1,64 @@
+{
+  "task_id": "yf-dividend-tracker-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求除息日的全天提醒。午夜到次日午夜的 dateTime 只描述一个覆盖全天的时段，编排没有确认事件被日历标记为全天；仅验证标题和日期不能区分这两种结果。",
+  "interpretation": "只落实qixin关于真正全天语义及核验的意见，保持主agent无委派与五标的统一表。固定提交源码证实create_event和get_event均仅暴露dateTime，因此候选纠正原版“午夜跨度即全天”的断言，设置实际能力核验及明确阻断路径；不虚构date/allDay参数或修改工具权限。",
+  "interpretation_status": "qualified",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "this midnight span is the all-day representation supported by the actual schema.",
+      "replacement": "The dateTime-only create_event interface requires start.dateTime and end.dateTime and does not expose date-only or all-day fields; this interface cannot establish the required all-day event.",
+      "explanation": "纠正原版将24小时时段等同全天的错误能力断言；固定源码的schema与返回值均没有真正全天字段。"
+    },
+    {
+      "original": "Create only missing reminders natively in parallel with `create_event` using `start.dateTime=\"[date]T00:00:00\"`, next-day `end.dateTime`, no timezone-driven date shift, exact `Ex-Dividend: [TICKER]` summary, and verified rate description;",
+      "replacement": "Do not send undeclared start.date/end.date or an invented allDay flag to it, do not use midnight-to-midnight dateTime as an all-day substitute, and do not inspect server internals, access its database or change tool permissions.",
+      "explanation": "删除假全天写入；不能改成同样无schema支持的date字段或绕过harness，必须依据实际接口能力决定能否执行。"
+    },
+    {
+      "original": "Retrieve each ID with `get_event`.",
+      "replacement": "Accept an existing reminder only when its read-back explicitly proves true all-day semantics for that civil date as well as the correct title and a description mentioning the verified dividend rate.",
+      "explanation": "强化验收：标题、日期、24小时长度都不足以证明全天，必须有真实全天表示的回读证据。"
+    },
+    {
+      "original": "Create the local workbook once, create or reuse exactly one cloud `Overview` sheet, write the exact sheets/headers from the canonical frozen rows, and read their bounded ranges back;",
+      "replacement": "The cloud spreadsheet depends only on the frozen dividend table, not on successful calendar creation. Create or update it independently of the reminder branch.",
+      "explanation": "保留共同数据冻结后的独立产物分支；题面Next/Finally是叙述枚举，没有明确日历完成后才能建云表，不能由全天能力缺口额外阻断表格交付。"
+    },
+    {
+      "original": "Read back both spreadsheets and the final event inventory, complete any original requirement, and call `claim_done` if available.",
+      "replacement": "A capability-blocked reminder stage is an incomplete task, not a successful all-day implementation.",
+      "explanation": "明确固定工具能力缺口导致未完成，不能靠更宽松的验收或伪全天事件宣称完成。"
+    }
+  ],
+  "preserved_requirements": [
+    "保持无子agent，五个固定股票一次原生并行读取，仅纳入dividend rate>0；保留short name、rate、yield、ex-date、payout ratio来源值及单位。",
+    "收益率只转换百分比一次、按ticker字母序、Total_Dividend_Stocks/Avg_Yield/Highest_Yield_Ticker与原确定性并列处理。",
+    "Dividend_Tracker.xlsx的Dividend Stocks六列与Summary三项；Dividend Watch List的Overview必须与本地数据逐格一致。",
+    "事件标题Ex-Dividend: [TICKER]、描述含来源rate、日期为来源除息民用日期且不做时区引起的日期移动；要求真正全天。",
+    "保留精确标题查询、唯一云表/Overview、歧义或重复阻断、原生并行事件查询/可用创建和回读；主agent唯一写入所有产物。",
+    "本地Excel、云表和提醒共享冻结数据，各有唯一主agent写入；保留独立表格分支，完整核验所有产物与真正全天要求后才允许claim_done。"
+  ],
+  "qualified_or_unimplemented": [
+    "在已固定的日历接口中，真正全天创建和回读不可表达，候选不能仅靠plan实现该要求；它仍完成并核验独立的本地工作簿与云表，报告缺失能力及未完成事件，不宣称整体完成。",
+    "不把同一日期午夜至次日午夜的dateTime当全天；也不无条件传start.date/end.date，因为实际CreateEventSchema不支持它们。",
+    "条件性写法只允许使用运行时实际已授权、确实暴露的全天契约；它不是请求修改harness或引入新工具，也不声称当前固定环境已有该能力。"
+  ],
+  "assumptions": [
+    "题面的Next/Finally单独用于枚举，未给出日历完成到云表写入的硬门槛；两表只依赖冻结股票数据，可以独立于日历能力检查完成。"
+  ],
+  "capability_conditions": [
+    "已静态核实sources/capabilities/calendar_index.ts，SHA256 e7b3e2d943171bb9e581901c15618fa3b6018b7899196b8661acd26112ace494；manifest指向Danield21/toolathlon_gym固定提交872ebef73f170a565136d4521ddb02b41872362e/local_servers/Calendar-Autoauth-MCP-Server/src/index.ts。310–328行CreateEventSchema仅接受start/end.dateTime，149–179行仅写入datetime，25–48行formatEvent回读也只有dateTime；未读取或使用任务评估器/GT。",
+    "运行前必须确认实际task-granted接口具有真实全天创建和可核验的全天返回表示；当前固定证据显示不具备，因此预期走明确未完成路径，不能拿午夜时段满足验收。"
+  ],
+  "plan_summary": [
+    "主agent读取五股票，冻结筛选、单位与汇总；唯一写入本地Excel和云表，两者独立于提醒分支。",
+    "核对实际日历能力，以窗口查询并回读现有候选；必须证明真正全天。",
+    "仅有实际支持的全天接口时才创建缺失提醒并核验；dateTime-only环境明确阻断该分支，禁止伪参数或工具越权。",
+    "独立完成两张表并逐格对齐；报告尚未满足的全天要求，只有所有必需产物真实满足后才允许claim_done。"
+  ],
+  "expected_tradeoff": "候选可能减少把普通24小时事件误判为全天的虚假完成，但在当前固定工具中会明确暴露不可满足的能力缺口并降低表面完成率；这是契约纠正，不能宣称仅靠编排提高真实任务成功率，未运行实验。",
+  "not_runtime_tested": true
+}

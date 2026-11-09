@@ -1,0 +1,48 @@
+{
+  "task_id": "canvas-at-risk-intervention",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求先创建报告，再发送干预汇总。方案把 Excel 生成核验与邮件发送安排在同一并行阶段，邮件分支没有等待报告成功的依赖，报告写入失败时仍可能发出通知。",
+  "interpretation": "直接落实报告创建并核验成功后才发邮件；保留22个课程采集分区和两名最终writer，只将最终独立分支改为有向依赖。另按固定harness约束，把原版只读课程owner的本地JSON写入转交主agent。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "then dispatches two independent final writers.",
+      "replacement": "then dispatches the report writer followed by the email writer only after the report has been created and verified.",
+      "explanation": "把报告成功设为邮件writer启动条件，覆盖指定否定理由。"
+    },
+    {
+      "original": "Then dispatch the two independent final branches in one native-parallel response:",
+      "replacement": "Then dispatch the final writers in dependency order. The workbook is a prerequisite for sending the email:",
+      "explanation": "保留两个单写入者，但取消Excel与邮件发送的同阶段独立调度。"
+    },
+    {
+      "original": "Read the JSON back and return only path/hash, full course identity, page/row counts, at-risk count, score sum/count, and unresolved/duplicate controls.",
+      "replacement": "Remain read-only: do not write a JSON file. The main agent follows the returned source references as needed, persists each complete course result to its own runtime-unique JSON path inside the workspace, reads it back, and records its path/hash before accepting that course receipt.",
+      "explanation": "必要工具职责修正：enterprise-data-analyst只读，原方案的JSON持久化由主agent承接，未减少采集/校验工作。"
+    },
+    {
+      "original": "First, the main agent reads the complete support resource JSON, advisor_contacts.json, and intervention_guidelines.pdf, and calls canvas_list_courses(include_ended=true) once.",
+      "replacement": "First, the main agent retrieves and reads the complete support resource JSON from http://localhost:30430/api/support_resources.json. Only after that succeeds, read advisor_contacts.json and intervention_guidelines.pdf and call canvas_list_courses(include_ended=true) once.",
+      "explanation": "明确保留题面Retrieve first、Then pull的先后约束，并补出原任务给定的资源地址，不引入新源。"
+    }
+  ],
+  "preserved_requirements": [
+    "支持资源先读取；Canvas只读；22门课程完整分页、课程全名、用户join、去重与空值控制保留。",
+    "score<50为风险，<40 Critical、40<=score<50 Warning；Critical同时有学科支持和咨询。",
+    "At_Risk_Report.xlsx三张指定表和列，全部风险行按分数排序，22课程全量平均并按名称排序，至少5类政策行动。",
+    "academic-support@uni.edu general联系人、指定邮件主题、风险总数、明确命名的前5课程与下一步。",
+    "邮件单次发送、Sent精确去重和回读保留；无聚合/审计agent，仅主agent声明完成。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent先读资源与规则并冻结22课程映射。",
+    "22个只读课程owner并行采集，主agent保存结果并完成join及规范化。",
+    "Excel owner完成并读回全部范围，主agent接受实际工作簿回执后才启动邮件owner。"
+  ],
+  "expected_tradeoff": "预计能阻止报告失败时提前发出邮件，但减少最终阶段并发并增加串行等待；主agent持久化开销和总体效果需后续实验验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,40 @@
+{
+  "task_id": "yf-stock-comparison-word-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "写入契约遗漏了两个明确要求：日历描述要点名五只股票，邮件正文要概述关键发现。编排只规定会议时段和邮件引用或附上报告，完成这些仍不足以满足上述内容。",
+  "interpretation": "保留无子agent的原生并行方案，仅补充两项写入/验收契约：事件描述明确列出五股票，邮件正文概述报告关键发现；完成声明等待已验证的文档、事件和邮件。",
+  "interpretation_status": "explicit",
+  "change_type": "clarification_only",
+  "changes": [
+    {
+      "original": "Independently create only a missing `Portfolio Review Meeting` at 2026-04-10 14:00–15:30 America/New_York and verify it by ID.",
+      "replacement": "Independently create only a missing `Portfolio Review Meeting` at 2026-04-10 14:00–15:30 America/New_York, with a brief description explicitly naming all five reviewed stocks: GOOGL, AMZN, JPM, JNJ, and XOM. Verify the retained event by ID, including its exact title, start/end times, America/New_York timezone, and all five symbols in the description; a retained event with missing required content is not accepted as complete.",
+      "explanation": "新增日历description五只股票清单并将其纳入事件ID读回；不改会议时间、时区或单次创建规则。"
+    },
+    {
+      "original": "Finally send exactly one email to `analyst@investment.com` with subject `Stock Comparison Report - Q2 2026`, reference or attach the verified document, and call `claim_done`.",
+      "replacement": "After the document read-back succeeds, independently of the calendar branch, send exactly one email to `analyst@investment.com` with subject `Stock Comparison Report - Q2 2026` and reference or attach the verified document. Its body must summarize the source-backed key findings from the report: which of the five stocks have strong buy versus buy or other returned recommendations, how their sectors differ, and the resulting Portfolio Strategy recommendations. Do not merely announce or link the report, and do not invent a rating category unsupported by the retrieved data. Verify the retained email recipient, subject, report reference or attachment, and substantive findings summary and wait for both the email verification and the calendar verification before the main agent calls `claim_done`.",
+      "explanation": "新增基于报告的评级比较、行业分散和组合策略摘要要求，并检查发出的邮件内容；邮件真实依赖已完成报告，不等待独立日历分支，整体完成等待二者。"
+    }
+  ],
+  "preserved_requirements": [
+    "五个get_stock_info调用和事件查找仍原生并行，无子agent。",
+    "GOOGL、AMZN、JPM、JNJ、XOM及五列Symbol/Company_Name/Current_Price/Analyst_Recommendation/Sector不变。",
+    "Stock_Comparison_Report.docx保留标题、Stock Overview表、Analysis与Portfolio Strategy内容和单次创建/读回。",
+    "会议2026-04-10 14:00–15:30 America/New_York，邮件收件人和主题保持原文。",
+    "邮件附上或引用已完成报告，三个交付物全部验证后仅主agent声明完成。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "邮件只引用/附上报告并概述分析，不消费日历结果，也不声明会议已创建；据此不把Finally解释为额外日历完成门槛。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent并行获取五股信息和已有事件，冻结与写报告的流程不变。",
+    "创建缺失会议时添加五符号描述，事件读回同时检查描述。",
+    "报告确认后发送含关键发现的邮件并读回，可与日历分支重叠；主agent等全部交付物验证后结束。"
+  ],
+  "expected_tradeoff": "预计强化原方案已有输出的内容验收，而不改变编排拓扑；可能增加邮件读回成本，效果待运行对照验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,22 @@
+{
+  "task_id": "yf-dividend-tracker-gcal",
+  "annotator": "qixin",
+  "reviewer": "audit17",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "固定calendar_index.ts的创建、存储和回读只有dateTime，不能表达并核验独立真正全天事件；候选仅给出真实能力检查和明确未完成路径，没有实现当前环境缺失的全天能力。",
+    "只有运行时实际已授权接口支持真正全天创建及回读时才允许创建；不得传未声明date/allDay字段、修改harness或用午夜24小时时段冒充全天。",
+    "本地工作簿与云表仍可独立完成；全天提醒未满足时不得claim_done。"
+  ],
+  "not_runtime_tested": true
+}

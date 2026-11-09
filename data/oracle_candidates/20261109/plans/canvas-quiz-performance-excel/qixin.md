@@ -1,0 +1,31 @@
+To solve this task efficiently, the main agent must complete this small five-quiz task directly; do not dispatch any sub-agent. The five-row table supplies exact fields to the quiz procedure below.
+
+Email-owner contract for every email sub-task below: call `search_emails(query=<literal subject>, folder="Sent", page=<n>, page_size=50)` from page 1 through the returned final page. Because search results do not expose recipients, call `read_email(email_id=<candidate id>)` for every candidate and match the complete literal `To`, `Subject`, and, whenever the Task specifies it, `From`; a subject-only hit is not a match. Call `send_email` exactly once only when no exact match exists AND `Quiz_Performance.xlsx` has been successfully created, populated, and read back by the main agent. After sending, repeat the paginated search, call `read_email` on every candidate, require exactly one exact match, and return its ID plus exact recipient/sender/subject/body read-back. If search, send, or read-back fails, return a blocker and do not retry `send_email`.
+
+**Quiz procedure.** Call `canvas_list_quiz_submissions(course_id=3, quiz_id=<quiz_id>)` exactly once; the response is complete and unpaginated. Treat this endpoint only as score evidence, and obtain `quiz_title` and `points_possible` only from the `canvas_list_quizzes` inventory. For numeric scores compute `score_sum`, `score_min`, `score_max`, and `pass_count_ge_60`; define every submission identity and duplicate check from literal `row.id`. Do not modify Canvas.
+
+The main agent performs these seven independent read-only operations directly in one native-parallel tool-call response:
+
+   1. Call `canvas_get_course(course_id=3)` exactly once. Return `{course_id,course_code,course_name,total_students,identity_ok,call_count,warnings}` and require exact name `Biochemistry & Bioinformatics (Fall 2013)`. Do not call quizzes or submissions.
+
+   2. Call `canvas_list_quizzes(course_id=3)` exactly once. Return every quiz as `{quiz_id,title,points_possible}`, sorted by quiz ID, plus `returned_count`, unique IDs, and warnings. Require the exact manifest `6:CMA 15003, 7:CMA 15004, 8:CMA 15005, 9:CMA 15006, 10:CMA 15007`; do not call submissions.
+
+   Apply the quiz procedure to these exact rows:
+
+| row_no | course_id | quiz_id | quiz_title |
+|---:|---:|---:|---|
+| 1 | 3 | 6 | CMA 15003 |
+| 2 | 3 | 7 | CMA 15004 |
+| 3 | 3 | 8 | CMA 15005 |
+| 4 | 3 | 9 | CMA 15006 |
+| 5 | 3 | 10 | CMA 15007 |
+
+The main agent verifies course identity, requires the five-row inventory exactly once, joins title and points exclusively from that inventory, and derives the task metrics with the stated denominators and deterministic tie-break.
+
+It then starts the workbook-create/write branch and the read-only exact sent-mail search in the same native-parallel response. The search may overlap workbook creation, but sending must wait for the completed workbook and successful read-back of both sheets. Freeze a `workbook_ready` result containing the verified path and stored Summary values; if workbook creation, population, or read-back fails, report that blocker and do not send the summary email. It performs both outputs directly, with the dependency workbook completion/read-back -> conditional email send/read-back:
+
+   1. Resolve the runtime workspace root and own `Quiz_Performance.xlsx` there exactly once. Create `Quiz Stats(Quiz_Title,Total_Submissions,Avg_Score,Min_Score,Max_Score,Pass_Rate)` with exactly five title-sorted rows and two-decimal averages/rates, and `Summary(Metric,Value)` with exactly `Total_Quizzes`, `Overall_Avg_Score`, `Highest_Avg_Quiz`, and `Lowest_Avg_Quiz`. Write literal values, not formulas. Read both sheets back and return `{path,hash,sheets:[{name,headers,row_count}],quiz_titles,stored_summary,arithmetic_checks,verification}`. Do not send email.
+
+   2. Own only one email from `quiz-analytics@university.example.com` to `instructor@university.example.com` with subject `Quiz Performance Summary - Biochemistry & Bioinformatics (Fall 2013)`. Follow the Email-owner contract above. Search the exact sender/recipient/subject first; if absent, wait for `workbook_ready` and use the verified stored Summary values before calling `send_email(to="instructor@university.example.com", from_addr="quiz-analytics@university.example.com", subject="Quiz Performance Summary - Biochemistry & Bioinformatics (Fall 2013)", body=<verified total quiz count, overall average, complete highest title, complete lowest title>)` once; if present, do not duplicate it. Read back or search again and return `{message_id,from,to,subject,total_quizzes,overall_average,highest_title,lowest_title,action,duplicate_count,verification}`. Do not modify files.
+
+Finally, reconcile the five source summaries, two workbook sheets, and one email. Verify quiz identity/order, denominators, rounding, literal workbook values, full highest/lowest titles, sender/recipient/subject/body values, read-back evidence, and absence of a duplicate message before claiming completion.

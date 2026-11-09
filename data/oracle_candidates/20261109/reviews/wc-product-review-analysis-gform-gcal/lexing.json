@@ -1,0 +1,18 @@
+{
+  "task_id": "wc-product-review-analysis-gform-gcal",
+  "annotator": "lexing",
+  "reviewer": "second02",
+  "review_type": "static_independent_review",
+  "status": "pass",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [],
+  "not_runtime_tested": true
+}

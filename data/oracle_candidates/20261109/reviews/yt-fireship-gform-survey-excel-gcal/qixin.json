@@ -1,0 +1,23 @@
+{
+  "task_id": "yt-fireship-gform-survey-excel-gcal",
+  "annotator": "qixin",
+  "reviewer": "audit01",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "核对固定calendar源码后去除假设可分页的模糊路径，改为合法全月timeMin/timeMax和显式maxResults，返回达到limit时增大limit重查。",
+    "记录服务start>=timeMin且end<=timeMax的contained-range限制，不把全月窗口内取全等同于跨月overlap全覆盖；对有证据边界事件检查/报告，并同步metadata实际能力条件及准确引文。"
+  ],
+  "remaining_conditions": [
+    "固定list_events只能保证所请求窗口内起止均被包含的结果；实验前需确认跨月社区活动或可见边界事件ID，候选不声称overlap完整覆盖。目录与Form→全月查询→例会→邮件的指定执行顺序已按文本修正。"
+  ],
+  "not_runtime_tested": true
+}

@@ -1,0 +1,45 @@
+{
+  "task_id": "fetch-notion-monitoring",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "create a calendar、 create a page可以同时完成",
+  "interpretation": "按“calendar与page可同时完成”将原版主agent直接外写改为两个external writer并行；原版已有事件侧原生并行，不将其描述为原先完全串行。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "use exactly one sub-agent wave because the 504-row incident scan is the only data-heavy branch.",
+      "replacement": "keep the 504-row incident scan and workbook in one office writer, then give the independent dashboard and calendar outputs separate external writers in a second parallel wave.",
+      "explanation": "只扩展两个外部产物的owner，保留原504行分析owner。"
+    },
+    {
+      "original": "it directly creates or updates exactly one page titled `Service Monitoring Dashboard - March 2026` and natively parallelizes exact event lookups/creates",
+      "replacement": "2. Wave 2 — dispatch exactly 2 coder sub-agents together in parallel:",
+      "explanation": "将page/calendar明确分给不同external角色，作为共享分析之后并行的独立输出。"
+    },
+    {
+      "original": "After one page/event read-back, send exactly one email",
+      "replacement": "Only after both Wave 2 handoffs return and the main agent confirms one complete dashboard and full required event coverage, send exactly one email",
+      "explanation": "主agent汇总两个writer回执后发送，避免通知先于实际完成。"
+    }
+  ],
+  "preserved_requirements": [
+    "全部504条、三服务，up/total*100一位、平均响应两位；连续down/degraded合并及时间戳时长。",
+    "Service_Availability_Report.xlsx两张精确sheet及所有incident行。",
+    "Excel先完成，之后page/calendar并行；page含所有服务及具体事故窗。",
+    "仅有down检查的服务建2026-03-07 10:00–10:30事件，degraded-only不触发。",
+    "指定sender/recipient/subject；只列uptime<99%服务；保留所有无关内容。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "将“可以同时完成”实现为独立子agent对照，而非仅重述原版主agent可原生并行。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "Wave1单office作者完成扫描和Excel，返回紧凑行数据。",
+    "主agent冻结结果，Wave2两个external作者并行写dashboard和calendar。",
+    "主agent等待双方验证回执后发唯一邮件并验收。"
+  ],
+  "expected_tradeoff": "独立writer可能缩短两个外部系统的并行路径，但增加派发及回执成本；原版已支持原生并行，收益需实测。",
+  "not_runtime_tested": true
+}

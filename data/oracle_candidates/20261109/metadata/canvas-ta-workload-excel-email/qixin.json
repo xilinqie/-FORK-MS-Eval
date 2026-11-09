@@ -1,0 +1,60 @@
+{
+  "task_id": "canvas-ta-workload-excel-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求把报告邮件发给系主任，正文附简短摘要。参考方案的邮件只发送汇总指标，既未附上工作簿，也未提供可访问的报告链接，而且邮件分支没有等待报告生成和核验。",
+  "interpretation": "将“email the report”落实为已验证工作簿的实际附件交付；固定工具send_email已公开支持attachments路径列表，邮件owner只在报告成功生成核验后派发。Excel和Notion仍基于同一规范数据独立并行，不把Then/Finally的叙述顺序当作无数据依赖的强制门槛。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "Then dispatch the three independent output branches in one native-parallel response from the frozen canonical payload:",
+      "replacement": "Output branches — dispatch the workbook and Notion owners together in one native-parallel response from the frozen canonical payload:",
+      "explanation": "只移出消费已完成报告的邮件owner，保留原工作簿和Notion独立并行。邮件通过主agent接收实际工作簿回执；不额外增加工作簿→Notion或Notion→邮件的依赖。"
+    },
+    {
+      "original": "Send once only if absent, using the same canonical total courses, total TAs, average TAs and full heaviest-workload course, then read it back.",
+      "replacement": "If no matching message exists, send once with the verified workbook attachment and a brief body using the same canonical total courses, total TAs, average TAs, and full heaviest-workload course.",
+      "explanation": "保留相同汇总指标，并使用固定工具真实支持的attachments路径列表交付报告；无需虚构分享URL或访问控制工具。"
+    },
+    {
+      "original": "Search Sent mail for exact To dept_chair@university.edu and subject TA Workload Report, reading candidates to verify recipients.",
+      "replacement": "An exact recipient/subject match without the report is not a successful delivery receipt; report that conflict without silently accepting it.",
+      "explanation": "新增报告可交付性验收，以原Sent查重句为锚点；已有同主题摘要邮件不能替代报告交付。"
+    },
+    {
+      "original": "same literal recipe, only the course identity and unique JSON path substituted.",
+      "replacement": "same literal recipe, only the course identity substituted; return the structured result without writing files.",
+      "explanation": "原21条重复指令提及未定义的JSON路径，而首个课程模板只返回结构化结果；将其明确为只读返回，符合explore固定权限，不增加持久化责任。"
+    },
+    {
+      "original": "Send once only if absent, using the same canonical total courses, total TAs, average TAs and full heaviest-workload course, then read it back.",
+      "replacement": "The send result need not contain a message ID: use a read-only Sent search to locate the sent message, resolve its actual ID, then read it and its attachment metadata back.",
+      "explanation": "固定send_email返回成功文本而非消息ID，明确发送后的真实ID获取与附件元数据回读，不假定工具返回不存在的字段。"
+    }
+  ],
+  "preserved_requirements": [
+    "22个课程owner的IDs/课程代码、先assignment_ids再TA及submission计数的本地依赖、pagination.total_count口径均保留。",
+    "TA_Workload_Report.xlsx两表及全部精确列/统计标签；Submissions_Per_TA无TA时为0、保留1位小数、按课程全名排序。",
+    "Total_TAs按各课TA_Count求和，Avg_TAs_Per_Course保留1位；最高assignment数和确定的最重课程沿用规范数据。",
+    "TA Staffing Overview的查重、仅补缺段落及不改无关内容策略保留。",
+    "dept_chair@university.edu、TA Workload Report主题及简短摘要保持；新增实际报告传递和发送前成功门槛。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "原题email the report通过实际工作簿附件落实；固定gym提交872ebef73f170a565136d4521ddb02b41872362e的local_servers/emails-mcp/src/emails_mcp/tools/email_tools.py第118–120行支持attachments: List[str]，第74–77行的read_email输出附件文件名/类型/大小。",
+    "Then/Finally未指定正式工作流屏障；Notion只消费冻结统计，故保留与Excel并行，邮件只依赖已验证工作簿。"
+  ],
+  "capability_conditions": [
+    "附件路径必须对邮件服务进程实际可读：固定pg_backend.py第643–647行按file_path打开文件。运行前/发送时需确认该任务workspace路径可达；若不可达则保留已生成报告并报告交付失败，不改挂载、不伪造URL、不发送摘要冒充报告。接口本身已通过固定源码确认，不再将attachments支持标为未知。 静态源码依据：https://github.com/Danield21/toolathlon_gym/blob/872ebef73f170a565136d4521ddb02b41872362e/local_servers/emails-mcp/src/emails_mcp/backends/pg_backend.py#L643-L647。"
+  ],
+  "plan_summary": [
+    "主agent列课程，22个只读explore返回每课计数，主agent汇总并冻结一份规范数据。",
+    "Excel writer与Notion owner并行，主agent可准备邮件并只读预检Sent。",
+    "收到验证工作簿回执后即派邮件owner，使用真实attachments路径列表，不能等待Notion造成无关屏障。",
+    "邮件owner查重、发送实际附件，再查询Sent获得真实ID并读回附件元数据；失败明确回报。",
+    "仅主agent在三项回执一致后声明完成。"
+  ],
+  "expected_tradeoff": "候选可检验是否减少仅摘要或报告未就绪的通知；邮件必须等待报告并承担附件交付检查成本，但Notion保留独立并行。效果尚待运行验证。",
+  "not_runtime_tested": true
+}

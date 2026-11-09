@@ -1,0 +1,42 @@
+{
+  "task_id": "canvas-quiz-performance-excel",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求创建 Excel 后再发汇总邮件；参考编排明确让邮件发送与工作簿生成和回读独立进行，可能在工作簿尚未创建成功时发出邮件。",
+  "interpretation": "按意见补齐 Excel 完成→汇总邮件发送的硬依赖；保持原版主agent直接完成、七项读取原生并行及Sent搜索可提前进行，不据A项另改拓扑。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Call `send_email` exactly once only when no exact match exists.",
+      "replacement": "Call `send_email` exactly once only when no exact match exists AND `Quiz_Performance.xlsx` has been successfully created, populated, and read back by the main agent.",
+      "explanation": "将原有查重发送条件与工作簿实际成功条件合取，不改变收件人匹配、只发送一次和失败不重试契约。"
+    },
+    {
+      "original": "It then starts the workbook-create/write branch and the exact sent-mail search in the same native-parallel response; neither branch waits for the other. Workbook read-back and the email's conditional send/read-back continue independently. It performs both outputs directly:",
+      "replacement": "It then starts the workbook-create/write branch and the read-only exact sent-mail search in the same native-parallel response. The search may overlap workbook creation, but sending must wait for the completed workbook and successful read-back of both sheets. Freeze a `workbook_ready` result containing the verified path and stored Summary values; if workbook creation, population, or read-back fails, report that blocker and do not send the summary email. It performs both outputs directly, with the dependency workbook completion/read-back -> conditional email send/read-back:",
+      "explanation": "只读Sent查询仍可与工作簿并行；正式邮件发送显式等待两表创建、写入和读回，失败则阻断发送。"
+    },
+    {
+      "original": "Search the exact sender/recipient/subject first; if absent, call",
+      "replacement": "Search the exact sender/recipient/subject first; if absent, wait for `workbook_ready` and use the verified stored Summary values before calling",
+      "explanation": "让具体邮件分支也落实同一完成令牌及工作簿实存汇总，避免通用契约与分支说明冲突。"
+    }
+  ],
+  "preserved_requirements": [
+    "课程ID=3及精确课程名；原版五测验清单、每测验一次未分页提交读取、以row.id作身份与去重依据，Canvas只读。",
+    "Quiz_Performance.xlsx保持Quiz Stats和Summary两表、指定字段、标题排序、两位小数、>=60通过率及跨全部提交加权意义上的总体均值。",
+    "保留literal数值、不写公式、两表读回、确定性并列处理、完整最高/最低测验名和最终对账。",
+    "收件人为instructor@university.example.com、发件人为quiz-analytics@university.example.com、精确主题不变；分页Sent查询后逐条read_email核对To/Subject/From，失败不重发。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保留原版并行读取、统一统计。",
+    "工作簿创建和只读邮件查重可并行，主agent为唯一文件及邮件写入者。",
+    "两表成功读回生成workbook_ready后，才允许缺失邮件发送并读回；最终统一验证。"
+  ],
+  "expected_tradeoff": "预期消除文件尚未成功时发送完成摘要的窗口；邮件发送被推迟到工作簿验收之后，延迟影响需实际实验验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,63 @@
+{
+  "task_id": "research-lab-publication-pipeline",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "可以分别完成Bibliography，Per-paper analysis summaries，Research roadmap ",
+  "interpretation": "落实三个产物可分别完成：主agent继续原版检索/分析及CSV，把Bibliography、整组逐篇文档、Roadmap分给三个office writer并行。独立复核仅增加必要完成边界：去掉无来源示例邮箱回退；未实现全员可访问中央仓库时如实部分完成，不新增其他意见所要求的归档流程。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "The main agent is the sole writer of all local deliverables:",
+      "replacement": "1. Wave 1 — dispatch exactly 3 coder sub-agents in parallel, each receiving the frozen paper set, research packet, source references and its assigned output paths:",
+      "explanation": "三个明确不重叠的最终产物owner，CSV仍主agent独占。"
+    },
+    {
+      "original": "Read the CSV, BibTeX, every manuscript and the roadmap back.",
+      "replacement": "After Wave 1, the main agent reads the CSV, bibliography, every manuscript and the roadmap through the returned paths",
+      "explanation": "保留交叉核验并让发送依赖三个完整回执。"
+    },
+    {
+      "original": "and do not add synthesis, per-paper, writer or verification waves.",
+      "replacement": "Do not add further research, synthesis, per-paper, writer or verification waves;",
+      "explanation": "原版禁止writer波次改为候选所需一个writer波次，仍不额外添验证波。"
+    },
+    {
+      "original": "If no valid laboratory-member address is exposed in task files or mailbox, use the operational group alias research-lab-members@lab.example.com required to fulfill the task and state that assumption in the body; do not silently skip the email.",
+      "replacement": "Resolve a real laboratory-member or laboratory-group recipient from task-visible files or mailbox evidence before sending. If no such address is established, do not invent an alias or use an unverified example-domain address; record the missing laboratory-recipient routing and leave the email obligation pending. The independent calendar branch may still proceed.",
+      "explanation": "独立复核的必要任务合约修复：原版回退地址没有实验室身份依据，不能通过声明假设把示例邮箱变成真实实验室收件人；缺地址只能保留待完成，独立日历工作仍可继续。"
+    },
+    {
+      "original": "Completion requires external read-back of a valid recipient email and retained event plus every local artifact.",
+      "replacement": "Local files and the handoff packet do not by themselves establish the task-required centralized repository accessible to all laboratory members.",
+      "explanation": "补充诚实完成边界，保留原方案未实现的共享仓库缺口，不把本地handoff/版本管理当作全员共享仓库；未加入新的材料归档编排。"
+    }
+  ],
+  "preserved_requirements": [
+    "运行时三年窗口、全本地inventory遍历、规范ID/title去重、至少五条不是停止规则。",
+    "保留原版bounded search、读全文/section、不得public curl/编造论文或DOI。",
+    "CSV一行每selected paper，Bib一条每row，逐篇指定分析章节，Roadmap≥400字符及Future Directions/Recommendations。",
+    "实际邮件/日历及读回、指定Research Roadmap Update、未来无冲突讨论会。",
+    "缺失可选PDF诚实标注；邮件必须有真实实验室收件人证据，中央仓库全员可访问义务不能由本地文件冒充。"
+  ],
+  "qualified_or_unimplemented": [
+    "Roadmap正文写作可与其他两个作者并行，但研究/逐篇分析证据及实验室gap synthesis须由主agent先完成；没有把依赖研究结果的roadmap提前到取证前。",
+    "未新增补充材料归档/集中共享仓库实现；原方案未验证的全员可访问中央仓库义务明确保留为pending，不能据本候选的本地写作并行宣称已解决。",
+    "独立复核取消原版未经证实的示例邮箱回退；缺少实际实验室地址时不发邮件，只报告完成的独立工作及未完成义务。"
+  ],
+  "assumptions": [
+    "把“分别完成”解释成三个独立office writer，逐篇summaries由其中一个writer整组独占，避免额外按论文扩张。",
+    "真实实验室收件人及全员可访问中央仓库是否存在需由任务可见证据证明，不再假定示例域名地址属于实验室。"
+  ],
+  "capability_conditions": [
+    "必须有任务可见的真实实验室成员/群组收件人证据，缺项时邮件保持pending。",
+    "需真实共享仓库及材料可供实验室成员访问的可见证据；本候选不新增仓库实现，未验证时只能报告部分完成。"
+  ],
+  "plan_summary": [
+    "主agent保留检索、全证据分析、CSV与共享研究packet。",
+    "一个波次并行三个本地产物writer：Bib、逐篇docx组、roadmap。",
+    "主agent核对共享论文集合后执行email/calendar分支；邮件只发真实实验室收件人，中央仓库/访问未验证时保留部分完成边界。"
+  ],
+  "expected_tradeoff": "独立格式化/写作可能降低主agent产物压力，但主agent仍完成证据与gap分析，新增handoff成本待实验；缺少真实收件人或共享仓库证据时会诚实停止整体完成声明。",
+  "not_runtime_tested": true
+}

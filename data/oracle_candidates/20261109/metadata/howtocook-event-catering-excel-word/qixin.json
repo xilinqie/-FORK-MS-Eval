@@ -1,0 +1,39 @@
+{
+  "task_id": "howtocook-event-catering-excel-word",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求 Word 的菜单概览列出全部所选菜品并逐项简述。编排选了八道菜，却只要求文档至少提到四个菜名，且未要求逐道描述，允许缺失一半菜单的提案通过核验。",
+  "interpretation": "仅补强Word交付与验收合同：菜单概览必须逐项列出冻结菜单全部八道菜，并为每道菜提供简述。保留原版主agent无委派和原有独立输出分支，不采用同题其他标注者的新增并行结构。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "Build the Word document with one bulk structured body containing the exact title, Executive Summary, Menu Overview, and Preparation Timeline and mentioning at least four exact selected dish names.",
+      "replacement": "Build the Word document with one bulk structured body containing the exact title, Executive Summary, Menu Overview, and Preparation Timeline. The Menu Overview must list all eight dishes from the frozen menu by their exact selected names, with a brief, recipe-grounded description for each individual dish; a partial list or an undifferentiated list of names is not sufficient. The Executive Summary describes the 30-person event and catering approach, and the Preparation Timeline explains when each included category will be prepared on the event day.",
+      "explanation": "用全部八道菜逐项描述替换至少四个菜名的较弱覆盖门槛，保留既定章节。"
+    },
+    {
+      "original": "Verify each deliverable once, then send exactly one email",
+      "replacement": "Verify each deliverable once. For the Word read-back, check the complete Menu Overview against the frozen eight-dish table: all eight selected names must appear in that section and each must have its own nonempty, dish-specific brief description; also check the Executive Summary and category-level Preparation Timeline. Correct any missing dish or description before marking the document ready. After all three deliverables have passed their checks, send exactly one email",
+      "explanation": "在原有一次验收位置增加菜名集合与逐道描述检查，确保不以部分菜单通过验收；邮件仍在所有产物就绪后发送。"
+    }
+  ],
+  "preserved_requirements": [
+    "30人团建菜单，选恰好八道菜，覆盖appetizers/main courses及至少一种soup或dessert。",
+    "HowToCook分类发现和八份食谱详情的原生并行读取，共用同一冻结菜单。",
+    "Catering_Plan.xlsx保持Menu/Ingredients精确表结构，30人份量、正数成本、估价与数量等字面数值和一致菜名。",
+    "Catering_Proposal.docx保留Executive Summary、Menu Overview、Preparation Timeline，菜单全量且逐项描述。",
+    "Menu Approval Survey创建一次并保留三条明确问题。",
+    "client@corporate.com及Catering Proposal for Team Building Event主题、产物验收后单次发信。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent获取并冻结八道菜，原生并行读取详情。",
+    "沿用Excel、Word、Form独立输出分支；主agent仍为三产物唯一owner。",
+    "Word生成和回读均覆盖八道菜与各自描述，之后统一邮件交付。"
+  ],
+  "expected_tradeoff": "预期减少菜单覆盖不足的接受路径，可能增加Word内容与回读检查长度；没有新增委派拓扑，效果尚未运行验证。",
+  "not_runtime_tested": true
+}

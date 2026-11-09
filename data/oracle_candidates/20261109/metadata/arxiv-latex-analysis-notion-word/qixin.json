@@ -1,0 +1,46 @@
+{
+  "task_id": "arxiv-latex-analysis-notion-word",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题部分论文标题与 ID 冲突，例如 2203.11171 对应 Self-Consistency，而不是题目所列的指令微调论文。编排虽要求记录冲突，却仍要求冻结三篇并据此生成、验收和通知，未规定先澄清或阻断受影响的交付，可能把错误来源写入正式报告。",
+  "interpretation": "落实身份冲突必须先澄清的意见；从原版三篇主agent研究+两个writer并行结构出发，只增设源身份关卡和对正式产物/通知的阻断。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "Verify each returned stable ID/title even if the task's pairing is unusual; do not silently replace a task slot from outside knowledge.",
+      "replacement": "Verify each returned stable ID/title against its requested slot; do not silently replace a task slot from outside knowledge.",
+      "explanation": "保留核对身份和禁止静默替换，要求真正解决不一致。"
+    },
+    {
+      "original": "Reconcile once and freeze one literal canonical three-paper packet;",
+      "replacement": "An unresolved ID/title conflict blocks finalization of the affected paper and the three-paper comparative deliverables.",
+      "explanation": "原版记录conflict后仍冻结；新增明确澄清/阻断分支，无法互动时不得伪造交付完成。"
+    },
+    {
+      "original": "1. Wave 1 — dispatch exactly 2 coder sub-agents in parallel as individual Agent calls:",
+      "replacement": "1. Wave 1 — after the identity gate passes, dispatch exactly 2 coder sub-agents in parallel as individual Agent calls:",
+      "explanation": "保持两个输出owner并行，派发依赖三篇身份关卡。"
+    }
+  ],
+  "preserved_requirements": [
+    "原题三组ID/标题原样记录，不私自改题或导入隐藏正确ID。",
+    "完整研究证据、贡献/方法/发现、三页Paper前缀Notion、指定Word报告名和Comparative Analysis。",
+    "Word与Notion各有单写入者，研究只读，主agent负责Sent搜索和唯一ready邮件。",
+    "动态工作区、重复对象阻断和模糊发送不重试保留。"
+  ],
+  "qualified_or_unimplemented": [
+    "如运行中发现冲突但无法获得权威澄清，本候选有意停止受影响的正式交付并报告未完成，而不是保证所有原始错误配对都能交付。"
+  ],
+  "assumptions": [],
+  "capability_conditions": [
+    "若论文ID与标题确实冲突，需要用户/任务提供者的权威澄清；不能从隐藏GT或外部常识自行替换。"
+  ],
+  "plan_summary": [
+    "主agent并行读取三个原题ID并核对身份。",
+    "冲突留在临时证据包，澄清前不派正式writer、不发ready邮件。",
+    "身份解决后冻结三篇，Notion/Word两writer并行，主agent验证后通知。"
+  ],
+  "expected_tradeoff": "身份关卡预计减少错误来源进入正式产物的风险，但可能导致歧义任务阻断或增加澄清成本；未运行验证。",
+  "not_runtime_tested": true
+}

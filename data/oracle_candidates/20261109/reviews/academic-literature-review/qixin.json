@@ -1,0 +1,21 @@
+{
+  "task_id": "academic-literature-review",
+  "annotator": "qixin",
+  "reviewer": "second02",
+  "review_type": "static_independent_review",
+  "status": "pass",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "去除候选新增的知识图谱落盘→Word屏障；五篇完整内容收齐后主agent写图谱与唯一office writer成文可重叠，最终仍核验两者。",
+    "保留原题明确的all paper content gathered硬门槛与单writer/单次创建；metadata改正“Then必然是硬依赖”的表述及相应计划摘要。"
+  ],
+  "remaining_conditions": [],
+  "not_runtime_tested": true
+}

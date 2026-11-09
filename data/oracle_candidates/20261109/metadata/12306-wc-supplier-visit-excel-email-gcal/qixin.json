@@ -1,0 +1,70 @@
+{
+  "task_id": "12306-wc-supplier-visit-excel-email-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "第二波允许在工作簿生成、验证前发送采购汇总邮件，并以固定文件名代替已验证的工作簿链接，可能发出无法访问或内容不一致的交付物。另一个执行问题是，两条线路同日均从北京南出发，参考方案只校验各自到达后的 30 分钟缓冲，没有交代由不同人员分别赴上海和广州。电商分支也未明确完成原任务要求的品类收入排名。",
+  "interpretation": "落实三项意见：补充有来源的品类收入排名；同日两条北京南线路正式承诺前核实不同出行人员/团队；采购汇总等待工作簿生成及读回并实际附送文件。固定邮件源码已确认attachments文件路径参数及邮件附件元数据读回，故不再把附件API当作未知能力；服务实际可见的挂载路径仍须运行时确认。原题只要求reference，附件是本候选的可访问交付实现，不强制新增云托管。研究角色只读约束同时要求JSON持久化移交主agent。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "preserved_requirements": [
+    "读取 procurement_config.json 与 supplier_visit_guide.md；低库存及优先级规则、已存在的城市证据来源保留。",
+    "完整商品与库存读取、5个产品-供应商关系、至少覆盖上海和广州；原plan的High<5、Medium 5至15、Low>15及排序保留。",
+    "2026-03-10两条高铁路线，最短时长优先、并列较早出发，头等座价格、30分钟到达缓冲。",
+    "Supplier_Visit_Plan.xlsx 的 Products、Travel_Plan、Visit_Schedule 原列名、字面数字、5条以上预约及2条路线；office coder为唯一文件owner。",
+    "两条Asia/Shanghai日历事件、两封指定供应商邀请及最终采购汇总；所有邮件和事件由主agent写入。"
+  ],
+  "qualified_or_unimplemented": [
+    "原题要求工作簿reference，没有新增云托管要求。固定send_email已支持attachments: List[str]，候选实际附送工作簿；若运行时邮件服务无法读取该workspace路径则明确保持该交付未完成。",
+    "不同出行者属于使两条同日线路可行的条件，不能凭意见捏造两名员工；缺分配证据时请求缺失信息并保持行程承诺待完成。"
+  ],
+  "assumptions": [
+    "上海与广州行程由来源证实的不同人员或团队分别执行，才可把两条同日路线作为共同访问计划；这需要运行时确认。",
+    "保留原版两读者、一office writer的结构，不合并同题其他标注者要求拆分日历writer的意见。",
+    "采购汇总消费已完成工作簿，故保留文件屏障；事件及供应商邀请消费冻结行程与人员安排，不把工作簿作为无关前置。",
+    "附件接口证据：sources/capabilities/email_tools.py:118–145支持attachments文件路径并传递到service；74–77的read_email显示附件文件名/类型/字节数；email_service.py:148–168传递给发送backend。此为固定提交源码阅读，不是业务调用或挂载实测。"
+  ],
+  "capability_conditions": [
+    "需要足够的只读销售收入及品类关联字段；若只有销量而无收入来源，不能声称完成品类收入排名。",
+    "需要任务可见的两地出行人员分配；附件API已静态确认，仍需运行时任务workspace与邮件服务的路径映射及附件读回一致，不能把本地存在当成邮件服务已能读取。"
+  ],
+  "plan_summary": [
+    "主agent读规则、两封供应商来源消息，并核实出行人员与收入统计范围。",
+    "两名只读explore并行完成电商（含品类收入）和两条铁路路线；主agent持久化其分析回传与来源引用。",
+    "主agent核对两地人员分配及缓冲后冻结payload；唯一office coder写并读回工作簿。",
+    "主agent在工作簿writer运行时并行创建/核对两地事件与两封供应商邀请；采购汇总等待文件成功与既有外部回执，携带可访问工作簿后发送。"
+  ],
+  "expected_tradeoff": "增加收入证据处理、人员可行性与文件交付门槛，预计可减少不完整承诺，但可能因输入/能力缺失阻断完成并延长外部动作路径；效果待实验验证。",
+  "changes": [
+    {
+      "original": "The procurement message may reference the fixed filename `Supplier_Visit_Plan.xlsx` while its sole writer runs.",
+      "replacement": "After Wave 2, the main agent requires the successful workbook receipt and checks its actual path, headers, rows, values, and existence.",
+      "explanation": "删除writer尚未完成即可发汇总的指令，建立文件创建与读回依赖。"
+    },
+    {
+      "original": "compute feasible meeting times using the 30-minute buffer",
+      "replacement": "Confirm that the separately evidenced travelers or teams cover the Shanghai and Guangzhou routes, and check each traveler's own visit sequence for overlaps and the required 30-minute arrival buffer.",
+      "explanation": "在原缓冲规则基础上补出行者可行性，不臆造人员。"
+    },
+    {
+      "original": "Use one strictly read-only explore sub-agent to own the complete commerce/supplier branch.",
+      "replacement": "Use available sales/revenue reports or completely paginated order line items for the same documented reporting coverage to compute and return a descending category-revenue ranking, retaining the category identifiers/names, currency, revenue values, and aggregation controls.",
+      "explanation": "以电商branch原句为新增锚点，补齐该意见要求的收入排名，区别销量与收入。"
+    },
+    {
+      "original": "Normalize every product's stable ID, name, total_sales, stock, SKU, and supplier metadata into one runtime-unique JSON file",
+      "replacement": "The main agent will persist the returned analysis and source-reference manifest in a runtime-unique workspace JSON.",
+      "explanation": "原explore不得写文件；为工具角色合规，将关联的持久化交接移给主agent。"
+    },
+    {
+      "original": "In the same orchestration response that dispatches Wave 2, the main agent must run native-parallel exact searches and create/send only the missing two Asia/Shanghai supplier-visit events, Shanghai and Guangzhou supplier invitations, and procurement summary email.",
+      "replacement": "These commitments do not consume the workbook and may overlap its construction; only the procurement summary must wait for successful workbook creation and read-back.",
+      "explanation": "独立复核撤销候选对全部行程动作新增的文件屏障：本意见要求汇总等文件，不要求事件及邀请等文件，恢复原有独立并行。"
+    },
+    {
+      "original": "The procurement message may reference the fixed filename `Supplier_Visit_Plan.xlsx` while its sole writer runs.",
+      "replacement": "Configure the eventual summary send with `attachments=[<verified_workbook_path_visible_to_email_service>]`; the single send occurs only after all summary prerequisites below are met.",
+      "explanation": "独立复核依据固定邮件API落实真实附件；汇总等工作簿并在邮件读回核对文件名和大小，路径挂载未知时明确阻断，避免仅声称接口未知。"
+    }
+  ],
+  "not_runtime_tested": true
+}

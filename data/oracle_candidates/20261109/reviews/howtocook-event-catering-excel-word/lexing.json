@@ -1,0 +1,20 @@
+{
+  "task_id": "howtocook-event-catering-excel-word",
+  "annotator": "lexing",
+  "reviewer": "audit02（独立复核）",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": false,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "本候选未修复原版Word只要求至少四个所选菜名、未逐道要求简述的弱验收；后续执行仍可能不满足task要求的全部八道所选菜品及逐项简述。按该候选对应的Word/Form并行意见保留，不合并同题另一条菜单覆盖意见；因此只确认该条并行澄清已落实，不能视为完整菜单内容合约已修复。"
+  ],
+  "not_runtime_tested": true
+}

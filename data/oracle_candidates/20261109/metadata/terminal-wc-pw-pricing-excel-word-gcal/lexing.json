@@ -1,0 +1,54 @@
+{
+  "task_id": "terminal-wc-pw-pricing-excel-word-gcal",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "波次1可以删除",
+  "interpretation": "将“波次1可以删除”解释为取消唯一WooCommerce explore委派，由主agent完成同样的全目录分页、price与多类别取数工作，之后保留三个writer岗位。不是删除必要的数据源。仅有Start/Next/Finally叙述枚举不建立额外屏障：主agent可原生并行推进本店与竞品取源，原有三个产物writer继续并行消费统一冻结数据。",
+  "interpretation_status": "qualified",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "use one small source wave for the paginated WooCommerce catalog only, then one parallel artifact wave of three writers; the competitor web read, the analysis and the frozen data files stay with the main agent.",
+      "replacement": "have the main agent retrieve the paginated WooCommerce catalog directly, then use one artifact stage of three writers; the competitor web read, the analysis and the frozen data files also stay with the main agent. Do not dispatch a source-collection explore sub-agent.",
+      "explanation": "取消源采集子agent，把完整WooCommerce工作交主agent，保留分析与最终writer职责。"
+    },
+    {
+      "original": "1. Wave 1 — dispatch exactly 1 explore sub-agent:\n\n   1. explore 0 (enterprise-data-analyst 0): One strictly read-only WooCommerce catalog owner.",
+      "replacement": "Before the only writer wave, the main agent is the sole WooCommerce catalog collector.",
+      "explanation": "删除原Wave 1调度而不是删除catalog取数；主agent保留分页、当前price、多类别及覆盖控制。"
+    },
+    {
+      "original": "While the wave runs, the main agent reads the competitor pricing table itself:",
+      "replacement": "In parallel with the paginated store-catalog reads, the main agent reads the independent competitor pricing table itself, batching ready source calls without waiting for the other source to finish:",
+      "explanation": "独立复核撤销仅由Start/Next推断的新增源间等待；删除source委派后，主agent仍可原生并行推进独立读取。"
+    },
+    {
+      "original": "2. Wave 2 — dispatch exactly 3 coder sub-agents in parallel, each consuming only the frozen JSON files:",
+      "replacement": "1. Wave 1 — dispatch exactly 3 coder sub-agents in parallel, each consuming only the frozen JSON files. The calendar writer consumes the canonical category list and gap values, which are also the inputs to the reports; it does not need a completed workbook or Word file. Each writer retains its own resource dependencies and returns a successful read-back to the main agent.",
+      "explanation": "独立复核撤销仅由Finally推断的报告→日历等待，保留原版三个独立writer并行。日历消费与报表相同的canonical类别/价差，不消费已保存文件；所有产物完成后再由主agent整体验收。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读Pricing_Strategy_Guide.pdf和margin_targets.json；margin仅背景，不改变价差推荐。",
+    "完整目录分页、使用price而非regular_price、产品计入每个所属类别、竞争页面固定http://localhost:30417/pricing.html保持。",
+    "主agent唯一拥有比较脚本、price_analysis_output.txt及our_products.json/competitor_prices.json/price_gaps.json；保留运行一次并回读。",
+    "三sheet、所有原headers、产品类别/名称排序、仅交集类别、Word固定标题及逐类别均价/带符号差距/推荐和原验收细节保留。",
+    "会议固定America/New_York 14:00–15:00、从2026-03-10起各类别分日、原版按连续工作日与字母序安排、重复阻断及回读保留。"
+  ],
+  "qualified_or_unimplemented": [
+    "删除的是源采集委派，不是WooCommerce取数或分页；主agent承担被删除波次的必要工作。",
+    "没有合并其他标注者关于gap先舍入后判定的意见，原版分析规则文字保持；本候选不因此被视为已修复该已知边界算法问题。",
+    "独立复核按最新版§4保留原生并行来源和三writer并行；原题Next/Finally没有明确after完成条件，日历与报告均从冻结分析数据生成。"
+  ],
+  "assumptions": [
+    "“波次1可以删除”未指定替代owner；据任务必需数据依赖解释为由主agent接手。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读指导与margin，原生并行推进完整本店目录与独立竞品页面读取。",
+    "主agent等待两源完成后核覆盖、运行原分析脚本并冻结三JSON。",
+    "唯一writer波次中两个office报告writer与一个external日历writer并行；主agent等待全部读回再验收。"
+  ],
+  "expected_tradeoff": "待实验验证：可减少一个source agent及交接成本，同时增加主agent取数负载；保留独立来源和产物的并行，不能预设总成本或时延更优。",
+  "not_runtime_tested": true
+}

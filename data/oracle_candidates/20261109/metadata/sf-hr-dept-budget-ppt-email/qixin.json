@@ -1,0 +1,56 @@
+{
+  "task_id": "sf-hr-dept-budget-ppt-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求先创建演示文稿，再创建 Excel。参考编排却将演示文稿、Excel 和共享表置于同一并行波次，Excel 分支没有等待演示文稿完成。",
+  "interpretation": "将原三writer同时启动改为明确PPT→Excel的成功依赖；保留云表独立于本地两文件的原并行支，最后主agent等待三产物完成后发邮件。查询、冻结数据、三个原owner和各自写入/读回方式保留，不把题面独立的Then枚举额外解释成Excel→云表硬门槛。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Then create the three independent deliverables in one wave.",
+      "replacement": "Keep the presentation and Google Sheet as independent writer branches, but release the Excel writer only after the presentation has been created successfully.",
+      "explanation": "仅落实题面明确After creating the presentation的PPT→Excel门槛；云表用同一冻结数据，不依赖Excel产物，因此保留原并行。"
+    },
+    {
+      "original": "Wave 1 — dispatch exactly 3 coder sub-agents in parallel:",
+      "replacement": "Initial writer stage — dispatch coder 0 (office-report-builder 0) and coder 2 (external-workflow-operator 0) in parallel.",
+      "explanation": "第一阶段仅启动PPT和云表owner；Excel不会再与尚未完成的PPT同时创建。"
+    },
+    {
+      "original": "coder 1 (office-report-builder 1): One coder sub-agent owns `Department_Budget_Analysis.xlsx`",
+      "replacement": "Dependent Excel stage — only after the presentation has been created, dispatch coder 1 (office-report-builder 1).",
+      "explanation": "Excel等待PPT创建与返回检查成功，不人为等待独立云表。"
+    },
+    {
+      "original": "After Wave 1, the main agent checks that all three outputs contain every exact department label",
+      "replacement": "After both initial branches and the dependent Excel stage have completed, the main agent checks that all three completed outputs contain every exact department label",
+      "explanation": "邮件仍等待三产物全部完成及一致性检查，新增局部依赖不会提前发送完成通知。"
+    },
+    {
+      "original": "Do not run row-by-row revalidation or dispatch another wave.",
+      "replacement": "Do not run row-by-row revalidation or dispatch an additional verification wave.",
+      "explanation": "Excel依赖PPT而形成后续阶段，仍保留不增加额外逐行校验和verification wave的原限制。"
+    }
+  ],
+  "preserved_requirements": [
+    "一次完整部门查询，精确保留HR、R&D等原名，冻结按部门字母序数据与总量控制。",
+    "HR_Department_Overview.pptx至少七页，精确标题页、每部门一页与最终总人数/总预算；一个presentation ID、每页有界填充、保存一次、全deck文本提取一次。",
+    "Department_Budget_Analysis.xlsx保留Department Summary与Summary、精确字段与四个下划线Metric标签；Budget及Budget_Per_Employee两位小数，平均每人预算用总预算/总人数；每sheet批量写一次并读回一次。",
+    "HR Department Tracker按精确标题搜索、仅缺失时创建、仅一个external owner写同一数据并读回。",
+    "全部完成及总量核对后向hr.directors@company.com发一封主题HR Department Budget Summary Q1 2026的概述邮件；主agent声明整体完成。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "按GENERATION §4，After creating the presentation是明确依赖；随后Then create a Google Sheet没有显式消费Excel输出，故不新增Excel→云表屏障。云表与PPT并行只保留原版已存在的独立支，不另加优化角色。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent查询并冻结唯一部门数据。",
+    "初始阶段office owner建PPT、external owner创建/复用云表，二者并行。",
+    "PPT成功后另一office owner建Excel，不必等待云表。",
+    "主agent等待三产物完成，核对名称与总量后发邮件，不追加校验波次。"
+  ],
+  "expected_tradeoff": "PPT→Excel屏障直接落实原任务明确先后要求；独立云表仍并行以保留原策略。依赖修正的耗时与成功率影响尚未实验验证。",
+  "not_runtime_tested": true
+}

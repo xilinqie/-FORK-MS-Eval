@@ -1,0 +1,59 @@
+{
+  "task_id": "sf-support-csat-gform-gsheet-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a Google Sheet 和 Create a Google Forms survey可以同时进行",
+  "interpretation": "原版已写 independent external branches，不能声称此前完全串行。本候选将原版主agent原生独立分支具体化为同一波两个外部writer，分别拥有Google Sheet和Form，形成可对照的子agent并行方案。仅包含已冻结分析指标的邮件保留给主agent并行发送；整体完成仍等待全部回执。",
+  "interpretation_status": "qualified",
+  "change_type": "orchestration_change",
+  "preserved_requirements": [
+    "主agent读取SLA_Policy_Reference.pdf、检查schema并用一条条件聚合计算High/Medium/Low，阈值4/8/24小时。",
+    "Total_Tickets、SLA_Compliant、0–100Compliance_Rate、Avg_CSAT、原分母与原版排名/并列规则；率和CSAT保留两位小数，输出无百分号/公式等修饰。",
+    "Support Center Performance Dashboard的SLA_Compliance和Summary，精确列与三档数据、Best_Priority和Worst_SLA_Priority。",
+    "Customer Support Satisfaction Survey恰4题，原问题和四组选项；同一表单按顺序写题。",
+    "从analytics@company.example.com向support-management@company.example.com发送指定主题和三档指标；主agent最终完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版已有独立输出分支；变化是将两个外部产物交给不同子agent明确同时启动，不把本候选描述为首次引入所有并行。"
+  ],
+  "assumptions": [
+    "将“可以同时进行”落实为两个独立external coder，并保留小型读聚合在主agent；该具体实现属于候选设计而非标注者已确认方案。",
+    "任务邮件只需分析指标和发现，不消费Sheet/Form成品或宣称其完成；依赖已冻结聚合即可，整体完成仍需两writer成功。",
+    "固定email_tools.py:118–145支持from_addr，并由email_service.py:148–168传给backend；候选显式传analytics@company.example.com且核对回读From。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保持原规则读取与聚合并冻结数据。",
+    "同一波并发两名external coder，Sheet与Form各有唯一owner，各自读回并返回真实ID。",
+    "主agent与双writer并行发送仅含已冻结指标的指定邮件；全部回执齐备后作最终核对，不新增表单/云表→邮件屏障。"
+  ],
+  "expected_tradeoff": "以额外两次委派和交接换取更显式的独立写入并发；对于紧凑产物可能增加而非减少开销，需实验比较。",
+  "changes": [
+    {
+      "original": "complete it directly in the main agent and dispatch no sub-agent.",
+      "replacement": "keep the compact read-only analysis in the main agent, then dispatch one parallel writer wave with two external-workflow-operator Coder sub-agents, one per independent resource.",
+      "explanation": "仅改变独立外部写入的owner，读取计算仍由主agent承担。"
+    },
+    {
+      "original": "Start the independent external branches without a Wave.",
+      "replacement": "Wave 1 — after the main agent has frozen the aggregate, dispatch exactly two Coder sub-agents concurrently in the same response.",
+      "explanation": "承认原有independent branches，将其具体化为同一波并发子agent。"
+    },
+    {
+      "original": "Separately call `create_form` exactly once for `Customer Support Satisfaction Survey`",
+      "replacement": "coder 1 (external-workflow-operator 1): Sole owner of the `Customer Support Satisfaction Survey` form.",
+      "explanation": "明确Form独立owner；另一个external coder独占云表，没有跨角色授权。"
+    },
+    {
+      "original": "Exhaust Sent pages for exact recipient `support-management@company.example.com` and task subject, send at most once from the configured account with all three rates/CSAT values, and read the retained message.",
+      "replacement": "While the two writers run, the main agent independently exhausts Sent pages",
+      "explanation": "独立复核恢复原邮件分支的并行性；增加两个产物writer不应给无成品依赖的分析邮件新增等待。"
+    },
+    {
+      "original": "send at most once from the configured account with all three rates/CSAT values,",
+      "replacement": "Send the missing message at most once with the supported `send_email` parameter `from_addr=\"analytics@company.example.com\"`,",
+      "explanation": "来源确认发件人覆盖能力，精确实现题面sender；不把配置账户默认地址当成已满足该要求。"
+    }
+  ],
+  "not_runtime_tested": true
+}

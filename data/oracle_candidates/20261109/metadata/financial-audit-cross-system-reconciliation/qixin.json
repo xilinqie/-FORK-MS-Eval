@@ -1,0 +1,50 @@
+{
+  "task_id": "financial-audit-cross-system-reconciliation",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "参考编排虽安排导出支持附表，但没有安排把附表和审计轨迹存入原题要求的安全存储，也没有核验访问权限。若无法确认财务负责人的地址，方案还会向未经证实的默认邮箱发送完整审计附件。",
+  "interpretation": "补齐支持附表及完整审计轨迹的安全存储和权限验收，删除默认收件人猜测。仅用真实授予的存储/权限能力；能力缺失明确阻断。原版explore写文件与只读权限冲突，必要连带改为main持久化；原两来源及两产物的并行保持不变。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "Persist one runtime-unique normalized JSON artifact",
+      "replacement": "The main agent consumes the complete handoff, sole-writes one runtime-unique normalized WooCommerce JSON artifact",
+      "explanation": "原explore被要求持久化JSON，与给定harness只读角色冲突；必要连带修正为返回数据/合法工具结果引用，由main单写并读回。仓库分支同样处理。"
+    },
+    {
+      "original": "only when both contain none, use the deterministic role fallback `senior-finance@company.com` and state that routing assumption in the body.",
+      "replacement": "An unverified role-address guess is not a recipient. If neither source establishes the recipient, retain the verified local report, state that the recipient is unresolved, do not send attachments, and do not claim completion.",
+      "explanation": "直接落实不向未经证实默认邮箱发送完整审计附件的意见；以缺少已验证收件人为明确阻断，不虚构地址。"
+    },
+    {
+      "original": "After Wave 2, export the verified report/supporting schedules through the already selected genuine conversion path and read back any produced PDF; never rename a different format or emit a placeholder.",
+      "replacement": "The main agent is the sole storage writer: store that package in the identified secure destination through a task-granted operation, verify the retained objects/paths and content identities by read-back or supported checksums, and inspect effective permissions",
+      "explanation": "以原导出步骤为锚点新增安全存储、权限核验、完整审计轨迹和最终存储读回；最终轨迹含邮件/日历回执，因此最终存档等待这些真实输入。源读取及工作簿/文档均只依赖各自上游规范数据，不因阶段枚举而串行。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整过去季度人口与确定分页/查询控制，不拿样本代替全量、不伪造金额或缺失维度。",
+    "原两数据源、匹配容差、九类对账分类、匹配率/金额控制及根因分析均保留。",
+    "Financial_Audit.xlsx保留五表、可视化、真实数字类型与全部范围读回；Financial_Audit_Report.docx保留执行摘要、分析、建议、行动计划及附表。",
+    "保留原两explore并行取源、两office coder并行写不同文件；main单写规范数据/审计轨迹，最终外发与归档等待各自真正消费的结果。",
+    "邮件保留确定主题、已验证附件、Sent分页查重和歧义发送不重试；会议保留原题输入优先及原plan候补排期规则。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "题面的第一至第六阶段描述工作项而未要求每个独立源或产物逐一完成后再开始下一项；以真实数据依赖保留原并行。文档从规范数据生成附表内容，不依赖已写出的工作簿；最终审计轨迹实际消费外发回执，因此其最终安全存档仍等待回执。"
+  ],
+  "capability_conditions": [
+    "需要任务可见且被指定的安全存储目的地，以及实际获授的写入和有效权限查看能力；目前提供的角色文件并未证明存在外部归档上传/ACL工具，计划不假定其存在。",
+    "需要任务输入或相关邮箱证据能确认某个资深财务管理收件人的身份及地址；缺失时不采用senior-finance@company.com默认值。",
+    "原版所选真实导出路径须由任务实际授予；没有受支持转换能力时记录缺项，不以伪PDF绕过。"
+  ],
+  "plan_summary": [
+    "main冻结季度、容差、可见联系人和安全存储能力条件。",
+    "两个explore并行返回电商/仓库只读数据，main单写源文件并核对全量控制，等两源完整后生成规范对账与审计轨迹。",
+    "两个office coder并行消费规范对账和附表数据，分别单写工作簿/报告并验收。",
+    "main对已确认财务收件人发送并安排会议，最后导出全部附表并安全存储/核验权限和最终轨迹。"
+  ],
+  "expected_tradeoff": "预计使安全归档和收件人身份成为显式验收条件，减少缺交付物或错误发送，并保留原版独立工作的并行；权限检查可能增加延迟，环境缺少归档能力时将明确未完成。未运行实验。",
+  "not_runtime_tested": true
+}

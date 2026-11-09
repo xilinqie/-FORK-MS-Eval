@@ -1,0 +1,79 @@
+{
+  "task_id": "terminal-canvas-pdf-excel-notion-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "处理脚本只为八项认证标准明确映射三项指标，其余缺值就直接判为 Non-Compliant，遗漏了可从师资资质、课程覆盖、招生和测验表现等已给资料或采集结果计算的标准。缺少计算依据也不能等同于不达标。",
+  "interpretation": "逐项把PDF的八标准映射到当前课程/师资数据，补齐原版缺少的五类计算。区分可观察数值不足与真正低于阈值；未知不再写Non-Compliant，而是带准确缺证据阻断八状态完成声明。伴随修正只读采集角色持久化职责与题面明示的输出顺序。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "mapping `avg_gpa` to the overall-GPA criterion, the retention proxy to the retention criterion, and the assessment diversity score to the assessment-diversity criterion",
+      "replacement": "establish a criterion-to-current-metric evidence map for all eight criteria",
+      "explanation": "依PDF八行Metric定义补齐师资学历比例、当前subject覆盖、平均招生、测验均分和课程section数，不把历史分数当当前值。"
+    },
+    {
+      "original": "a criterion with no matching metric gets `actual_value` null, status Non-Compliant, and a `gap_note` explaining the missing metric.",
+      "replacement": "Unknown evidence is a blocker, not a fourth Notion status and not Non-Compliant.",
+      "explanation": "落实缺证据不能等同失败；保留任务三种状态schema，不能为了8行把未知降级成Non-Compliant。"
+    },
+    {
+      "original": "If `total_submissions` is 0 set `retention_proxy` to null with a warning; if some courses lack `total_submissions`, compute `retention_proxy` from the courses that have it and list the excluded courses in warnings.",
+      "replacement": "Zero total submissions or missing submission counts make the ratio unresolved; do not evaluate a subset as though it covered the whole program.",
+      "explanation": "“未知≠不合规”须贯穿已映射指标；原题要求全课程分子/分母，不能用子集冒充全量。"
+    },
+    {
+      "original": "Persist `accreditation_course_batch_a.json` with `coverage_status=complete` plus provenance controls",
+      "replacement": "The main agent alone saves the accepted packets once as accreditation_course_batch_a.json and accreditation_course_batch_b.json",
+      "explanation": "原版explore写文件与固定harness只读权限冲突；必要移交主agent持久化，并保留两个分片和控制信息。"
+    },
+    {
+      "original": "then parallelize the independent workbook, Notion, and calendar artifacts",
+      "replacement": "Later writers may prepare their independent payloads in parallel, but completed artifacts must follow the task's order",
+      "explanation": "原题最后明确Complete the steps in order；维持三个独立owner，但工作簿→Notion→Calendar正式写入按序，准备可并行。"
+    },
+    {
+      "original": "Then write and run `generate_summary.py` that reads `compliance_assessment.json`",
+      "replacement": "After all three artifacts have completed in that order, resume the existing Wave 2 processor owner without spawning a new agent. It now writes and runs generate_summary.py exactly once as the final artifact step.",
+      "explanation": "保留同一processor单写者与原计算链，把summary移回原题Finally要求的位置，不提前创建最终摘要。"
+    },
+    {
+      "original": "freezes the eight criteria and exact minimum thresholds",
+      "replacement": "For C7 (Quiz-Based Assessment), the task-visible PDF contains a specific conflict: its descriptive sentence says 72%, while both the Minimum Threshold field and the summary table say 85.0%. Use the mutually consistent formal threshold fields, 85.0%, for this criterion and preserve the 72%/85.0% discrepancy and this precedence decision in the frozen criterion specification and downstream evidence notes. These are input criterion definitions, not observed program scores; obtain every actual value from the collected current evidence.",
+      "explanation": "新增说明的锚点是原PDF阈值冻结步骤。固定题面输入C7正文72%与Minimum Threshold/summary两处85%冲突；明确采用一致正式阈值并保留冲突，不注入任何当前实测值或GT结果。"
+    }
+  ],
+  "preserved_requirements": [
+    "起点仅为sources/tasks/terminal-canvas-pdf-excel-notion-gcal/plan.md的MS-Eval公开原版4c1bbd3dc0d736623bba563e56cfd8666f85daac；不使用26题修订。",
+    "保留原版两个不重叠课程分片、完整22课程与旗舰7/8覆盖、完整score映射/采集证据。",
+    "保留三个脚本和三个输出文件名、avg_gpa均值口径、total_enrollment/total_submissions方向、四位派生指标、三态阈值规则及Overall compliance分母8。",
+    "保留Accreditation_Self_Study.xlsx四表及全部字段、字面数字、课程排序、八矩阵行、仅Partial/Non-Compliant差距行及至少三资源。",
+    "保留Notion名称及准确schema、八页、真实faculty owner、三个月日期范围和日历+30/+60/+90天，幂等与单写入者。",
+    "保持一位processor owner，summary回到全部产物之后，最终仅主agent确认完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "意见没有定义缺值时第四种状态，原题Notion只准三态；因此不能新增Unknown作为最终Status，未解决证据导致阻断而非虚造八个结果。",
+    "C7对明确无测验成绩的课程没有可定义均值；按“已观察到的课程测验均分”聚合非空且证据充分的值，列offered/scored/excluded覆盖和理由。不以0补齐，不隐藏分母变化。此口径为有说明的解释，若运行时无法确认未评分与检索缺失的区别，应阻断。",
+    "为遵守原题明确顺序，原版三末端writer仅准备可并行，实际工作簿/Notion/Calendar按序；generate_summary最后由原processor恢复完成。",
+    "C7采用正式Threshold与summary的一致85%是对题面可见PDF内部72%/85%冲突的显式解释；保留冲突证据，不能把这个标准解释宣称为作者确认或实测结果。"
+  ],
+  "assumptions": [
+    "补证仅使用固定gym提交872ebef73f170a565136d4521ddb02b41872362e的题面可见输入：https://github.com/Danield21/toolathlon_gym/blob/872ebef73f170a565136d4521ddb02b41872362e/tasks/finalpool/terminal-canvas-pdf-excel-notion-gcal/initial_workspace/accreditation_standards.pdf（git blob 2a0e40daebdb2090baf9aa73ef948da27127d2e8）、https://github.com/Danield21/toolathlon_gym/blob/872ebef73f170a565136d4521ddb02b41872362e/tasks/finalpool/terminal-canvas-pdf-excel-notion-gcal/initial_workspace/faculty_credentials.json（blob e4283fe0d8ead722cc8f2db607a6082bb757ce2f）、https://github.com/Danield21/toolathlon_gym/blob/872ebef73f170a565136d4521ddb02b41872362e/tasks/finalpool/terminal-canvas-pdf-excel-notion-gcal/initial_workspace/previous_review.csv（blob 6c1de2edfe99e3635eab132d00f32157ee3f8f01）。未读取GT产物或评估器数值。",
+    "PDF C7正文为72%，但Minimum Threshold和summary同为85%；采用两处明确阈值栏的一致值，并要求运行时记录冲突。候选plan不硬编码任何预期合规数值。",
+    "静态能力依据为sources/accreditation/canvas_source_excerpts.txt的getCourse含syllabus_body，以及同目录输入定义对Department字段的说明；候选只从授权Canvas工具读取课程字段，不允许执行器读取源码/种子库。",
+    "sources/accreditation/canvas_source_excerpts.txt显示quiz清单与quiz submissions是不同读取路径；因此区分测验存在、成绩存在和完整采集。该区别只用于输入/覆盖定义，不把静态样本计数、课程缺失清单或均值写入候选。",
+    "previous_review.csv仅历史参考；faculty资格比例从当前terminal_degree逐条算，不抄历史分数；无当前题面外数据假设。"
+  ],
+  "capability_conditions": [
+    "运行时须经授权Canvas工具取得课程Department/subject和可评分测验的完整分数来源；若只有quiz存在清单而无分数、或相关分页不完整，明确返回缺证据，不绕过harness查询Canvas数据库。",
+    "若PDF正式Minimum Threshold与summary字段不能一致解析、必要师资字段缺失或某全量分母无法取得，须解决后才能生成最终八状态评估；不能靠历史值、空值或默认Non-Compliant兜底。"
+  ],
+  "plan_summary": [
+    "主agent先读PDF/师资/历史文件，冻结八指标与阈值；两个只读agent采集完整课程和证据，主agent保存。",
+    "单processor依八映射计算metrics，再按支持的数值评估三态；未知证据单列阻断。",
+    "三个writer可准备并行，但正式工作簿→Notion八页→日历三事件依次完成，保留各自独占写入。",
+    "恢复原processor在最后生成summary，主agent核对全套一致性和一次创建。"
+  ],
+  "expected_tradeoff": "完整映射和覆盖控制预计减少将可计算指标误判为失败的情况，但采集细节、证据校验和按序提交会增加成本；缺失输入时可能如实阻断而不是产出误导性完整报告，效果待实验验证。",
+  "not_runtime_tested": true
+}

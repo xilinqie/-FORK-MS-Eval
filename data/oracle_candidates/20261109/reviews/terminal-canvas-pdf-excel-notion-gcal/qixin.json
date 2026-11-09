@@ -1,0 +1,24 @@
+{
+  "task_id": "terminal-canvas-pdf-excel-notion-gcal",
+  "annotator": "qixin",
+  "reviewer": "audit18",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "在英文计划中明确写出题面输入PDF的C7正文72%与Minimum Threshold/summary两处85%冲突，采用一致正式阈值并要求保留解释；未写任何当前实际分数、GT数值、缺失课程清单或预期状态。",
+    "同步metadata新增阈值冲突变更锚点，并将能力依据表述改为本包source摘录/输入定义；保留八指标映射、真实顺序、只读采集和未知不等于Non-Compliant的边界。"
+  ],
+  "remaining_conditions": [
+    "C7输入PDF内72%/85%冲突按两处正式阈值字段一致的85%解释，须在冻结标准及下游证据中显式保留；这是候选解释，不等于标准作者确认。",
+    "C7只对有定义且完整采集的课程测验均分求平均；无评分课程保留N/A及offered/scored/excluded范围，采集失败不能冒充空成绩。题面未规定这一空成绩口径，候选已明示；必要字段或全量覆盖确实不足时阻断完整八状态发布，不伪造Non-Compliant或完成。"
+  ],
+  "not_runtime_tested": true
+}

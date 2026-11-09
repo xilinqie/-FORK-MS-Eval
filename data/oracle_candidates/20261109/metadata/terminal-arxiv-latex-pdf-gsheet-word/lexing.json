@@ -1,0 +1,55 @@
+{
+  "task_id": "terminal-arxiv-latex-pdf-gsheet-word",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Write a Python script called extract_methods.py 和  Write a second Python script called score_papers.py可以并行执行",
+  "interpretation": "将指定意见落实为extract与score脚本的并行编写/准备；extract可运行时score同时编写，但score运行真实依赖methodology_analysis.json，因此由主agent在提取结果验收后运行。修正原explore写.tex权限仅为必要配套。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "Each explore sub-agent retrieves only its assigned arXiv-LaTeX paper, preserves complete ordered source/section content in one unique `<paper_id>.tex`,",
+      "replacement": "Explore agents remain read-only: they do not create `.tex` or JSON files.",
+      "explanation": "原版research角色写文件违反本轮固定harness，只能回传完整数据/合法结果引用，由主agent保存.tex；是实现条件所需扩散。"
+    },
+    {
+      "original": "then writes and runs `extract_methods.py`, `score_papers.py`, and `generate_rankings.py` in dependency order",
+      "replacement": "2. Wave 2 — dispatch exactly 2 coder sub-agents in parallel:",
+      "explanation": "把前两个脚本的代码生产拆成并行office作者。"
+    },
+    {
+      "original": "in dependency order to create `methodology_analysis.json`, `comparison_matrix.json`, and `final_rankings.json`.",
+      "replacement": "Script authoring and the extractor's run may overlap, but execution of `score_papers.py` waits for successful extraction and verified `methodology_analysis.json`.",
+      "explanation": "不按字面同时运行消费者与生产者；主agent收取两个回执后执行score，避免不存在的agent间信号。"
+    },
+    {
+      "original": "then writes and runs `extract_methods.py`, `score_papers.py`, and `generate_rankings.py` in dependency order",
+      "replacement": "Run it once through the task-granted terminal tool after the input files are complete, then read the script and JSON back.",
+      "explanation": "独立复核补明extract实际执行使用任务获授terminal，兑现原task的Run this script using the terminal；保留作者角色、并行准备和真实输入依赖。"
+    }
+  ],
+  "preserved_requirements": [
+    "先PDF再四篇指定ID文件及review模板，仅四篇，不引入其他论文。",
+    "完整LaTeX保存为本地.tex，extract脚本真正读取并输出paper_id/title/methods/section_count。",
+    "score真正读取methodology结果，五项1–5整数、总分=sum，按PDF证据规则。",
+    "generate_rankings真实读comparison，rank/paper_id/title/total_score/recommendation与20/15阈值。",
+    "精确三张云表与四篇覆盖；Word四部分、优缺点/分项分/总分/建议。",
+    "主agent或office保存本地文件；cloud写入不交给office角色。"
+  ],
+  "qualified_or_unimplemented": [
+    "原意见要求两脚本“并行执行”，但score_papers.py原题明确uses methodology analysis；不能同时执行尚无输入的score。候选仅并行编写与独立准备，实际score执行仍等extract成功。"
+  ],
+  "assumptions": [
+    "score程序可根据预先冻结的输入schema与rubric先写代码，无需提前持有提取结果值。",
+    "合法工具完整源结果引用若不可用，允许explore返回精确结构化源payload，而不是强制其无权限写文件；可能增加handoff长度。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取rubric/任务名单，四explore并行只读取证。",
+    "主agent持久化.tex并冻结两脚本接口。",
+    "两个office作者并行：extract编写+运行、score仅编写。",
+    "主agent验收method JSON后执行score及rankings，随后独占写cloud/Word并核对。"
+  ],
+  "expected_tradeoff": "并行代码准备可能缩短部分关键路径，但真实提取→评分数据依赖保留，增加两次作者交接；是否有收益需后续实验。",
+  "not_runtime_tested": true
+}

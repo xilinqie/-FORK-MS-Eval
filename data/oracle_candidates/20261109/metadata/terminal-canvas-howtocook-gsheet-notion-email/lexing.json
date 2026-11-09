@@ -1,0 +1,60 @@
+{
+  "task_id": "terminal-canvas-howtocook-gsheet-notion-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Start by reading the study_protocol.md file，Query the learning management system ，Query the cooking recipe database for healthy recipe categories可以并行\n\nCreate a cloud spreadsheet 和 Create a knowledge base database 可以并行",
+  "interpretation": "将protocol/营养/预算读取与题目已明确给出输入范围的Canvas、HowToCook只读采集并行，并将云表和Notion独立委派给两个writer。处理、干预设计和外部发布仍等待protocol审阅和全部输入；其他本地产物及邮件继续由main从冻结数据并行完成。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "the main agent completes the two-course study directly; do not dispatch sub-agents.",
+      "replacement": "Use exactly two read-only source sub-agents followed by exactly two external writer sub-agents",
+      "explanation": "把原版main原生批处理改为两个独立来源owner和两个外部写入owner；不是声称原版没有任何并行。"
+    },
+    {
+      "original": "Dynamically resolve the task workspace, read study_protocol.md, nutritional_guidelines.csv and campus_dining_budget.json",
+      "replacement": "Start the source phase with the main agent reading `study_protocol.md`, `nutritional_guidelines.csv`, and `campus_dining_budget.json` completely while the two source sub-agents below collect the task-specified Canvas and recipe data in parallel.",
+      "explanation": "依据题目已给定课程ID、字段与食谱范围，并行三个独立来源读取；Start by不是单独硬门槛。实际分析、干预、输入持久化与外部发布需等待protocol/IRB审阅，发现明确限制必须落实。"
+    },
+    {
+      "original": "In the same ready-source phase, call HowToCook for each of the ten required categories and retain exact recipe IDs/names/categories/descriptions/ingredients.",
+      "replacement": "Source wave — dispatch exactly two explore sub-agents in parallel:",
+      "explanation": "把Canvas和HowToCook来源独立委派，返回结构化只读交接。保留原十分类覆盖检查，但按题面读取所有实际类别和计数，不把十当截断或虚构目标。"
+    },
+    {
+      "original": "Then perform all six independent outputs directly, batching ready calls:",
+      "replacement": "Writer wave — after both scripts and JSON read-backs pass, dispatch exactly two external-workflow-operator coder sub-agents in parallel",
+      "explanation": "两项指定云资源已可原生批处理，候选改为两个独立external coder并行单写，计算结果先冻结而非让writer重新算。其他本地产物仍main负责。"
+    },
+    {
+      "original": "- generate_summary.py and nutrition_study_summary.txt with explicit High/Medium/Low counts, averages, interventions and budgets, then read back.",
+      "replacement": "In the same ready-output phase, the main agent sole-writes and runs `generate_summary.py`, which reads the two retained JSON files and produces `nutrition_study_summary.txt`",
+      "explanation": "保留原版独立输出可批处理的关系：summary和Excel只消费已冻结JSON/规范行，不消费邮件回执或云表ID，因此不因Finally增加等待。最终验收仍等待所有真实交付物。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整读study_protocol.md并遵守方法/IRB约束；nutrition CSV与budget JSON作为真实营养/预算输入，所有分析和发布等待这些输入。",
+    "课程13/14、全部页、逐submission ID及跨课user ID去重、只用非空分数、学生等权、High=0/Medium≤0.25/Low>0.25和0–1迟交率。",
+    "保留两个计算Python脚本和两JSON的执行/读回；High Control None0、Medium早餐Partial、Low早餐午餐Full Meal Plan。",
+    "云表两精确sheet/schema、High/Low/Medium按tier名排序、数字字面量；Notion五属性及固定2026-04-01/Planning。",
+    "两封邮件保留精确收件人主题及完整人数/均分/干预/菜单/预算/April审批内容。",
+    "保留generate_summary.py、nutrition_study_summary.txt及Nutrition_Academic_Study.xlsx精确两表备份，由main单写。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版已写batching ready calls，未断言原版云表和Notion串行；本候选实际差异是独立external writer与显式相同输入。"
+  ],
+  "assumptions": [
+    "按数据依赖解释Start by/second/Finally：题面已授权并明确Canvas课程/字段和食谱范围，独立只读采集可与protocol读取并行；所有后续处理与发布以协议审阅为门槛。实际输入中如有明确限制，须落实或报告阻断，不能忽略。",
+    "两封邮件仅报告研究/餐单数据，不声明云表或Notion已创建；summary/Excel只读取已验证JSON与规范行，所以无需等待外部写入或邮件完成。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "main读protocol/营养/预算文件，同时两个explore并行查Canvas/HowToCook；全部输入齐备且协议允许后才处理。",
+    "main独占两个脚本和JSON，按原统计口径计算并冻结三tier规范包。",
+    "两个external coder并行独占云表/Notion并交回真实ID和读回。",
+    "main从同一冻结包执行两封邮件、summary及Excel分支，可与两个external writer重叠；最后等全部读回统一验收。"
+  ],
+  "expected_tradeoff": "独立源reader和writer可能减少主agent上下文压力并使并行职责明确，但原版本已原生批处理，额外四个子agent可能增加交接成本；是否有收益待实验验证。",
+  "not_runtime_tested": true
+}

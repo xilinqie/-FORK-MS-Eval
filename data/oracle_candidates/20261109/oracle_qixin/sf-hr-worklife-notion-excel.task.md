@@ -1,0 +1,20 @@
+The HR leadership team wants to understand work-life balance and job satisfaction scores across departments to prioritize employee wellbeing initiatives. Please connect to the data warehouse and query the average work-life balance score and average job satisfaction score for employees in each department. Include the employee count per department in your results.
+
+Create an Excel file called WL_Balance_Report.xlsx in the workspace with two sheets.
+
+The first sheet should be called "Department Analysis" with five columns: Department (sorted alphabetically), Employee_Count, Avg_WLB (average work-life balance rounded to 2 decimal places), Avg_Job_Satisfaction (rounded to 2 decimal places), and Combined_Score which is the simple average of Avg_WLB and Avg_Job_Satisfaction for that department, rounded to 2 decimal places.
+
+The second sheet should be called "Findings" with two columns: Metric and Value. Include rows for Total_Employees (sum of all employees), Overall_Avg_WLB (weighted average across all departments rounded to 2 decimals), Overall_Avg_Job_Satisfaction (weighted average rounded to 2 decimals), Best_WLB_Department (department with the highest average WLB), Best_JS_Department (department with highest average job satisfaction), and Departments_Analyzed (count of departments).
+
+After creating the Excel file, create a knowledge base page called "HR Wellbeing Dashboard" with content blocks that summarize the key findings from the analysis. The page should mention the overall average work-life balance and job satisfaction scores and highlight which departments perform best on each metric. When multiple departments are tied at the rounded score, you may report any one of them.
+
+Finally, send an email to hr_director@company.com with a subject that references the wellbeing analysis and a body that summarizes the top-level findings across departments.
+
+Task-Solving Rationable with Sub-task Decomposition:
+To solve this task efficiently, complete it directly in the main agent and dispatch no sub-agent. Run one compact department aggregate and one company aggregate, compute weighted overall values and each literal Combined_Score, and freeze one canonical result set. The main agent is the sole owner of the workbook, knowledge-base page, and email.
+
+Create WL_Balance_Report.xlsx in the dynamically resolved task workspace first. Its Department Analysis sheet contains Department, Employee_Count, Avg_WLB, Avg_Job_Satisfaction, and Combined_Score, with departments alphabetically sorted. Round the two averages to two decimals; Combined_Score is their simple average rounded to two decimals. Its Findings sheet contains Metric and Value with Total_Employees, Overall_Avg_WLB, Overall_Avg_Job_Satisfaction, Best_WLB_Department, Best_JS_Department, and Departments_Analyzed. Preserve weighted overall values, raw ranking/tie evidence, exact metric labels, and cross-output values. Use literal numbers and read both completed sheets back against the canonical result set.
+
+Only after the workbook has been successfully created, populated, and read back, create exactly one HR Wellbeing Dashboard page. Do not start its external creation in the workbook-creation response. The page's content blocks summarize the verified overall work-life balance and job satisfaction averages and the best department for each metric; any one department tied at the rounded score may be reported, consistently across outputs. Retain its real page ID and read the body back. If the workbook stage fails, report the blocker and do not publish the page.
+
+Verify both outputs before sending the required email to hr_director@company.com with a subject referring to the wellbeing analysis and a body summarizing the top-level findings across departments. Retain the send result and verify the message's recipient, subject, and summary before the main agent declares completion. The required dependency is completed workbook -> page creation/read-back -> final summary email; no separate audit agent or writer wave is needed.

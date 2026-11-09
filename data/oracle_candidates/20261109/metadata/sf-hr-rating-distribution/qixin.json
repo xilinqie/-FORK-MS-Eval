@@ -1,0 +1,32 @@
+{
+  "task_id": "sf-hr-rating-distribution",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求报告创建后再发邮件。编排在同一原生并行响应中写工作簿和发邮件，没有用报告生成成功作为发送前置条件。",
+  "interpretation": "保持主agent单条聚合SQL和无委派结构；将邮件发送从与工作簿并行改为报告创建及原有读回核对成功之后，邮件正文可提前准备但不能提前发送。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "in the same native-parallel response send exactly one email to `hr-analytics@company.com` with subject `Performance Rating Distribution Report`. Read both populated ranges back once, reconcile totals, and finish.",
+      "replacement": "prepare the brief overall-distribution email body from the same frozen counts while the workbook is being built, but do not send it yet. Wait for successful completion of both workbook sheets, read both populated ranges back once, and reconcile totals. Only after those report-creation and read-back steps succeed, send exactly one email to `hr-analytics@company.com` with subject `Performance Rating Distribution Report`, then finish. If workbook creation or reconciliation fails, report the failure and do not send the completion email.",
+      "explanation": "将原题After creating the report落实为发送前置条件；原来的一次读回直接作为成功判据，不另增验收wave。"
+    }
+  ],
+  "preserved_requirements": [
+    "主agent完成全部工作，不增加子agent；一次集合查询按department/rating返回明细及总体计数。",
+    "Dept_Rating字符串格式、字母序、两个精确sheet/header与五项Summary保留。",
+    "High_Performers_Pct由4或5原始计数/total计算并保留一位小数；数值字面写入。",
+    "指定Excel名、hr-analytics@company.com、Performance Rating Distribution Report不变；仍不搜索Sent、不重发、不回读已发邮件。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "冻结一次SQL结果并构建报表和邮件摘要。",
+    "工作簿成功创建后读回两个范围、核对总数。",
+    "仅在成功门槛之后发送一次邮件；失败则不通知完成。"
+  ],
+  "expected_tradeoff": "待实验验证：发送需等待报表落盘及核对，可能延长邮件发出时间，预期避免报告尚未成功时提前报完成；不声称已有运行收益。",
+  "not_runtime_tested": true
+}

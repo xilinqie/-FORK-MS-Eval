@@ -1,0 +1,20 @@
+{
+  "task_id": "canvas-grade-distribution-gform",
+  "annotator": "lexing",
+  "reviewer": "audit02（独立复核）",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "权限兼容方案依赖Canvas分页结果提供完整、可由主agent本地脚本消费且位于许可task workspace内的工具结果引用。未实测这种引用在运行时是否存在；若仅有截断预览或路径在workspace外，计划与metadata均明确阻断并报告缺失，不读取越界路径、不执行explore脚本，也不能宣称统计及产物已完成。"
+  ],
+  "not_runtime_tested": true
+}

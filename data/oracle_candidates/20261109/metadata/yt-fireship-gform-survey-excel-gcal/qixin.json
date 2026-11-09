@@ -1,0 +1,53 @@
+{
+  "task_id": "yt-fireship-gform-survey-excel-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确规定先建问卷，再检查整个 2026 年 4 月的社区活动并创建例会。编排先创建日历再建问卷，且只查询 4 月 1 日当天，漏掉了当月其余日期的已有活动。",
+  "interpretation": "完整落实两点：把 Form 创建和核验提前到月历查询之前，保持 workbook → Form → calendar → email；把原 4 月 1 日窗口扩展为 2026 年 4 月全月 UTC 窗口，检查返回的月内社区活动后才用确切标题/时段查重并创建例会。保留单主 agent，不合并另一人的并行建议。静态源码核对后明确：固定工具无分页参数，可增大maxResults取全同窗口结果；其contained-range语义不证明跨月重叠事件全覆盖，该工具语义边界尚未修复。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "Call `list_events` over April 1, 2026 with sufficient `maxResults` and `orderBy=\"startTime\"`,",
+      "replacement": "Call `list_events` with valid `timeMin=\"2026-04-01T00:00:00Z\"`, `timeMax=\"2026-05-01T00:00:00Z\"`, an explicit positive `maxResults`, and `orderBy=\"startTime\"`.",
+      "explanation": "由一天扩大到整月，使用固定工具实际支持的必填时间边界和maxResults；无pageToken，达到limit时只增大limit重查。"
+    },
+    {
+      "original": "Forms has no list/search: call `create_form` exactly once,",
+      "replacement": "After the workbook has been created and both sheets read back, create the survey before performing any calendar lookup or calendar write.",
+      "explanation": "将原位于日历创建后的 Form 段前移，强制遵守第二步 Excel、第三步 Form、第四步查日历的顺序。"
+    },
+    {
+      "original": "filter exact `Community Standup` 18:00–19:00 UTC locally, create once only if absent with exact `start.dateTime`/`end.dateTime`, retain its ID, and call `get_event`.",
+      "replacement": "From the fully retrieved result for this month window and any additional verified relevant events, filter exact `Community Standup` on April 1 at 18:00–19:00 UTC locally for duplicate prevention. Create once only if absent with exact `start.dateTime`/`end.dateTime`, retain its ID, and call `get_event`.",
+      "explanation": "保留精确目标时段、单次创建、真实ID和回读；区分取全请求窗口内结果与证明所有跨月重叠事件均被检索，不把工具局限冒称为已修复。"
+    },
+    {
+      "original": "Call `list_events` over April 1, 2026 with sufficient `maxResults` and `orderBy=\"startTime\"`,",
+      "replacement": "The service selects events whose starts and ends are contained within the requested range; this full-window result alone does not prove coverage of events crossing the month boundaries.",
+      "explanation": "以原日历调用为锚点补固定能力限制，来源sources/capabilities/calendar_index.ts:277–283、293–303、359–364、489–505，固定提交872ebef73f170a565136d4521ddb02b41872362e。没有伪造分页、空时间参数或要求更改harness。"
+    }
+  ],
+  "preserved_requirements": [
+    "原版前两段保留：动态读取 community_config.json/report_template.md、完整 Fireship 目录顺序遍历、按整型浏览量与 Video_ID 排序取八个、一次计算 likes/views*100。",
+    "Community_Report.xlsx 两 sheet、精确表头、字面数据、至少四个有内容依据的主题聚合、两 sheet 回读。",
+    "Form 创建一次、不重试不明确创建、五题顺序、四组原选项及末题开放文本、同一 Form 顺序添加、实际 ID。",
+    "Community Standup 在 2026-04-01 18:00–19:00 UTC，创建一次或复用确切匹配事件、get_event 回读。",
+    "发给 community@devclub.io 的邮件包含月度报告主题、视频主题/参与率、实际 Form ID 和例会日期；回读后仅主 agent claim_done。"
+  ],
+  "qualified_or_unimplemented": [
+    "已实现合法全月窗口与同窗口结果取全；固定服务按start>=timeMin且end<=timeMax筛选，不是overlap查询，不能仅靠该请求保证跨月事件全覆盖。候选记录覆盖范围并处理实际有证据的边界事件，不因假设可能存在边界事件而强制每次任务失败。"
+  ],
+  "assumptions": [],
+  "capability_conditions": [
+    "实验前需确认现有社区活动是否包含跨月事件，或是否能从任务可见信息取得这些事件的真实ID供get_event核对。固定list_events无pageToken，省略maxResults默认只返10条；可通过增大maxResults直至返回数小于limit取得当前窗口内全部返回结果，但不能由此证明跨界事件不存在。源码见sources/capabilities/calendar_index.ts:277–283、293–303、359–364、489–505；这只是静态能力结论，未运行日历。"
+  ],
+  "plan_summary": [
+    "保持原有主 agent 目录采集、八视频统计、Excel 创建回读。",
+    "主 agent 先创建并核验五题 Form。",
+    "Form成功后合法查询整个四月窗口，必要时增大maxResults取全结果；说明contained-range覆盖限制，对有实际证据的跨月事件追加核对，再查重创建目标例会。",
+    "所有输出回读后发邮件，读回成功才 claim_done。"
+  ],
+  "expected_tradeoff": "修正先后顺序与一天范围遗漏，扩大maxResults可能增加读取量；跨月重叠事件的完整性仍受固定服务语义限制，需实验前确认，不能宣称已修复或已验证成功率。",
+  "not_runtime_tested": true
+}

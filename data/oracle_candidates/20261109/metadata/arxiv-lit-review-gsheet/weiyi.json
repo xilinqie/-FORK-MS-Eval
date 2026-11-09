@@ -1,0 +1,54 @@
+{
+  "task_id": "arxiv-lit-review-gsheet",
+  "annotator": "weiyi",
+  "candidate_id": "C_weiyi",
+  "source_reason": "(1) 标题写\"15个子Agent\"但实际只描述了5个，数量不匹配；(2) explore agent指令仅为占位符级别，缺少具体工具调用说明和返回格式要求；(3) 缺少独立的writer wave，Excel（3个sheet）、Notion页面、JSON文件、Python脚本等交付物全部由主Agent串行完成，未能利用并行写入能力",
+  "interpretation": "把意见中可适用于本题的部分落实为明确的五篇论文研究交接、精确角色数量和独立 writer 阶段。保留主 agent 的检索/冻结职责，给每篇手稿指定只读 reader，并分别由 external writer 和 office writer负责真实云表和文本；Memory仍由主 agent 在研究过程中记录。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "This five-paper task is small enough for the main agent to complete directly; do not dispatch any sub-agent.",
+      "replacement": "use exactly five read-only academic-literature-researcher sub-agents for the five assigned manuscript analyses, then exactly two writer sub-agents",
+      "explanation": "原版没有子agent，不能按15与5不匹配纠错；候选新增明确的5个读者和2个writer作为对照，未声称原版有这类数量错误。"
+    },
+    {
+      "original": "Then issue the five independent manuscript reads in native parallel, one exact stable ID per call.",
+      "replacement": "Research wave — dispatch exactly five academic-literature-researcher explore sub-agents in parallel",
+      "explanation": "把原版已有的五篇原生并行阅读转为五个只读reader，并新增明确的输入、工具来源、输出schema及证据字段。"
+    },
+    {
+      "original": "Using that packet, interleave the three independent output branches whenever their tool dependencies permit:",
+      "replacement": "Writer wave — dispatch exactly two writer sub-agents in parallel from the same frozen research packet; each owns a different final artifact:",
+      "explanation": "真实交付物仅Google Sheet、Memory和review_summary.txt；云表与文本只消费冻结研究包，分配两个不同资源的单写入者并行，同时main完成Memory。Finally不是表就绪门槛，不添加云表到文本的依赖。"
+    },
+    {
+      "original": "For each paper extract a source-backed one-to-two-sentence methodology summary",
+      "replacement": "Each reader calls the task-granted arxiv-latex `list_paper_sections(arxiv_id=<assigned paper_id>)`, selects the actual returned methodology section path or paths, and calls `get_paper_section(arxiv_id=<assigned paper_id>, section_path=<returned path>)` for those sections and any needed source context. If the returned section inventory does not identify the methodology or the section read is incomplete, use the task-granted `get_paper_prompt(arxiv_id=<assigned paper_id>)` to inspect the full flattened manuscript; do not guess a section path or substitute a search abstract for the methodology. If the manuscript content still cannot be obtained, return the missing-content condition rather than a fabricated summary.",
+      "explanation": "独立静态复核补齐该意见要求的具体工具调用：先列真实章节，再按返回section_path读取；必要时用已授权全文prompt，失败明确返回缺项。固定gym提交的arxiv-latex main.py第82–113行确认工具名/参数，第135–163行确认调用。避免仅写泛称manuscript-source read。"
+    }
+  ],
+  "preserved_requirements": [
+    "约五篇真正相关的prompt-engineering论文；所有交付物排除word embeddings/word representations。",
+    "保留原plan五篇、五技术行、精确两表schema与范围、数值引用数、每篇非空1–2句方法摘要。",
+    "保留工作区动态解析、标题查重/单次创建、歧义写入不重试及三项读回验收。",
+    "Memory记录研究进展及发现；review_summary.txt含所有论文标题和一段综合结论。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版没有“15个子Agent”标题，也未描述5个explore占位符；这两个事实前提不能按字面修复，候选仅明确自身5读者+2writer数量及实际契约。",
+    "Excel三sheet、Notion页面、JSON文件和Python脚本不是本题交付物，全部不新增。",
+    "原版已使用原生并行读稿和交错输出，不能声称原版全串行；候选变化是新增独立子agent所有者。"
+  ],
+  "assumptions": [
+    "将混入其他题内容的意见解释为对本题真实输出建立明确研究交接和writer阶段；这种具体实现仍待人工确认。",
+    "按真实数据依赖解释题面First/Then/Finally：独立查询可并行后按论文身份匹配；文本无须消费云表URL或读回，故两个writer并行。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保留原版arXiv与Scholarly发现的原生并行，交叉核对后冻结五篇身份；仅需要确切标题的补查等待对应标题。",
+    "五个只读reader按list_paper_sections→get_paper_section读取真实方法章节，必要时get_paper_prompt取得全文，返回统一证据schema；主agent逐篇写进展笔记并冻结规范包。",
+    "external writer独占云表、office writer独占txt并行消费规范研究包，同时main完成Memory；main等待三项读回统一验收。"
+  ],
+  "expected_tradeoff": "独立读者可能减少main的手稿上下文负担，两个writer并行且职责清楚；原版已有原生并行，额外七个子agent仍可能增加交接与启动成本。效果仅为待实验检验的假设。",
+  "not_runtime_tested": true
+}

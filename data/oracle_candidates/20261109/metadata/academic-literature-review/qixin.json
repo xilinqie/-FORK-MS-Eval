@@ -1,0 +1,66 @@
+{
+  "interpretation": "以sources中的公开原版4c1bbd3dc0d736623bba563e56cfd8666f85daac为起点，将“没有最终交付subagent信息”落实为一个明确的最终Word writer波次，补足其输入、内容合同、单写入权和回执。原版其实已让主agent产出文档，因此这是有意改换owner，不将原版误述为完全未安排交付。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "use exactly one research wave.",
+      "replacement": "use one parallel research wave followed by one explicitly assigned document writer.",
+      "explanation": "保留唯一研究波次，新增单个最终文档writer，回应指定人的交付subagent诉求。"
+    },
+    {
+      "original": "and writes one uniquely named compact evidence JSON",
+      "replacement": "Explore is read-only: return the record in the handoff rather than creating a local JSON file.",
+      "explanation": "原版要求explore写本地JSON与本轮harness只读角色冲突；必要扩散修正为结构化返回，由主agent持久化，完整保留研究内容和证据字段。"
+    },
+    {
+      "original": "then directly owns both remaining outputs.",
+      "replacement": "Wave 2 — dispatch exactly 1 coder sub-agent:",
+      "explanation": "把最终文档从主agent移交office coder；主agent仍独占图谱。两个输出共用收齐证据，Then枚举不被扩张为图谱落盘→Word的额外等待。"
+    },
+    {
+      "original": "Create `Literature_Review.docx` exactly once with one bulk structured write:",
+      "replacement": "Sole writer of <workspace_root>/Literature_Review.docx.",
+      "explanation": "为完整文档设唯一实际写入者；新plan后文保留一次bulk structured write、五论文内容和完整回读。"
+    },
+    {
+      "original": "finish without another sub-agent or verification wave.",
+      "replacement": "Do not dispatch another writer or a verification wave.",
+      "explanation": "新增writer之后仍不增加验证agent，主agent根据既有graph回读及writer回执宣布完成。"
+    },
+    {
+      "original": "Update the existing knowledge graph by adding only the five source-supported paper entities and relationships while preserving unrelated nodes.",
+      "replacement": "Once all paper content has been gathered and verified, this graph update may overlap the document writer because both consume the same complete evidence packet; Word does not consume the graph mutation result.",
+      "explanation": "独立复核去除候选新设的图谱完成屏障；完整论文内容→唯一Word writer的明示硬依赖完全保留。"
+    }
+  ],
+  "preserved_requirements": [
+    "先提取research_notes.tar.gz且不覆盖文件，读Markdown与memory/memory.json后开展研究。",
+    "五个非重叠RAG角度、五篇不同且相关的论文；下载/读全文/检查来源稿方法部分并剔除无关论文。",
+    "收齐全部论文内容后，主agent更新知识图谱并保留无关节点；唯一文档writer也从完整证据包创建Word，两个输出均须核验。",
+    "最终Word恰好一个指定owner、创建一次；部分研究者不得写/追加最终文档。",
+    "Introduction、每篇title/authors/year/contribution/methodology、综合Conclusion与学术行文衔接。",
+    "保留源控制、独立中间记录、文档及图谱回读；主agent唯一整体完成声明。"
+  ],
+  "qualified_or_unimplemented": [
+    "“原版没有最终交付信息”的绝对前提不成立：原plan已有主agent写Word；候选落实为新增明确的交付子agent，而不声称修补完全缺失的交付。"
+  ],
+  "assumptions": [
+    "将指定人的诉求解释为一个负责整份最终Word的office writer，不拆成多个论文writer同时写同一docx。",
+    "知识图谱更新保留给主agent；新增office角色只负责本地Word，避免假设其有未授予的Memory工具。",
+    "题面的Then create是输出枚举；明确的only after all paper content has been gathered是硬门槛。图谱写入与Word均消费完整研究包，Word不依赖图谱修改结果，二者可重叠。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读研究背景并冻结五个topic。",
+    "五个只读学术researcher并行返回结构化证据，主agent校验并按需保存各自独立JSON。",
+    "全部论文证据齐备后，主agent更新并核验图谱，同时可派唯一office coder创建完整Word；整体验收等待二者。",
+    "主agent根据源包、图谱回读和文档回执核对完成。"
+  ],
+  "expected_tradeoff": "待实验验证：最终文档owner更明确且可隔离成文上下文，但新增一个writer波次和完整证据交接，可能增加时延与token成本。",
+  "task_id": "academic-literature-review",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": " 编排的信息过少。没有最终的交付的subagent信息。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,71 @@
+{
+  "task_id": "terminal-canvas-wc-excel-ppt-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确规定先生成 Excel，再生成 PPT，最后发送两封邮件。编排却把三项放在同一并行波次，邮件可能先于两个报告发出。另外，匹配条件是有至少一笔符合分类的购买，编排改成正金额，会排除零金额的合格购买。",
+  "interpretation": "同时落实两项意见：将matched资格从正金额改为至少一笔符合Electronics/Cameras分类的购买，零金额及负金额合格购买不因此被排除；保留脚本→相关分析→Excel→PPT→邮件的成功依赖。六个来源reader和三个最终writer职责基本保留。固定harness还要求explore只读，故课程JSON持久化移交主agent，这属于确保候选可执行的必要权限修正。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "use one parallel source wave and one parallel artifact wave.",
+      "replacement": "use one parallel source wave followed by the required ordered script and artifact stages.",
+      "explanation": "保留并行数据来源，取消与题面明确顺序冲突的最终产物同波并行。"
+    },
+    {
+      "original": "Persist one unique course JSON and return path/hash, course/assignment/page/submission/user controls.",
+      "replacement": "This read-only agent must not persist a course JSON itself; the main agent saves the returned course data to its unique workspace JSON path.",
+      "explanation": "原企业explore角色没有文件写权限；只改持久化owner，不增删来源研究任务。"
+    },
+    {
+      "original": "registry customer group 1/4 (five bookstore_customer_id values)",
+      "replacement": "Partition the actual registry customer IDs into four disjoint, exhaustive groups and pass their literal IDs to their respective owners; do not drop a registry row to force a particular group size.",
+      "explanation": "四个订单owner不变，但组内ID以实际CSV为准，避免原版固定五个的描述被误作筛选条件；这是保留每个registry学生口径的参数化。"
+    },
+    {
+      "original": "then keeps only students whose mapped customer has positive qualifying spend.",
+      "replacement": "Include an enrolled registry student when the mapped customer has at least one qualifying Electronics or Cameras purchase, even when total qualifying spend is zero or negative; do not filter by `spend > 0`.",
+      "explanation": "资格由有购买决定，花费只是数值统计，不再排除零金额；所有状态和所有合格行金额仍照计。"
+    },
+    {
+      "original": "Wave 2 — start three Coder writers in parallel:",
+      "replacement": "Stage 2 — after both scripts and JSON outputs have succeeded, dispatch coder 0 (office-report-builder 0) as the sole writer of `Student_Purchase_Analysis.xlsx`.",
+      "explanation": "脚本运行及结果成功后先单独启动Excel owner。"
+    },
+    {
+      "original": "coder 1 (office-report-builder 1): Sole writer of Purchase_Behavior_Presentation.pptx",
+      "replacement": "Stage 3 — only after the workbook is complete, dispatch coder 1 (office-report-builder 1) as the sole writer of `Purchase_Behavior_Presentation.pptx`.",
+      "explanation": "PPT owner等待完整Excel，保留同一分析群体与指标。"
+    },
+    {
+      "original": "coder 2 (external-workflow-operator 0): Sole owner of the two emails.",
+      "replacement": "Stage 4 — only after both reports have been created and read back, dispatch coder 2 (external-workflow-operator 0) as the sole owner of the two emails.",
+      "explanation": "邮件owner等待两个正式报告成功，不能在来源或脚本结束时提前发送。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读registry、analysis_guide和store_config；验证真实产品分类，所有registry pair保留，department不筛选，课程只用1和2。",
+    "Canvas所有numeric graded submissions用于平均和数量，包含0分；完整用户与分页控制保留。",
+    "WooCommerce完整分页且status不筛选，七种状态全部计入；按Cameras/Electronics类别而非产品ID区间识别，金额用原line total、数量用quantity、一个订单有合格行只计一次。",
+    "主agent先编写运行cross_reference.py输出matched_students.json，再编写运行correlation_analysis.py输出correlation_results.json；相同population，Pearson双侧p/均值/人数与精确r>=0/r<0推荐分支。",
+    "Student_Purchase_Analysis.xlsx四sheet及全部指定列/Metric，至少三条可行动建议，数值字面值无公式。",
+    "Purchase_Behavior_Presentation.pptx恰好五页，精确标题/副标题和各slide标题，人数、均分、有符号相关系数、解释与建议均包含。",
+    "两封邮件精确收件人/主题及不同正文重点；保留Sent去重、最多一次发送和读回。",
+    "每个必需文件单一步骤单writer生产一次、后续不覆盖；禁止aggregation/audit/repair agents，主agent最终验收及完成声明。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "有合格购买被实现为至少一个含合格分类line item的订单，而不是合格花费大于零；这与题面对匹配学生的定义一致。",
+    "仅角色权限与每个registry记录完整覆盖导致两项小范围扩散：课程JSON由主agent保存，四订单分组大小依据CSV，不改变六reader编排。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent核验分类并冻结产品映射和四个客户分组。",
+    "六reader并行取得两课程和四组订单证据，主agent持久化只读reader返回的数据。",
+    "主agent按有购买而非正金额运行交叉匹配脚本，再运行相关分析脚本。",
+    "office writer先建Excel，完成后另一office writer建PPT。",
+    "两个报告完成后external writer发送/读回两封邮件，主agent验收完成。"
+  ],
+  "expected_tradeoff": "资格修正改变分析population和可能的统计结论；顺序屏障可能增加报告阶段耗时，但保留来源读取并行，实际正确率/延迟变化仍待实验。",
+  "not_runtime_tested": true
+}

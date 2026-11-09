@@ -1,0 +1,38 @@
+{
+  "task_id": "scholarly-arxiv-survey-word-notion-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求章节和方法子节用 Word 的 Heading 1 和 Heading 2。参考编排把每种方法安排为 Heading 3，直接改变了要求的文档层级；应将方法子节作为 Heading 2。",
+  "interpretation": "落实Word标题层级契约：章节用Heading 1，五种方法直接作为Heading 2子节；taxonomy类别分组保留为正文。独立静态复核另发现原任务要求下载、固定read_paper又以is_downloaded为前提，故作必要兼容补充：由主agent完成论文获取准备后再派只读reader；不改变五reader/三writer及Notion、日历分工。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "document title/author metadata, then Title, Abstract, 1. Introduction, 2. Background, 3. Taxonomy of Methods (Heading-2 category subsections, Heading-3 per-method subsections), 4. Comparative Analysis containing a table with exactly the five required method columns populated from the frozen packet, and the remaining guideline-required sections; read the outline and full text back.",
+      "replacement": "document title/author metadata, then Title, Abstract, 1. Introduction, 2. Background, 3. Taxonomy of Methods, 4. Comparative Analysis containing a table with exactly the five required method columns populated from the frozen packet, and the remaining guideline-required sections including Open Challenges and Conclusion. Apply the actual Word Heading 1 style to the survey section titles and Heading 2 to each of the five per-method subsections directly under Taxonomy of Methods. Preserve any category grouping from the guidelines as introductory prose within that section, without inserting a heading level that pushes methods to Heading 3. Each method subsection references its assigned paper and summarizes key ideas, methodology, and results. Read the outline and full text back, inspect the actual paragraph styles, and require Heading 1 sections and Heading 2 method subsections before returning.",
+      "explanation": "按意见修正方法Heading 3为Heading 2；显式要求真实Word样式并读回核对，避免只改变显示字号。"
+    },
+    {
+      "original": "Do not dispatch Wave 1 until all five literal assignments exist; report a discovery blocker rather than assigning an unnamed paper.",
+      "replacement": "Before Wave 1, the main agent uses the task-granted `download_paper(paper_id=<assigned paper_id>)` for each of the five exact assigned IDs, allowing those independent preparation calls to run natively in parallel. Retain the tool-reported successful or already-available paper receipts before dispatching the read-only researchers. If a granted download reports a pending conversion, use its supported `check_status=true` operation and wait for readiness; if acquisition fails or the required tool is unavailable, report the unresolved paper instead of asking an explore agent to write state or substituting an abstract. Access papers only through the granted tools, not by opening server-cache paths. Do not dispatch Wave 1 until all five literal assignments and ready-paper receipts exist; report a discovery or acquisition blocker rather than assigning an unnamed or unavailable paper.",
+      "explanation": "必要能力/依赖修复，不并入其他人的意见：原题明确Download and read；固定872提交server.py实际绑定pg_adapter，后者第276–280行在未下载时拒绝read_paper，第147–197行的download_paper会改变下载状态。由主agent通过任务授权工具准备可读资源，explore仍只读；没有增加agent或GT结果。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读Survey_Guidelines.pdf与guide.md，五种指定方法均有确定论文分配后才发起阅读wave。",
+    "保留5个并行学术reader、3个并行writer和main最终统一验收；main完成题目要求的论文下载准备后再交给只读reader。",
+    "LLM_Reasoning_Survey.docx保留摘要、引言、背景、taxonomy、比较表、开放挑战和结论；每方法含论文引用、关键思想、方法和结果。",
+    "Reasoning Papers保留六项精确属性类型、五篇条目和查重创建。",
+    "五场Reading Group保留2026-03-16至20的10:00–11:00 UTC、标题/描述与事件读回。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "保持原检索及五论文分配；main经授权download_paper取得可读回执后，启动原五读者波次并冻结规范数据包。",
+    "Word writer将章节/方法样式固定为Heading 1/Heading 2，保留类别信息为正文，并在读回时检验样式。",
+    "Notion/calendar writer及主agent最终一致性检查保持原结构。"
+  ],
+  "expected_tradeoff": "标题层级修正不增加子agent或改变产物并行；实际样式读回和main的必要论文获取准备可能增加调用与等待，同时避免只读reader拿到未就绪论文。固定能力仅静态核对，实际效果未运行验证。",
+  "not_runtime_tested": true
+}

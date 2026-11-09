@@ -1,0 +1,18 @@
+I need a summary of course announcements from our learning management system. Pull all announcements and aggregate by course, showing count and date range.
+
+Create an Excel file called Course_Announcements.xlsx with two sheets. The first sheet, named "Announcement Stats", should have columns Course_Code, Announcements, Earliest_Date, and Latest_Date with one row per course, sorted by Announcements descending. Use UTC dates (YYYY-MM-DD) for Earliest_Date and Latest_Date — do not apply any timezone conversion to the timestamps returned by the announcements API.
+
+The second sheet, named "Summary", should be a two-column table with the header "Metric, Value" and exactly three rows: Total_Announcements (total announcements across all courses), Courses_With_Announcements (number of distinct courses that have at least one announcement), and Most_Active_Course (the course code with the highest announcement count).
+
+Send an email to academic-affairs@openuniversity.ac.uk with subject "Course Announcement Activity Report" briefly summarizing the activity levels.
+
+Task-Solving Rationable with Sub-task Decomposition:
+To solve this task efficiently, complete the aggregation, workbook, and email directly in the main agent. Dispatch no sub-agents and use no delegation wave. Do not create one reader agent per course.
+
+Resolve the task-visible workspace directory from the runtime allowed-directory listing (or the literal accessible-workspace directory already supplied by the harness), freeze it as `<workspace_root>`, and reject bare `/workspace` and dumps/run-specific paths. Call `canvas_list_courses(include_ended=true)` once, deduplicate stable course IDs, then issue one independent complete announcement-list call per returned course in one native-parallel response. If the handler exposes pagination, continue only the courses whose response says another page exists; otherwise do not invent cursors. Canvas is read-only.
+
+For every course compute announcement count and the earliest/latest UTC calendar dates directly from returned timestamps without timezone conversion. Include one row per course, leaving dates empty when count is zero. Sort by count descending then course code ascending. Compute exactly `Total_Announcements`, `Courses_With_Announcements`, and `Most_Active_Course`, breaking a count tie by course code ascending. Freeze one literal canonical payload containing all course rows, the three metrics, and the email summary; no output branch may recompute it.
+
+The main agent is the sole writer of `<workspace_root>/Course_Announcements.xlsx`. Create it exactly once with only `Announcement Stats` and `Summary`. Write exact headers `Course_Code, Announcements, Earliest_Date, Latest_Date`, every canonical course row, UTC `YYYY-MM-DD` dates, and literal numeric counts. Write `Summary` with headers `Metric, Value` and exactly the three vertical metrics. Read back both complete populated ranges and check path, sheet order, row counts, and cell equality against the canonical payload.
+
+The main agent may interleave independent workbook operations with paginated Sent search for exact To `academic-affairs@openuniversity.ac.uk` and Subject `Course Announcement Activity Report`, reading every candidate. If no exact match exists, send exactly one concise message; the factual activity summary does not depend on workbook creation or read-back finishing. Include the three canonical metrics and reference `Course_Announcements.xlsx`; never retry an ambiguous send. Read the retained message back. Wait for the workbook and message results before final acceptance, and accept only when both match the same canonical payload. Only the main agent declares overall completion.

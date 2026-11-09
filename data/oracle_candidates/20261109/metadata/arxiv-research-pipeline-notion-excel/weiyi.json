@@ -1,0 +1,61 @@
+{
+  "task_id": "arxiv-research-pipeline-notion-excel",
+  "annotator": "weiyi",
+  "candidate_id": "C_weiyi",
+  "source_reason": " 缺少独立的writer wave，Excel（3个sheet）、Notion页面、JSON文件、Python脚本等交付物全部由主Agent串行完成，未能利用并行写入能力",
+  "interpretation": "把意见落实为真实的独立writer阶段：五个研究者只返回证据；一个office writer负责中间JSON、脚本及依赖其输入的综合结果；随后Excel与Notion分别由office/external writer并行生成。原版已经把Excel与Notion写为independent native-parallel output branches，所以不采纳“全部主Agent串行”的事实前提。JSON输入→脚本运行→综合结果→最终交付的依赖必须保留，不能把所有文件无条件并行。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "use exactly one paper-processing wave.",
+      "replacement": "retain one parallel paper-processing wave, delegate the dependent synthesis files to one local writer, and then use an independent two-writer output wave.",
+      "explanation": "保留原来的五论文研究波次，新增综合文件writer阶段与两个独立最终writer的并行波次；不是宣称原版没有并行。"
+    },
+    {
+      "original": "writes one unique `paper_<safe_id>.json`",
+      "replacement": "Return a structured evidence record",
+      "explanation": "固定角色说明规定explore只读，不能承担原版中的本地JSON写入。改为返回完整结构化证据，由后续office writer持久化，属新增writer阶段需要同时修正的权限交接。"
+    },
+    {
+      "original": "consolidates them into `papers_metadata.json` and `papers_contents.json`, writes and runs `research_synthesizer.py` exactly once, and verifies `research_synthesis.json`.",
+      "replacement": "It saves one unique `paper_<safe_id>.json` per paper, consolidates them into `papers_metadata.json` and `papers_contents.json`, and creates both inputs before writing and running `research_synthesizer.py` exactly once.",
+      "explanation": "把原主agent文件构建职责移交单一office writer，保留两输入先于脚本执行、脚本先于输出验证的真实依赖。"
+    },
+    {
+      "original": "It then creates `Research_Knowledge_Base.xlsx` and the single `LLM Research Hub` page as independent native-parallel output branches from that verified synthesis.",
+      "replacement": "dispatch exactly 2 coder sub-agents in parallel, both consuming the same immutable `research_synthesis.json` and its source metadata/content files:",
+      "explanation": "原版本来就原生并行；候选的实际变化是将两支明确委派给两个独立writer，Excel的三张sheet仍由一个writer一次组装以避免同文件竞争。"
+    },
+    {
+      "original": "Read each final output once and do not dispatch another wave.",
+      "replacement": "Only the main agent declares overall completion. Do not dispatch an additional audit or repair wave or silently rerun the synthesis after downstream outputs have been created.",
+      "explanation": "因新增必要writer波次，原禁止另一波的上限必须调整；仍保留最终产物单次读回及禁止额外审核/修复波次。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读task可见指南及团队兴趣，Scholarly与local arXiv搜索三个原主题，以稳定ID去重并冻结覆盖三主题的五篇近期论文。",
+    "五个论文explore各只负责一个固定ID，读取全文和可用LaTeX方法，保留元数据、引用、方法与benchmark证据，不编造不可得内容。",
+    "创建papers_metadata.json和papers_contents.json后，编写并执行research_synthesizer.py一次，提取方法、引用网络、相关性并输出research_synthesis.json。",
+    "Research_Knowledge_Base.xlsx三张精确sheet及全列名；Paper_Catalog按Citation_Count降序；Applicability为High/Medium/Low，Priority为Critical/Important/Nice-to-have，至少四个研究空白；全部为字面值，无公式。",
+    "单一LLM Research Hub Notion页，精确Dashboard标题与四类实质段落；Excel与Notion使用同一验证后的综合结果，最终各读回一次，主agent独占整体完成声明。"
+  ],
+  "qualified_or_unimplemented": [
+    "不沿用“Excel与Notion全部串行”的错误前提，原版已有native-parallel；本候选增加的是独立writer角色与独立writer wave。",
+    "不将JSON输入、脚本运行、research_synthesis.json和下游最终产物同时写入；这些是任务明确的数据依赖。",
+    "不将三个sheet拆成三个并行写同一xlsx的writer；由一个office owner组装，另一个external owner写Notion。"
+  ],
+  "assumptions": [
+    "将意见中的“独立writer wave”解释为将原主agent执行的本地综合文件和最终输出职责交给适配工具权限的writer，具体二阶段实现是候选设计，未获标注者确认。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保留搜索、五论文选择及证据验收。",
+    "第一波五个只读研究者返回可用证据或合法结果引用。",
+    "第二波单office writer保存JSON并编写执行综合脚本。",
+    "综合结果验证后，第三波office写三sheet工作簿、external写Notion页，二者并行。",
+    "主agent收齐路径/真实ID及读回控制后声明完成。"
+  ],
+  "expected_tradeoff": "独立writer可能降低主agent文件构建上下文负担，并让Excel与Notion各自运行；新增综合writer调用及交接可能增加延迟，且原版已有最终产物原生并行，不能预先宣称提速。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,54 @@
+{
+  "task_id": "fetch-yf-macro-portfolio-excel-gcal-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Schedule a Google Calendar可以和Send an email同时进行",
+  "interpretation": "原版已经在同一原生并行响应启动日历与邮件查询，本候选不声称原版没有并行。将日历与邮件完整的查询、去重、写入、回读分别交给两个external-workflow-operator并行执行；主agent仍负责读取、计算和唯一写入Excel。为不违反题面，保留先读策略PDF、再取得宏观预测、再查询股票的明确数据阶段。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "the main agent must complete this compact fixed-five-symbol workflow directly; do not dispatch sub-agents.",
+      "replacement": "the main agent performs the compact fixed-five-symbol research, calculations and local workbook writing directly, then uses one parallel wave of two external-workflow-operator sub-agents for the independent calendar and email branches.",
+      "explanation": "把原生并行外部操作变为两个有独立写入所有权的子agent，不增加研究/本地writer波次。"
+    },
+    {
+      "original": "Then fetch http://localhost:30211/api/macro_forecast.json and issue get_stock_info for GOOGL, AMZN, JPM, JNJ, and XOM together in one native-parallel response.",
+      "replacement": "Then fetch http://localhost:30211/api/macro_forecast.json and wait for the macro forecast response before querying stock information. In the following native-parallel response, issue get_stock_info for GOOGL, AMZN, JPM, JNJ, and XOM together.",
+      "explanation": "原题明确After retrieving the macro forecast；原plan该句同批读取不保留此硬顺序，生成约定要求候选遵守原题，因此作必要约束修正，不是合并其他标注者意见。"
+    },
+    {
+      "original": "Once the canonical payload is frozen, start the workbook branch, exact calendar search, and exact Sent-mail search natively in parallel.",
+      "replacement": "Once the canonical payload is frozen, dispatch exactly two external-workflow-operator sub-agents together in one writer wave.",
+      "explanation": "同一冻结输入到达后同时启动两条外部链，Excel仍由主agent独立写入；邮件内容不声称日历已创建，避免新增不真实依赖。"
+    },
+    {
+      "original": "Finish only after workbook, event and email agree with the same payload and call claim_done.",
+      "replacement": "The main agent waits for both external owners and its workbook read-back. It reconciles all three outputs to the canonical payload and calls claim_done only when the workbook, retained event and retained email are verified.",
+      "explanation": "保留主agent完成声明与三项回读验收，新增子agent结果等待。"
+    }
+  ],
+  "preserved_requirements": [
+    "读取Investment_Strategy.pdf后读取固定宏观API，再读取GOOGL/AMZN/JPM/JNJ/XOM；四个2026季度及来源sector、价格、市值、PE、beta。",
+    "Macro_Portfolio_Analysis.xlsx三个精确sheet与header，股票与sector字母序，市值十亿/PE/GDP显示一位小数，严格beta和GDP阈值以及Overweight/Underweight/Hold规则。",
+    "日历Q2 Portfolio Rebalancing Review：2026-03-30 14:00–15:30，描述列五标的、平均GDP及多数sector建议；保留原版未指定时区时省略timeZone、使用服务UTC默认的规则。",
+    "邮件收件人investment_committee@firm.com，主题Macro Outlook & Portfolio Impact - Q2 2026，包含GDP、通胀、利率与需增减持sector。",
+    "保留精确事件/Sent搜索、无重复创建发送、回读及不重试歧义写入；仅主agent claim_done。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版已有原生并行，本候选只是把完整外部流程划分为两个独立子agent，不能宣称首次实现并行。",
+    "意见不涉及研究读取顺序，但原题明确宏观预测先于股票查询；必须遵守此硬约束，故该处局部修正并标记mixed。"
+  ],
+  "assumptions": [
+    "将“日历可以和邮件同时进行”落实为两个external writer并行；意见本身没有指定子agent数量，采用两个分别对应两项外部产物。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent按PDF→宏观API→五股票并行的顺序取数并计算。",
+    "主agent冻结canonical payload，同时派两个external writer。",
+    "日历owner搜索/创建/回读事件；邮件owner搜索/发送/回读邮件，二者无需互等。",
+    "主agent并行写本地Excel，最终等待三项验收后完成。"
+  ],
+  "expected_tradeoff": "独立external writer可能降低单一主agent交替操作两个服务的负担，但增加委派与结果汇合成本；该收益与延迟变化均待实验验证。",
+  "not_runtime_tested": true
+}

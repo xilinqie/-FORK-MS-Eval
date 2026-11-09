@@ -1,0 +1,44 @@
+{
+  "task_id": "wc-coupon-performance-notion-ppt",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "题目明确要求 Excel 完成后再做演示稿，编排却把两项并行推进，没有保留这条顺序依赖。",
+  "interpretation": "仅对指定的顺序问题增加Excel成功完成及回读→PPT正式创建/填充的硬依赖。保留无委派、统一小表、Notion独立分支及原有查重/回读/邮件规则；不采用其他标注者意见或隐藏结果。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "After the coupon table is frozen, interleave the independent workbook, presentation, and page branches with native parallel tool calls whenever their next calls are simultaneously ready;",
+      "replacement": "After the coupon table is frozen, interleave only the independent workbook and Notion page branches with native parallel tool calls whenever their next calls are simultaneously ready.",
+      "explanation": "从原并行集合中移出PPT，保留无关Notion并行。"
+    },
+    {
+      "original": "The presentation must contain exactly the task-requested title slide, one complete coupon slide per frozen coupon, and the final summary slide.",
+      "replacement": "Do not create or populate Coupon_Analysis_Presentation.pptx until Coupon_Performance.xlsx is complete and both workbook sheets have passed read-back validation.",
+      "explanation": "在原presentation契约附近新增After the Excel的可验收完成屏障；后续全部slide内容约束仍保留。"
+    },
+    {
+      "original": "Read back both workbook sheets, the presentation slide inventory/content, and the retained page ID/body.",
+      "replacement": "After workbook, presentation, and page read-backs are complete, use the verified summary for the required email.",
+      "explanation": "把原回读顺序展开为工作簿先验收、PPT后验收，并保持邮件基于所有已完成产物的验证摘要。"
+    }
+  ],
+  "preserved_requirements": [
+    "主agent直接执行、无子agent，全部产物复用同一coupon-code-keyed表。",
+    "全量分页、源顺序tie处理、total usage_limit及无上限N/A、使用率两位小数字面量。",
+    "Coupon_Performance.xlsx两表确切列、Times_Used降序及四项Summary。",
+    "Excel完成后PPT，确切文件名和标题，逐券一页并含type/usage，最后统计总结页。",
+    "Coupon Strategy Overview 2026页面body含验证后的高表现券码、明确分析和可行动建议；不固定示例券码为赢家。",
+    "marketing@company.com及确切主题，查重、至多一次发送、保留真实ID、回读。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取和冻结优惠券表，准备Notion与Sent查重。",
+    "工作簿和Notion可原生并行；两表全部回读通过后才建立PPT。",
+    "PPT可与剩余Notion工作重叠；三个产物验收完毕后发送摘要邮件并完成。"
+  ],
+  "expected_tradeoff": "新增依赖可能增加串行时间，但保证题面明确的Excel先于PPT；速度和成功率影响尚待实验。",
+  "not_runtime_tested": true
+}

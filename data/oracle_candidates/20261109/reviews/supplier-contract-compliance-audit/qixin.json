@@ -1,0 +1,21 @@
+{
+  "task_id": "supplier-contract-compliance-audit",
+  "annotator": "qixin",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "原task没有指定机构或远程平台，本候选的带索引、不可覆盖版本副本和追加台账的本地合同库可以作为明确限定的central repository解释，不能据此宣称机构共享库或外部入库已建立；若可见输入另要求外部目标须另有真实能力与回执。",
+    "每家underperforming会议以真实合同条款和表现证据定义；若原材料不足，评价和会议覆盖仍待核，不能把缺证判为不达标，也不能把未能分类当作已证实无会议义务。业务stakeholder路由同样须有证据。"
+  ],
+  "not_runtime_tested": true
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": "canvas-announcement-summary",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "只有1个波次",
+  "interpretation": "结合该标注者 A=0 及“工作量少”，将 B 的“只有1个波次”解释为取消仅含一个工作簿 coder 的委派，改由主 agent 全程执行；不解释为需要增加波次。保留原有逐课程原生并行读取和统一 payload，工作簿与邮件查重/条件发送仍可交错；邮件只汇总公告事实，不新增等待工作簿成功的无关前提。",
+  "interpretation_status": "inferred",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Use the main agent for the compact read-only aggregation and one coder only for the final workbook. Do not create one reader agent per course.",
+      "replacement": "To solve this task efficiently, complete the aggregation, workbook, and email directly in the main agent. Dispatch no sub-agents and use no delegation wave. Do not create one reader agent per course.",
+      "explanation": "根据同一人的 A 理由推断取消委派；保留不按课程扩增 reader 的限制。"
+    },
+    {
+      "original": "1. Wave 1 — dispatch exactly 1 coder sub-agent:",
+      "replacement": "The main agent is the sole writer of `<workspace_root>/Course_Announcements.xlsx`.",
+      "explanation": "把唯一 coder 工作完整移交主 agent，未删除工作簿任务。"
+    },
+    {
+      "original": "In the same response that launches this individual Agent call, the main agent paginates Sent search",
+      "replacement": "The main agent may interleave independent workbook operations with paginated Sent search",
+      "explanation": "删除 Agent 启动后改用主 agent 工具交错；保留原版工作簿与事实汇总邮件的独立执行，最终验收仍等待两者成功。"
+    }
+  ],
+  "preserved_requirements": [
+    "包括已结束课程；按稳定课程 ID 去重；公告分页仅依照实际返回能力。",
+    "每课程一行，零公告日期留空；UTC 日期不作时区转换；数量降序、课程代码升序打破并列。",
+    "Course_Announcements.xlsx 仅有 Announcement Stats 和 Summary；表头、三个汇总指标、字面计数、完整回读保留。",
+    "邮件收件人、主题、三项指标、文件引用、精确查重和不重试不明确发送结果保留。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "“只有1个波次”单独不能推出主 agent 模式，本候选依同一记录 A=0、“工作量少”及本轮特殊约定采用该解释。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主 agent 解析工作区并原生并行读各课程公告。",
+    "主 agent 冻结规范数据，接管原单一 coder 的工作簿创建与回读。",
+    "主 agent 交错执行工作簿与邮件查重/条件发送；两者分别回读且一致后才声明整体完成。"
+  ],
+  "expected_tradeoff": "减少一次委派与上下文交接可能降低协调成本，但主 agent 需承担全部文件操作；是否更快或更可靠须后续实验验证。",
+  "not_runtime_tested": true
+}

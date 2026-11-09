@@ -1,0 +1,50 @@
+{
+  "task_id": "sf-hr-salary-benchmark-gform-excel-email",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create an Excel 和 Create a Google Forms survey可以同时进行",
+  "interpretation": "把原版先描述Form、后描述Excel的两项制作明确为由主agent原生并行调度的两个独立分支；Excel和Form各自保留单一owner，Form内部题目仍串行，邮件等待两分支回读。意见未要求新增子agent，因此不强行加入writer wave。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "To solve this task efficiently, complete it directly in the main agent and dispatch no sub-agent. The source is one compact employee table, the form has five fixed questions, and there is only one workbook writer.",
+      "replacement": "To solve this task efficiently, complete it directly in the main agent and dispatch no sub-agent. After the compact employee statistics are frozen, build the workbook and the fixed five-question form as two concurrent output branches using native parallel tool batches. The main agent remains the sole writer of each artifact and owns the final email.",
+      "explanation": "直接实现Excel与Form同时推进，同时保留原版无子agent结构。"
+    },
+    {
+      "original": "The main agent is the sole owner of `Compensation Satisfaction Survey`.",
+      "replacement": "Start these two branches together after the salary aggregates pass their controls. Batch ready calls from different branches in parallel, but preserve all dependencies within each branch; neither branch waits for the other to finish.\n\nBranch A — the main agent is the sole owner of `Compensation Satisfaction Survey`.",
+      "explanation": "明确跨分支ready call原生并行，分支内部依赖不可跳过。"
+    },
+    {
+      "original": "Create `Salary_Analysis.xlsx` once with exact",
+      "replacement": "Branch B — concurrently with Branch A, the main agent creates `Salary_Analysis.xlsx` once with exact",
+      "explanation": "将Excel生产标为与Form并发的独立分支。"
+    },
+    {
+      "original": "For email idempotency, call",
+      "replacement": "Join both branches: wait until the workbook ranges and the five-question form have both been read back successfully. Do not send a completion message or claim the review package is ready while either branch is incomplete. For email idempotency, call",
+      "explanation": "在原邮件操作前增加两分支join，保留完成通知真实性。"
+    }
+  ],
+  "preserved_requirements": [
+    "完整读取Compensation_Policy.pdf，发现HR_ANALYTICS.PUBLIC员工表与DEPARTMENT/SALARY列。",
+    "七部门的headcount/min/max/avg/median及公司独立总人数/总薪资控制；按未舍入均薪降序和部门名tie-break。",
+    "Company_Avg_Salary=total_salary/total_headcount，公司均薪展示两位小数；Excel两sheet、精确列与四行Summary、字面量。",
+    "Compensation Satisfaction Survey仅创建一次；恰好五题、三choice两text、逐题顺序及所有既定选项不变，get_form回读。",
+    "来自compensation@hr.example.com发往hr-leadership@company.example.com的精确主题，正文含公司均薪和最高/最低部门；完整Sent分页、read_email确认与去重。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "“可以同时进行”采用主agent原生并行工具批处理实现；人工意见没有要求必须使用两个子agent。原版无子agent也不等于工具能力上禁止并行，本候选把这种执行关系明确化。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取政策、执行部门与公司查询，验证并冻结聚合。",
+    "同时推进Form分支与Excel分支；跨分支可并行，同Form题目顺序保持串行。",
+    "等待Form与Excel回读成功后进行邮件去重、发送与全局核对。"
+  ],
+  "expected_tradeoff": "可能让独立表单与工作簿工具等待重叠且不增加委派成本；若工具调用限制使并行收益有限，实际时延未必下降，需实验验证。",
+  "not_runtime_tested": true
+}

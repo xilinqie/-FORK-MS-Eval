@@ -1,0 +1,55 @@
+{
+  "task_id": "yt-transcript-notion-song-report-gcal-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "知识库写入契约只规定建页面、数据库及逐首入库，漏掉页面概览必填的频道、总时长、曲目数和独立艺人数。对艺人的邮件也只规定点名，没有要求正文明确索取授权与传记资料。",
+  "interpretation": "保持公开原版的主agent直接执行拓扑，仅落实该人的两项内容缺口：Notion页面正文概览显式写频道、总时长、曲目数、独立艺人数；艺人邮件正文明确请求授权和额外传记资料，并强化回读验收。未合并同题其他人的并行建议。",
+  "interpretation_status": "explicit",
+  "change_type": "clarification_only",
+  "changes": [
+    {
+      "original": "Call `get_video_info(url=\"7ZQzGq32kAY\")`, then exhaust both",
+      "replacement": "Call get_video_info(url=\"7ZQzGq32kAY\"), retaining the channel name, video description/details, and source-supported approximate total duration.",
+      "explanation": "在原视频信息读取处补留概览所需实际来源字段，避免下游只能得到曲目。"
+    },
+    {
+      "original": "Freeze one canonical Tracklist table, Artist_Stats aggregation, and the three publication rows; every artist count and total duration must recompute exactly from Tracklist.",
+      "replacement": "Also freeze the page overview payload: the channel name and video description from retrieved video information, approximate total video duration with its source/basis, the number of identified songs equal to the canonical Tracklist row count, and the number of unique represented artists equal to the canonical Artist_Stats artist count.",
+      "explanation": "以原canonical freeze句为新增锚点，加入概览数据并保持曲目/艺人数统一。"
+    },
+    {
+      "original": "Search exact Notion titles before create, create or complete one nonduplicate page/database with exact property types and genre options, upsert one item per canonical track with a stable track number, and retrieve schema and rows; do not retry an ambiguous create.",
+      "replacement": "Write an Overview section into the body of Afrobeat Mix 2024 - Blog Analysis that describes the video and explicitly states all four required facts: channel name, approximate total duration, number of songs identified, and number of unique artists represented.",
+      "explanation": "在原唯一Notion writer契约中补正文概览及字段验收，保留schema/逐首入库/去重。"
+    },
+    {
+      "original": "send at most one missing `Artist Feature Request - Afrobeat Mix 2024` naming only supported artists",
+      "replacement": "Its body must explicitly request permission to feature the identified artists and discuss their work in the planned AfroBeats Today articles, and request additional biographical information for those artists.",
+      "explanation": "明确正文的两项请求，新增对应读回检查；不改变邮件owner、收件人、主题或依赖拓扑。"
+    }
+  ],
+  "preserved_requirements": [
+    "视频7ZQzGq32kAY与英文完整/带时间戳transcript，游标到空、全时间轴分段、证据与不确定性。",
+    "至少12支持曲目工作簿、至少10Notion歌曲、每位唯一艺人的Artist_Stats及从Tracklist重算的计数/时长。",
+    "Song_Analysis_Report.xlsx三表确切headers、三篇文章2026-03-15/22/29、AfroBeats Today平台、Scheduled。",
+    "Notion标题、页面概览四项、数据库五种属性及Afrobeats/Afropop/Highlife/Other选项。",
+    "整月日历检查、三项确切event名和日期10:00–11:00、America/New_York。",
+    "两封确切主题/收件人、艺人授权及传记请求、编辑完成说明和数目/排期；查Sent及至多一次发送。",
+    "不新增子agent，所有文件和外部资源仍由主agent单写，完成通知等产物回读。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "独立艺人数沿用原版canonical Artist_Stats的去重规则，并与正文、数据库及工作簿保持一致。",
+    "授权请求具体表述为允许在计划文章中介绍这些艺人及讨论其作品，不额外引入歌曲版权交易或发布行为。"
+  ],
+  "capability_conditions": [
+    "若视频信息与已取得时间轴均无法支持频道或总时长等必需概览事实，须报告缺失，不能填入猜测。"
+  ],
+  "plan_summary": [
+    "按原流程读配置、查整月日历和穷尽视频/转录资料。",
+    "冻结曲目、艺人、排期及带来源的概览；写工作簿与Notion时逐项核对。",
+    "保留原顺序和邮件依赖，艺人邮件显式双请求，编辑邮件等全部产物完成后发送，最后统一核对。"
+  ],
+  "expected_tradeoff": "强化内容合约可能减少页面字段或邮件意图遗漏，但不产生新委派拓扑；对成功率和成本的影响需后续实验验证。",
+  "not_runtime_tested": true
+}

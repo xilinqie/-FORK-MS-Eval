@@ -1,0 +1,20 @@
+{
+  "task_id": "yt-transcript-notion-song-report-gcal-email",
+  "annotator": "qixin",
+  "reviewer": "/root/audit03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "页面四项概览和艺人邮件双请求的写入/读回契约均已明确；若视频信息与取得的时间轴不能支持频道或总时长，须按候选报告缺失，不猜测。此条件来自候选明确限定，未运行核实是否实际缺失。"
+  ],
+  "not_runtime_tested": true
+}

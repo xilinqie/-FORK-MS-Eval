@@ -1,0 +1,21 @@
+{
+  "task_id": "research-data-archival-compliance",
+  "annotator": "qixin",
+  "reviewer": "second03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "独立政策核验需要权威机构/资助方条款及适用性、有效日期和起算证据；仅本地metadata自报年限不能解除该条件。",
+    "实际机构目标、有效访问权限、登记/版本操作及异地复制能力尚未由输入证明。候选明确区分本地副本/文档与真实控制；缺任一必需能力时只能部分完成，不能发无条件认证或claim_done。"
+  ],
+  "not_runtime_tested": true
+}

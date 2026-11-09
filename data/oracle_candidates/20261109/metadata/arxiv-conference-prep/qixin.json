@@ -1,0 +1,39 @@
+{
+  "task_id": "arxiv-conference-prep",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求先完成演示文稿，再创建会议日历事件。参考编排却在第一波论文检索启动时就建日历，届时演示文稿尚未生成。应在核验演示文稿后创建日历事件，再发邮件。",
+  "interpretation": "将日历创建由论文检索启动时移到PPT保存并核验成功之后；邮件再次依赖PPT与会议两个真实回执。保留5名研究者、1名PPT writer和主agent外部操作职责，提前查询日历仅为只读准备。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Because the conference event is fixed and independent of paper research, the main agent must search for the exact event before dispatch and, in the same orchestration response that launches Wave 1, create at most the one missing event for 2026-04-10 from 09:00 to 17:00 at `San Francisco Convention Center`; preserve the calendar tool's default timezone, use no attendees, and retain the event ID for later read-back. Do not retry creation after an ambiguous failure.",
+      "replacement": "The main agent may search for the exact conference event before dispatch as read-only preparation and retain candidate IDs, but it must not create the event during Wave 1. Calendar creation waits for the Wave 2 presentation writer to return a saved deck and successful validation, accepted by the main agent.",
+      "explanation": "删除违反原题After creating the presentation的提前建会命令；没有把只读查找也无谓串行。"
+    },
+    {
+      "original": "After Wave 2, the main agent must verify the deck and read back the retained calendar event, requiring exactly one matching RLHF Summit 2026 event on 2026-04-10 from 09:00 to 17:00 at the specified location. It must then search sent mail and send at most one missing email to collaborators@rlhf-lab.org with the exact subject and verified report/event details. Perform final deck, event, and message checks before completion.",
+      "replacement": "After Wave 2, the main agent must receive and verify the saved deck and its validation before performing any calendar creation. It then searches for the exact RLHF Summit 2026 event, reads any candidate, and creates at most one missing event for 2026-04-10 from 09:00 to 17:00 at `San Francisco Convention Center`, with a description identifying the conference as about reinforcement learning from human feedback. Preserve the calendar tool's default timezone, use no attendees, retain the real event ID, and do not retry creation after an ambiguous failure. Read the retained event back and require exactly one match for the name, date, time, location, and description. Only after both the deck and event are verified may the main agent search sent mail and send at most one missing message to `collaborators@rlhf-lab.org` with subject `RLHF Summit 2026 Preparation Materials`. Its body states that the verified conference report covers the key RLHF papers and that the calendar event has been created, and includes April 10, 2026 and San Francisco Convention Center. Read the message back. An unresolved deck or event failure blocks this completion email; record the actual failure without claiming those outputs exist. Perform final deck, event, and message checks before the main agent declares completion.",
+      "explanation": "将实际创建、日历读回、邮件发送串成所需依赖，保留固定日程、默认时区、不邀参会者和至多一次规则，并明确失败不得发完成通知。"
+    }
+  ],
+  "preserved_requirements": [
+    "至少5篇相关论文及InstructGPT、摘要、Constitutional AI、DPO、PPO五主题；读取全文方法，不加入隐藏论文结果。",
+    "PPT文件名、标题/副标题、概览、每论文一页及综合页；唯一office writer。",
+    "2026-04-10 09:00–17:00、San Francisco Convention Center和RLHF描述；会议在演示文稿之后。",
+    "固定协作者地址与邮件主题，正文含已完成报告/会议、日期地点；主agent最终验收。",
+    "原两波研究→演示文稿结构、动态workspace和无外部写入的Explore约束。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent冻结主题与任务契约，可提前只读查会。",
+    "五名Explore并行研究，主agent核对并冻结五论文数据。",
+    "唯一office coder生成和核验PPT。",
+    "主agent接受PPT回执后建/读回会议，随后发送并核验邮件。"
+  ],
+  "expected_tradeoff": "候选强制符合用户指定先后关系，可能增加外部动作的关键路径时延；收益与代价须后续实验验证。",
+  "not_runtime_tested": true
+}

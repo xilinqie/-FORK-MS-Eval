@@ -1,0 +1,53 @@
+{
+  "task_id": "howtocook-catering-gform-notion-excel",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create a Google Forms、Create a Notion page、Create an Excel file可以分开进行",
+  "interpretation": "将Google Form、Notion页、Excel工作簿分派给三个互不写同一对象的writer。Form只依赖Event_Brief，故可与主agent查菜谱并行；Notion与Excel等待同一6–8道菜谱清单冻结后并行。此处把原版主agent的独立输出分支变为独立子agent职责，而非假定原版三个操作必须串行。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "complete it directly in the main agent; do not dispatch sub-agents.",
+      "replacement": "assign the Google Form, Notion page, and Excel workbook to separate single writers, while the main agent owns recipe selection and the shared event facts.",
+      "explanation": "直接响应“可以分开进行”，创建三个适配权限的独立owner；主agent保留唯一菜谱筛选。"
+    },
+    {
+      "original": "Read `Event_Brief.md`, create the fixed Google Form once, and query the necessary HowToCook categories with native-parallel read calls.",
+      "replacement": "Start coder 0 (external-workflow-operator 0) as the sole owner of the fixed Google Form, in parallel with the main agent's recipe-reading branch.",
+      "explanation": "Form固定题目与菜谱检索不相互依赖；将Form外部写入交给external writer，主agent并行查询。"
+    },
+    {
+      "original": "Create the Notion page and workbook as independent output branches after the recipe set is fixed,",
+      "replacement": "After the recipe set is fixed, dispatch two coder sub-agents in parallel; the Form branch may continue independently if it has not yet returned:",
+      "explanation": "保留原版本来就有的菜谱固定后输出分支独立关系，具体化为Notion external writer和Excel office writer。"
+    },
+    {
+      "original": "verify the Form, page, and workbook once each.",
+      "replacement": "Verification is once per final Form, page, and workbook; do not recreate them in a second writer branch.",
+      "explanation": "保留单次验证，新增三owner实际ID/路径交接及不重建约束。"
+    }
+  ],
+  "preserved_requirements": [
+    "读取Event_Brief.md；20人、每人25美元、总预算500美元。",
+    "选6–8道多样主菜和配菜，仅抓取选中的菜谱，Notion与Excel复用完全一致的菜名、类别、份数和合理人均成本。",
+    "Google Form精确标题Team Lunch Dietary Preferences，至少三个问题涵盖饮食偏好、过敏、额外意见，原版allergy与additional comments or requests标题要求保留。",
+    "Notion页Team Lunch Menu包含人数和预算、全部菜谱类别/份数、饮食适配说明。",
+    "Catering_Budget.xlsx精确Menu与Summary两sheet，Menu四列次序不变、每菜一行，Summary的Total_Dishes为实际数量、Total_Budget=500、Budget_Per_Person=25；人均成本与Summary Value全部为数字字面值，不用公式。",
+    "每个产物只创建一次、单writer、各读回一次；没有已收到问卷响应的依据时不得虚构响应。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "将“分开进行”具体实现为三个writer；原版已允许主agent独立输出分支，候选不把这种角色拆分称为原版首次获得并行能力。",
+    "题面Part 1–4用于划分任务内容，未给出三个最终产物之间的显式after创建屏障；仅保留菜谱确定先于菜单/预算的实际依赖。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取brief冻结预算和饮食约束。",
+    "一个external writer建Form；主agent同时查菜谱并冻结唯一菜单。",
+    "菜单确定后external writer建Notion、office writer建Excel，两者并行，Form可独立完成。",
+    "主agent收齐三个owner返回，核对同菜单与数值预算，声明完成。"
+  ],
+  "expected_tradeoff": "三个writer可能缩短独立外部及本地写入的等待，但任务规模小，额外agent调用与菜单交接也可能大于节省的时间，须由后续实验判断。",
+  "not_runtime_tested": true
+}

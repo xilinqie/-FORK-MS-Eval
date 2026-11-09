@@ -1,0 +1,40 @@
+{
+  "task_id": "yt-transcript-music-schedule-gcal-gsheet-word",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "Create four calendar events 和 Write a Word document named Radio_Show_Script.docx.可以并行",
+  "interpretation": "保留主agent无委派和上游canonical playlist/云表；把原来同一主agent按文字顺序做Word后做事件，改为云表读回后Word与calendar两个原生并行分支，独立推进内部依赖，join后才发送完成邮件。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Reuse the retained exact `Radio_Broadcast_Schedule` spreadsheet, or on recorded zero matches call create exactly once and never retry an ambiguous create. Create/reuse exactly one `Playlist` and `Show_Schedule` sheet, write canonical playlist and four runtime-conflict rows, and read both bounded ranges back. Create `Radio_Show_Script.docx` once with exact title, Opening Monologue, Track Introductions for every frozen track and at least eight when supported, and Closing; read it back.",
+      "replacement": "Reuse the retained exact `Radio_Broadcast_Schedule` spreadsheet, or on recorded zero matches call create exactly once and never retry an ambiguous create. Create/reuse exactly one `Playlist` and `Show_Schedule` sheet, write canonical playlist and four runtime-conflict rows, and read both bounded ranges back. Once these spreadsheet read-backs and the canonical playlist are ready, the main agent runs two independent output branches with native-parallel ready-call batches; no sub-agent is dispatched. The main agent is the sole writer of the Word file and the sole owner of the four target calendar events.\n\n- Word branch: Create `Radio_Show_Script.docx` once with exact title, Opening Monologue, Track Introductions for every frozen track and at least eight when supported, and Closing; read it back. Keep document creation and dependent edits ordered within this branch, without waiting for the calendar branch.\n- Calendar branch: Create only missing `Afrobeat Sunday Show` events natively in parallel on April 5/12/19/26 with exact UTC `start.dateTime`/`end.dateTime`, no local timezone, and Show 1–4 descriptions; retain each returned/reused ID and call `get_event`. Calendar calls may proceed while Word creation and its read-back are in progress. Each event get waits for its own retained ID; no two branches modify the same resource.",
+      "explanation": "Word与calendar共享冻结数据且写不同对象；明确分支和单写入者，不引入未要求的角色。"
+    },
+    {
+      "original": "Create only missing `Afrobeat Sunday Show` events natively in parallel on April 5/12/19/26 with exact UTC `start.dateTime`/`end.dateTime`, no local timezone, and Show 1–4 descriptions; retain each returned/reused ID and call `get_event`. Derive `Confirmed`/`Tentative` only from the runtime overlap rule, reconcile spreadsheet/document/calendar, then check Sent mail and send one missing exact-recipient/subject completion email. Read it back and call `claim_done`.",
+      "replacement": "Wait for both branches to complete successfully, including the Word read-back and all four retained event read-backs. Derive `Confirmed`/`Tentative` only from the runtime overlap rule, reconcile spreadsheet/document/calendar, then check Sent mail and send one missing exact-recipient/subject completion email. Do not send a readiness or booking confirmation while either branch is incomplete. Read the email back; only the main agent calls `claim_done` after the successful join and reconciliation.",
+      "explanation": "把原末尾calendar创建移入并行分支，收尾改为双分支成功join；保留Sent去重、read-back和主agent完成权。"
+    }
+  ],
+  "preserved_requirements": [
+    "原版broadcast_guide.md/show_config.json读取、April冲突查询、云表精确名称去重及ID复用保留。",
+    "7ZQzGq32kAY视频metadata后完整timed transcript分页、支持的全部歌段边界、不导入fallback playlist、不编造曲名保留。",
+    "Radio_Broadcast_Schedule两sheet、canonical playlist和四个April周日20:00–22:00 UTC及冲突状态仍按原task。",
+    "Radio_Show_Script.docx固定标题和三节、每曲介绍及至少八曲要求、读回保留；日历四场ID/UTC/Show1–4描述仍按原task和原plan。",
+    "完成邮件仍须三种产物完成后发给station@radioafrica.fm，主题April 2026 Afrobeat Show Schedule Ready；只主agent声明完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "不合并同题其他标注者关于日历描述内容验收的意见；原task要求播放列表说明仍有效，候选仅改变Word/calendar调度关系。"
+  ],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent维持原输入读取、冲突/云表定位、视频分析和云表写入。",
+    "云表就绪后原生并行推进Word与四场日历事件；各自内部操作按真实ID和编辑依赖排队。",
+    "等待两个分支读回成功，再统一核对并发送一封完成邮件。"
+  ],
+  "expected_tradeoff": "待实验验证：Word写入与日历请求可能重叠以缩短收尾时间，但原生并行的工具调度收益尚未验证；增加明确join以避免提前邮件。",
+  "not_runtime_tested": true
+}

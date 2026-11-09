@@ -1,0 +1,24 @@
+{
+  "task_id": "canvas-ta-workload-excel-email",
+  "annotator": "qixin",
+  "reviewer": "second01",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "恢复Excel与Notion两个输出owner并行；报告邮件只等待Excel验证回执，不因Then/Finally引入Excel→Notion→邮件的无关串行。",
+    "对照固定gym提交的email_tools.py第118–132行和pg_backend.py第643–647行，改用真实attachments文件路径列表，删除无证据的接口未知声明及托管URL替代；文件不可访问时明确报告失败。",
+    "发送后通过Sent搜索解析真实邮件ID再读回附件文件名/大小，避免假定send_email成功文本返回ID；对应metadata、能力条件和精确引文已同步。"
+  ],
+  "remaining_conditions": [
+    "send_email已在固定源码中确认支持attachments；运行时仍须保证writer生成的任务workspace绝对路径对邮件服务进程可读。若挂载或读取失败，候选只保留已完成本地产物并明确报告邮件交付未完成，不绕过工具、不伪造URL或以摘要代替报告。"
+  ],
+  "not_runtime_tested": true
+}

@@ -1,0 +1,20 @@
+{
+  "task_id": "canvas-course-comparison-word",
+  "annotator": "qixin",
+  "reviewer": "audit02（独立复核）",
+  "review_type": "static_independent_review",
+  "status": "pass",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "将collector对total_students的检查改为从canvas_get_course元数据读取并验证，不再要求与未承诺该字段的manifest比较；真实course_code和名称仍按manifest核验。同步metadata增加原版锚点与新句精确引文。"
+  ],
+  "remaining_conditions": [],
+  "not_runtime_tested": true
+}

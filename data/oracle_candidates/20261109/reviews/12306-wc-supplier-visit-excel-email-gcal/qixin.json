@@ -1,0 +1,26 @@
+{
+  "task_id": "12306-wc-supplier-visit-excel-email-gcal",
+  "annotator": "qixin",
+  "reviewer": "second02",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "撤销候选对事件和供应商邀请新增的工作簿等待；这些动作消费已核实人员及冻结行程，可与文件writer重叠，采购汇总仍等待文件成功与必要外部回执。",
+    "依据固定邮件源码email_tools.py:118–145及email_service.py:148–168，明确使用attachments文件路径参数实际附送工作簿；以read_email附件名/字节数核验交付，并将未核实挂载保留为条件，避免只引用文件名或假定云分享能力。",
+    "同步metadata中并行关系、具体附件能力、剩余路径条件及精确changes引文；避免将配置附件payload误写成提前执行第二次发送。"
+  ],
+  "remaining_conditions": [
+    "两条同日北京南出发线路需要任务可见的不同人员或团队分配；缺信息时不能捏造姓名或承诺一人同时赴两地，候选明确保持相关访问待完成。",
+    "品类收入排名需要收入及品类关联证据，不能用total_sales销量替代收入；缺字段时该要求未完成。",
+    "附件API已由固定提交源码证实，但本轮未运行邮件服务或检查运行实例挂载；需任务可见的服务路径映射及发送后附件读回，路径不可达或附件缺失时采购汇总交付仍未完成。"
+  ],
+  "not_runtime_tested": true
+}

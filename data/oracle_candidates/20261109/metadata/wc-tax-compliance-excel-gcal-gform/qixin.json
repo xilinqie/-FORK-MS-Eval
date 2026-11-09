@@ -1,0 +1,60 @@
+{
+  "task_id": "wc-tax-compliance-excel-gcal-gform",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "四条提醒要求真正的全天事件。编排却用当天零点至次日零点的 start.dateTime/end.dateTime 创建有时段事件，未设置日期型开始、结束或全天标志，也未验收全天状态。",
+  "interpretation": "把午夜dateTime伪全天改为真实全天语义合同与读回验收；保持主agent计算+双writer原拓扑。固定源码表明现有Calendar仅支持dateTime，因此候选是能力条件化的纠错方案：不虚构工具能力，当前环境缺能力时完成可独立的Excel/Form并明确未完成，不claim_done。",
+  "interpretation_status": "qualified",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "create only missing reminders with start.dateTime=\"[filing-date]T00:00:00\" and end.dateTime=\"[next-civil-date]T00:00:00\" (all-day, description \"Quarterly tax filing deadline reminder\"),",
+      "replacement": "Genuine all-day reminders are mandatory; a midnight-to-midnight timed event is not a substitute.",
+      "explanation": "落实该人的全天语义质疑；不保留将24小时时段称作全天的错误指令。"
+    },
+    {
+      "original": "and retrieve each retained ID with get_event.",
+      "replacement": "Return each retained event ID, exact title, filing date, exclusive end date where applicable and positive all-day verification evidence.",
+      "explanation": "验收由只有ID/时间扩展到真实全天表示及读回证据。"
+    },
+    {
+      "original": "Accept only after every read-back matches the frozen payload, then call claim_done.",
+      "replacement": "If any all-day event is unsupported, unverified, conflicting or missing, report the exact remaining capability or event blocker and the artifacts that did complete; do not call claim_done.",
+      "explanation": "固定工具缺全天能力时明确blocked，不使用未授权API/改harness/直连DB来补能力。"
+    },
+    {
+      "original": "This file is the single binding input for both sub-agents;",
+      "replacement": "Include the frozen four date/title records and complete five-question form contract as output instructions in the same payload.",
+      "explanation": "原冻结口径为第二writer所需的日期和表单合同补齐传递位置，仍禁止下游重读PDF/guide。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读Tax_Regulations.pdf/guide；全订单无status过滤、全税率、同州多税率求和、无同州才空state回退。",
+    "基于未舍入值计算Actual-Expected及含0.50/1.00边界的状态；金额两位/费率四位，字面数值不用公式。",
+    "三张精确sheet、全部订单/州排序、Requires_Filing实际税额>100、九项Overview指标。",
+    "四个提醒仍为2026-04-15 Q1、2026-07-15 Q2、2026-10-15 Q3、2026-01-15 Q4，不顺延Q4年份。",
+    "Vendor Tax Information五问顺序、short_answer三身份字段+Yes/No单选+证件描述/引用文本，不改成上传控件。",
+    "原双writer职责和单写入者、一次冻结不重读源、单次汇总验收、仅主agent整体完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "无法承诺在固定Calendar实现上成功创建真正全天事件：缺日期型/全天参数且返回也不能区分；不能拿午夜时段补交。",
+    "条件性start.date/end.date指令只有实际暴露schema接受且可读回验证时才适用；当前固定schema不是这种接口。",
+    "固定环境不支持时不修改harness、不直连数据库、不调用未授权HTTP API；保留真实能力阻断可能导致该候选不完成全任务。"
+  ],
+  "assumptions": [
+    "原题把Q4明确列在2026年1月15日；候选照原日期，不自行按税务习惯改2027。",
+    "表中的文本状态/州/标签仍为文本；“literal numbers”落实到数值字段，避免强行把文字字段数值化。"
+  ],
+  "capability_conditions": [
+    "固定公开源码证据：toolathlon_gym 872ebef73f170a565136d4521ddb02b41872362e，local_servers/Calendar-Autoauth-MCP-Server/src/index.ts；CreateEventSchema第312–319行仅必填dateTime/可选timeZone，insert第149–156行读取dateTime，formatEvent第31–37行仅输出dateTime。来源 https://github.com/Danield21/toolathlon_gym/blob/872ebef73f170a565136d4521ddb02b41872362e/local_servers/Calendar-Autoauth-MCP-Server/src/index.ts 。静态仅读audit16 supplemental_sources/batch16/calendar_index.ts及manifest，没有读取旧裁定或执行源码。",
+    "运行前须从实际grant的工具声明确认是否已有支持真实全天创建和验证的能力；若仍与上述固定实现一致，该分支明确blocked。候选本身不请求或改造权限。"
+  ],
+  "plan_summary": [
+    "主agent保留全量税务分析，冻结audit_results及事件/表单合同。",
+    "主agent先读实际工具声明，形成真实全天能力结果。",
+    "Wave1两个writer并行：本地Excel；外部Form与受能力条件约束的calendar。",
+    "主agent要求四个真实全天读回；任何缺失都报告未完成，不claim_done。"
+  ],
+  "expected_tradeoff": "合同强化可避免把有时段事件误报为全天成功，但在已知固定工具上可能显式阻断全任务；这是诚实能力边界，不是已验证完成率或效率改进。",
+  "not_runtime_tested": true
+}

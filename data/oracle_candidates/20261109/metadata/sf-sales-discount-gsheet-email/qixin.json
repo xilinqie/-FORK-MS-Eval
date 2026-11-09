@@ -1,0 +1,38 @@
+{
+  "task_id": "sf-sales-discount-gsheet-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求完成 Segment Analysis 表后再发邮件。编排把发信作为独立分支，没有等待共享表写入和回读成功；表格未完成时邮件仍可能发出。",
+  "interpretation": "保留主agent一次聚合与云表/邮件查重原生并行；将实际发信绑定到Segment Analysis写入和全范围回读核对成功，完整覆盖该人的顺序及回读意见。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "Independently search all pages of Sent mail for recipient `finance-team@company.com` and subject `Segment Discount Analysis`; send once only if no exact match exists, name the verified highest-frequency segment and overall discount rate, and read the retained message back.",
+      "replacement": "The read-only search and body preparation may overlap spreadsheet creation, writing, and read-back, but do not send yet. Wait for successful sheet writing and full-range read-back reconciliation before sending any missing email.",
+      "explanation": "保持查重独立，取消发送独立，明确主agent亲自等待写入和回读结果，无跨代理信号依赖。"
+    },
+    {
+      "original": "read the full written range back.",
+      "replacement": "Require matching headers, row coverage, order, and stored numeric values against the frozen aggregates before treating the sheet as complete.",
+      "explanation": "以原回读句为锚点说明完成判据，防止只有空云表ID便发送。"
+    }
+  ],
+  "preserved_requirements": [
+    "仍只看delivered订单，并按客户关联后的精确segment分组。",
+    "discount>0判据、折扣订单平均折扣、全部收入/折扣收入与总体原始分子分母控制保留。",
+    "Discount Analysis Report / Segment Analysis、精确八列、常量数字、两位均值/金额、一位比例、按未舍入折扣率降序及确定性并列规则保留。",
+    "唯一主agent执行云表与邮件；Sent全分页查重、精确finance-team@company.com和Segment Discount Analysis保留。",
+    "邮件报告最高折扣频率分群和按全部订单加权的总体折扣率，并回读核对。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "1. 主agent完成一次订单/客户聚合并冻结排序表和总体控制。",
+    "2. 云表写入/回读与只读Sent预检并行，暂不发送。",
+    "3. 表格核对成功后发送缺少的邮件，回读并核对总体指标再完成。"
+  ],
+  "expected_tradeoff": "待实验验证：发送等待云表写入及回读会增加末端依赖，但能满足指定先后关系；预检并行保留以减少等待。",
+  "not_runtime_tested": true
+}

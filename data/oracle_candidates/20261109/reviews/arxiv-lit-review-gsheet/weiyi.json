@@ -1,0 +1,23 @@
+{
+  "task_id": "arxiv-lit-review-gsheet",
+  "annotator": "weiyi",
+  "reviewer": "audit17",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "将泛称manuscript-source read补为实际白名单支持的list_paper_sections(arxiv_id)→get_paper_section(arxiv_id,section_path)，按真实返回路径读取；必要时用get_paper_prompt并明确缺正文时阻断。同步metadata的精确替换引文、调用证据与plan_summary；五reader/两writer数量、真实产物和只读边界不变。"
+  ],
+  "remaining_conditions": [
+    "原版没有15与5的子agent数量矛盾；Excel三sheet、Notion、JSON和Python脚本也不是本题交付物。这些错误前提未按字面实施，候选只覆盖真实Google Sheet、Memory和review_summary.txt。",
+    "五reader加两writer是对混合意见的限定性解释；原版本已有原生并行，不能将候选称为首次并行化，也不能视为标注者已人工确认该具体实现。"
+  ],
+  "not_runtime_tested": true
+}

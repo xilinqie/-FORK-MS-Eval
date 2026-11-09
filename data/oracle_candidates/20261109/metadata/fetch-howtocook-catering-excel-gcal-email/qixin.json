@@ -1,0 +1,44 @@
+{
+  "task_id": "fetch-howtocook-catering-excel-gcal-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求分别给供应商和活动委员会发两封邮件，内容也不同：前者要完整食材清单和估算总价，后者要逐日菜单与预算。参考编排只安排发送一封汇总邮件，遗漏了独立交付。",
+  "interpretation": "将原单数汇总邮件拆成供应商和委员会两个不同收件人、主题、正文契约，各自发送和读回。保持无委派、主agent负责全流程，不将原A项标签理解成必须新增子agent。",
+  "interpretation_status": "explicit",
+  "change_type": "contract_correction",
+  "changes": [
+    {
+      "original": "and send the summary email exactly once to the brief-defined recipient/subject (paginate Sent search first, read the retained message back).",
+      "replacement": "Finally, the main agent sends two separately routed emails after the workbook and scheduled events have been verified.",
+      "explanation": "替换单封指令，不仅追加第二封说明；两封随后逐一指定地址、主题和内容。"
+    },
+    {
+      "original": "Reconcile workbook, events and email against the frozen menu, then call claim_done; do not add a separate verification phase.",
+      "replacement": "Reconcile workbook, five events, and both emails against the frozen menu, then let the main agent call claim_done only when those required outputs are verified; otherwise report the exact missing output.",
+      "explanation": "最终验收按两份外部交付核对，任一缺失不得伪称完成。"
+    },
+    {
+      "original": "Read Event_Brief.pdf with the authorized PDF read tools and guide.md, and fetch the health-portal landing and dietary-guidelines pages in one native-parallel batch",
+      "replacement": "First read Event_Brief.pdf carefully with the authorized PDF read tools. Then read guide.md and fetch the health-portal landing and dietary-guidelines pages in a native-parallel batch",
+      "explanation": "为保留原task要求先读brief的顺序，限定批量准备在该读取之后；不是新增研究或委派。"
+    }
+  ],
+  "preserved_requirements": [
+    "先读Event_Brief.pdf，再结合guide与健康门户；每日早餐午餐共10餐、50人份、至少两项素食。",
+    "单一Wellness_Menu_Plan.xlsx、Daily Menu/Ingredient Summary/Budget Overview、精确表头、字面量数值及指定成本与预算规则。",
+    "Excel完成后才安排五个2026-03-16至20日07:00–08:00 UTC事件，保留指定标题和无offset ISO写法。",
+    "供应商邮件完整去重食材和总估价；委员会邮件逐日菜单和预算；两个固定邮箱和主题。",
+    "主agent单owner、每表bulk write与最终读回、无额外验证波次。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent读取和冻结输入，选择并计算菜单。",
+    "主agent唯一写入并读回三表工作簿。",
+    "工作簿成功后主agent建立并验证五事件。",
+    "主agent分别去重发送两封不同内容邮件，核对全部交付后声明完成。"
+  ],
+  "expected_tradeoff": "新增第二封必要邮件及独立读回会增加调用量，但覆盖原题独立交付；未经运行，不能宣称提高成功率。",
+  "not_runtime_tested": true
+}

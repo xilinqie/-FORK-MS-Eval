@@ -1,0 +1,44 @@
+{
+  "task_id": "howtocook-weekly-gsheet-gcal",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求邮件说明计划表和七个日历事件已经创建。编排把发送邮件作为与建表、创建事件并行的独立分支，没有等两项都成功就可能提前报完成。",
+  "interpretation": "保留原版主agent及原生并行的建表/建事件，只把完成邮件从独立写入分支改为依赖两项实际成功回执的后续步骤。Sent查重和正文准备仍可并行，发送由主agent在核验21行及7条事件后执行。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "From that table start three independent branches in one native-parallel response:",
+      "replacement": "From that table, the main agent starts the two independent creation branches in one native-parallel response:",
+      "explanation": "将有完成状态依赖的邮件发送移出并行创建组；表格和日历原有并行保持，不增加子agent。"
+    },
+    {
+      "original": "and exhaust Sent-mail search for recipient `meal_planning@service.com` and exact subject `Weekly Meal Plan Ready`, sending it only if absent.",
+      "replacement": "In parallel with these operations, it may exhaust Sent-mail search for recipient `meal_planning@service.com` and exact subject `Weekly Meal Plan Ready` and prepare the body, but it must not send a completion notice yet.",
+      "explanation": "拆开可以提前执行的只读邮件准备和必须等待产物成功的send。"
+    },
+    {
+      "original": "Read the full sheet range, all seven retained events, and the retained email back in native-parallel batches and reconcile all recipe names before completion.",
+      "replacement": "A failed, missing, or unresolved sheet or required event blocks the send.",
+      "explanation": "将原先发送后统一检查中表格/事件的读回前移为发送门槛，新增失败阻断；发送后的message读回仍保留。"
+    }
+  ],
+  "preserved_requirements": [
+    "不派子agent；HowToCook只读，早餐/素菜/荤菜三类各7个不同ID，总计21个唯一菜谱。",
+    "21次独立菜谱详情原生并行；完整英文菜名、按烹饪步骤Easy/Medium/Hard阈值5/10及准备时长15/30/60保持。",
+    "Weekly Meal Plan单sheet五列和21条数据；Day1至7各Breakfast/Lunch/Dinner排序。",
+    "2026-04-07至04-13七条Dinner Prep - Day X事件，每日18:00至19:00，描述含当天英文晚餐菜名，不添加未指定时区。",
+    "meal_planning@service.com及Weekly Meal Plan Ready主题不变，正文保留七日概述及表/事件已创建事实。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent并行读三类及21项详情，统一冻结菜名和步骤规则。",
+    "原生并行建Google表和七条事件，同时可只读查Sent及准备正文。",
+    "主agent成功读回并核对表和全部事件后，才发缺少的完成邮件。",
+    "回读邮件并确认其完成陈述有实际产物ID支撑，再声明完成。"
+  ],
+  "expected_tradeoff": "发送门槛可能避免某项产物失败时的提前完成通知，但增加通知等待时间；维持主agent原生并行是否更经济需要实验验证。",
+  "not_runtime_tested": true
+}

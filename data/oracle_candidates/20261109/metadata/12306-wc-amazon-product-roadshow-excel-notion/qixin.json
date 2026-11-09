@@ -1,0 +1,53 @@
+{
+  "task_id": "12306-wc-amazon-product-roadshow-excel-notion",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "题目中说，这个 Excel 工作簿包含四个表，这四个表应该有一个并行，然后这四个的并行，而不是说这四个在一个 sub task 里面是串行。",
+  "interpretation": "把“四表应该并行”落实为四个office coder并行生成独立sheet payload，主agent等待四份结果后唯一组装最终xlsx。保留原版两个只读来源代理和主agent知识库/邮件职责，不把原版误称为已证明串行。",
+  "interpretation_status": "qualified",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "To solve this task efficiently, use exactly one read-only source wave.",
+      "replacement": "To solve this task efficiently, use one read-only source wave followed by one parallel sheet-preparation wave.",
+      "explanation": "增加一波四表并行准备，来源读取波次保留。"
+    },
+    {
+      "original": "return only the five product rows plus compact Shanghai/Guangzhou customer-count, order-revenue, share, page, and join controls.",
+      "replacement": "Return the five product rows plus a compact customer-count, order-revenue, and revenue-share summary for every key region identified in the data, explicitly including Shanghai and Guangzhou, with page and join controls.",
+      "explanation": "为独立Customer_Regions制表者提供任务所要求的全部关键区域输入；没有注入GT区域或数值，仍保留上海/广州和分页/关联控制。"
+    },
+    {
+      "original": "Create `Roadshow_Plan.xlsx` with exactly the four required sheets, five products, both configured train rows, and at least four city schedule rows using literal numeric values.",
+      "replacement": "Wave 2 — dispatch exactly 4 coder sub-agents in parallel, each using the office-report-builder role and owning only its separately named sheet payload:",
+      "explanation": "四个制表payload各由一个有本地写权限的office coder生成，来源explore仍只读。"
+    },
+    {
+      "original": "Do not dispatch a writer or verification wave.",
+      "replacement": "The main agent is the sole writer of the final `Roadshow_Plan.xlsx`: assemble the four validated payloads into exactly `Products`, `Customer_Regions`, `Travel_Itinerary`, and `Roadshow_Schedule`, in that order, using literal numeric cells and no formulas.",
+      "explanation": "替换禁止writer波的原句为安全并行准备加单写入者组装；仍不增加单独验证波。"
+    }
+  ],
+  "preserved_requirements": [
+    "仍读取roadshow_config.json和business_guide.md，按任务优先列车和两城日期执行。",
+    "原始销量前十、详情前五、完整顾客/订单分页和两条2026-03-10高铁查询保留。",
+    "Roadshow_Plan.xlsx四个指定sheet/列、五产品、两列车、至少四日程行、数值常量及上海/广州Priority 1保留。",
+    "指定知识库标题、五产品卖点、两段行程、Follow-up Actions和三组精确收件人/主题保留。",
+    "explore不写文件；office coder只写各自workspace payload；主agent唯一写最终工作簿、知识库和邮件并声明完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "不让四个agent并发写同一个xlsx；按意见实现四表数据准备并行，最终文件由主agent单次组装。",
+    "原版未明确强制四表串行；本候选新增的是显式四代理准备结构，不以“原版一定串行”为事实前提。"
+  ],
+  "assumptions": [
+    "四个sheet所需输入在来源波次后由主agent冻结，代理不需要互相通信。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "1. 主agent读配置并冻结口径；两个explore并行返回电商/铁路数据。",
+    "2. 主agent校验并为四个office coder分配不同JSON路径，四表payload并行制作；知识库写入可由主agent独立推进。",
+    "3. 主agent等待四份结果并唯一组装xlsx，回读工作簿/页面后处理三封邮件并确认完成。"
+  ],
+  "expected_tradeoff": "待实验验证：四表准备可并行，但额外四次代理启动和payload交接可能增加成本及延迟；不预设优于原版。",
+  "not_runtime_tested": true
+}

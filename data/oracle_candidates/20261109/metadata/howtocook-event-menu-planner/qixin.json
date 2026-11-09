@@ -1,0 +1,35 @@
+{
+  "task_id": "howtocook-event-menu-planner",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题明确要求创建 Excel 后才发送给餐饮协调员。参考编排把发送邮件与生成工作簿放在同一响应，缺少等待工作簿生成成功的依赖。",
+  "interpretation": "保持原版无委派、独立输入读取原生并行和单份规范菜单数据，只将发送邮件改为工作簿创建/填充/读回成功后的后继；不因Start/Next/Then列表词添加与本意见无关的输入串行化。",
+  "interpretation_status": "explicit",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "In the same response as the independent workbook creation, send exactly one email from `events@company.com` to `catering@vendor.com` with subject `Menu Plan for Annual Company Dinner`, using the frozen event date, guest count, total cost, and accommodations; do not add a sent-mail discovery loop. Read each populated workbook sheet back once, reconcile it to the canonical table, and finish without a separate verification wave.",
+      "replacement": "After the workbook has been created and fully populated, read each populated workbook sheet back once and reconcile it to the canonical table. Only after this succeeds, send exactly one professional email from `events@company.com` to `catering@vendor.com` with subject `Menu Plan for Annual Company Dinner`, using the verified menu summary, frozen event date, guest count, total cost, and accommodations. Do not dispatch the send in the workbook-creation response, and do not add a sent-mail discovery loop. If workbook creation, population, or read-back fails, report the missing result and do not send the menu-plan email. Finish without a separate verification wave; only the main agent declares overall completion.",
+      "explanation": "直接落实指定B意见：先创建填充并读回Excel，再发邮件；仍由主agent全程单写入且不增加查重循环或审核波。"
+    }
+  ],
+  "preserved_requirements": [
+    "从给定API获取活动详情、读取Dietary_Guidelines.pdf及供应商联系人文件；只在任务workspace读写，不假定/workspace。",
+    "保留三类精确菜谱检索、仅取六个已选ID、稳定ID与中文原名证据、固定英文翻译、每道服务50人、每菜至少标准和素食/无麸质选项。",
+    "Event_Menu.xlsx由主agent唯一写入，保留Menu Plan、Ingredient List、Cost Summary、Dietary Accommodations四表及全部指定表头。",
+    "菜谱缺量/单位/价格时明确估计与理由；合并食材按50人计算，成本/人=总成本/50，预算差=预算/人−成本/人，服务费=总成本15%，金额为数值常量。",
+    "Dietary_Tags使用Vegetarian、Gluten-Free、Nut-Free全称，保留素食、无麸质、坚果过敏及交叉污染预防证据；邮件发件人、收件人、主题、活动日期、人数、成本和饮食安排不变。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "活动详情、饮食指南、联系人和已知类别的菜谱列表可独立读取；选择菜单、估价和饮食适配实际消费这些输入，必须在读取完成后处理。题面明确After creating the Excel file则作为正式邮件发送的完成门槛保留。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent保留活动详情、饮食指南、联系人及三类菜谱列表的原生并行读取；选菜消费已获取的要求和指南，再并行取六项详情。",
+    "统一菜单与估计后单写Event_Menu.xlsx，读回四表。",
+    "只有工作簿成功验收后才发送一封菜单邮件；无子agent、无额外验证波。"
+  ],
+  "expected_tradeoff": "预期使协调员收到的总结对应实际已创建工作簿；独立输入读取维持原并行，仅邮件发送被推迟到文件完成验收之后，实际延迟影响需实验验证。",
+  "not_runtime_tested": true
+}

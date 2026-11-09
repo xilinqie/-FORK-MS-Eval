@@ -1,0 +1,20 @@
+{
+  "task_id": "howtocook-scholarly-health-study",
+  "annotator": "qixin",
+  "reviewer": "/root/audit03",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [],
+  "remaining_conditions": [
+    "静态合约已补齐逐食材真实每100g数值、数量缩放以及五条逐菜研究关联；若运行时nutrition_reference.json缺所选食材数值，或配方数量无法有据换算为克，必须按候选报告具体缺项而非填0或虚构值。此条件来自候选明确限定，未运行核实是否实际缺失。"
+  ],
+  "not_runtime_tested": true
+}

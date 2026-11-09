@@ -1,0 +1,53 @@
+{
+  "task_id": "terminal-canvas-gform-gcal-excel-email",
+  "annotator": "qixin",
+  "candidate_id": "C_qixin",
+  "source_reason": "原题要求邮件确认补救复习场次已排定。参考编排把邮件和日历设为独立分支，邮件只等待统计结果，可能在相关日历事件未创建或未核验时提前报完成。",
+  "interpretation": "把原来只依赖统计总数的完成邮件改为依赖实际form receipt和全部所需calendar event read-back。保留无委派主agent、十一quiz数据与计算口径、外部精确去重。工作簿继续与日历并行写入并回读，最终统一核对其schedule与真实事件；邮件不宣称Excel完成，故不额外等待workbook。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "Then perform the three independent outputs directly with native-parallel batches:",
+      "replacement": "Run the calendar and workbook branches independently from the frozen packet.",
+      "explanation": "仅移除calendar与完成邮件之间错误的独立关系；保留calendar和workbook原有独立并行。"
+    },
+    {
+      "original": "Send at most once after canonical totals exist, then read back.",
+      "replacement": "After the form read-back and all required event read-backs have succeeded, finish the paginated Sent search/read for exact coordinator@assessment.example.com -> faculty@assessment.example.com and subject Quiz Performance Analysis - Cross-Course Review.",
+      "explanation": "统计结果就绪不再足够；邮件实际声明表单已建和复习场次已排，所以等待这两项真实完成。单独Finally不作为等待独立Excel分支的硬门槛。"
+    },
+    {
+      "original": "Sole-write Quiz_Performance_Report.xlsx with exactly the three requested sheets, eleven quiz rows, five survey rows and one schedule row per flagged quiz; use literal values and read every populated range back.",
+      "replacement": "The main agent may write and read back the workbook and perform the exact Sent-mail search while calendar operations run.",
+      "explanation": "保留原版独立Excel写入及Sent搜索的并行性；最终统一核验schedule与真实事件，但不因枚举次序额外延迟文件生成或邮件。"
+    },
+    {
+      "original": "Verify canvas_get_course(7) is CCC-2014J and canvas_get_course(11) is DDD-2013B.",
+      "replacement": "Use canvas_list_courses and canvas_get_course to confirm course 7 is Creative Computing and Culture (Fall 2014 / CCC-2014J) and course 11 is Data-Driven Design (Spring 2013 / DDD-2013B).",
+      "explanation": "按原题显式要求同时使用list_courses与get_course确认课程；只是完整保留题面硬约束，不改变原固定ID与数据统计口径。"
+    }
+  ],
+  "preserved_requirements": [
+    "主agent直做，不新增子agent或audit/repair wave；仍读取Program_Guidelines.pdf与analysis_config.json。",
+    "保持课程7/11、原plan的11个quiz IDs、live titles、score>=70、0–100 pass rate、average<75，以及按submission行ID去重。",
+    "写并运行analyze_quiz_performance.py一次，得到quiz_performance_results.json，保留submission-weighted course/program average及绝对course gap。",
+    "Academic Performance Self-Assessment恰好五题，保留自由文本/单选类型、所有选项及题序，创建一次并回读。",
+    "复习场次从2026-03-16 14:00开始，按quiz-ID每日一次、每次1小时，标题Quiz Review: [实际标题]，保留配置/环境可见时区规则。",
+    "Quiz_Performance_Report.xlsx三个sheet与精确header、所有quiz、五题及实际场次，数值字面量、无公式；邮件固定from/to/subject及总数、flagged数、program average、完成声明。"
+  ],
+  "qualified_or_unimplemented": [],
+  "assumptions": [
+    "若flagged集合为空，则已核验空事件集满足无场次需求；邮件应说明无需复习而不能虚构已创建事件。",
+    "题面的Finally单独用于枚举，邮件未宣称Excel已完成，因此仅其明确完成声明涉及的表单与日历构成发送前置条件；Excel仍须在整体完成前通过核验。"
+  ],
+  "capability_conditions": [],
+  "plan_summary": [
+    "主agent按原流程取数、运行统计脚本、创建并核验五题表单。",
+    "主agent并行执行flagged日历分支与Excel写入/回读分支。",
+    "邮件等待真实表单与全部所需event receipts，保持与不相关Excel分支的独立性。",
+    "最终核对Excel schedule与实际事件、表单和邮件；整体完成仍等待全部产物。"
+  ],
+  "expected_tradeoff": "该依赖修正可能减少邮件早于实际排课完成的情况，但增加邮件对日历的等待时间；保留独立Excel分支及事件调用内部并行，实际可靠性与耗时待实验验证。",
+  "not_runtime_tested": true
+}

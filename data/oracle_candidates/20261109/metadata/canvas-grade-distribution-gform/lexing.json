@@ -1,0 +1,56 @@
+{
+  "task_id": "canvas-grade-distribution-gform",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "excel和survey可以在wave2分开两个agent进行",
+  "interpretation": "将原版主agent直接制作Excel和表单改为Wave 2中两个不同权限的单一owner，在共享分析冻结后完整并行创建与验收。题面的First/Second是交付事项枚举；表单不消费工作簿，也无明确after-workbook-ready门槛，因此不添加跨产物等待。另将原版错误分给只读explore的脚本执行移至主agent，采集者只交接许可范围内工具结果引用。",
+  "interpretation_status": "explicit",
+  "change_type": "mixed",
+  "changes": [
+    {
+      "original": "let the main agent itself produce the workbook, the form and the email — no second wave.",
+      "replacement": "then use exactly two artifact owners in Wave 2: one for the workbook and one for the survey.",
+      "explanation": "新增两个artifact owner，分别用office与external权限；邮件仍由主agent负责。"
+    },
+    {
+      "original": "Aggregate all graded submissions in one script execution",
+      "replacement": "the main agent verifies exactly one complete handoff per course and uses one task-approved local script execution to consume all six courses' permitted result references",
+      "explanation": "必要权限修正：enterprise-data-analyst没有脚本执行权限，改为主agent消费结果引用并聚合；统计口径不变。"
+    },
+    {
+      "original": "The main agent then completes every output directly, with no further delegation:",
+      "replacement": "Wave 2 — dispatch exactly 2 coder sub-agents in parallel, with separate ownership and no cross-artifact creation gate:",
+      "explanation": "按意见明确拆成可完整并行的两个writer，不让office角色创建外部表单；冻结共享分析后无需Excel→Form依赖。"
+    },
+    {
+      "original": "call create_form(title=\"Spring 2014 Course Feedback Survey\") exactly once",
+      "replacement": "While coder 0 builds the workbook, call create_form(title=\"Spring 2014 Course Feedback Survey\") exactly once and retain the returned formId; do not wait for the workbook to finish.",
+      "explanation": "明确Form创建、顺序加题和回读可以与Excel生成/验收重叠；First/Second并非明示workflow屏障，Form的真实依赖仅是其自身formId与题目顺序。"
+    }
+  ],
+  "preserved_requirements": [
+    "六门Spring 2014课程的完整名称/代码和公开原版课程ID；分页读取全部graded且数值分数的提交。",
+    "课程均值/中位数、>=60通过率、distinct user_id人数；Summary为课程均值等权平均，极值以未舍入均值与课程代码tie-break。",
+    "Grade_Distribution_Report.xlsx的两个精确sheet、列与四项Summary；数值字面量，单写入者。",
+    "问卷精确标题与四种题目、选项，suggestions为optional text；同一form按序加题。",
+    "邮件精确From/To/subject、先确认产物、Sent去重与回读；仅主agent声明完成。"
+  ],
+  "qualified_or_unimplemented": [
+    "原版explore执行聚合脚本不符合固定角色权限；为形成可执行候选，把聚合移交主agent。人工要求的两个writer完整并行已实现。"
+  ],
+  "assumptions": [
+    "人工意见没有规定Wave 2两writer的具体权限角色，按本地文件/外部表单分配office-report-builder与external-workflow-operator。",
+    "原题First/Second用于枚举成绩报告与问卷事项；没有要求按给定workflow严格执行，也没有要求问卷读取工作簿。两个writer在同一冻结分析之后启动，邮件仍等待两份产物的真实完成。"
+  ],
+  "capability_conditions": [
+    "Canvas分页工具必须提供完整且位于许可task workspace内的可读结果引用；若仅有截断预览或引用在workspace外，采集者报告缺失并阻断聚合，不读取外部路径、不伪造统计。"
+  ],
+  "plan_summary": [
+    "主agent发现课程；六个只读collector并行获取完整分页引用。",
+    "主agent一次脚本聚合所有课程、验证并冻结课程统计与Summary。",
+    "Wave 2的Excel owner与Form owner同时创建各自唯一产物并各自回读；Form内部题目按序添加，无跨artifact等待。",
+    "主agent等待两产物就绪后发送并验证邮件，统一声明完成。"
+  ],
+  "expected_tradeoff": "可能通过两个writer完整并行降低artifact阶段的等待并减少主agent工具负载，但增加两次委派与交接成本；不预设优于主agent原生并行，实际收益待实验验证。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,50 @@
+{
+  "task_id": "yf-stock-volatility-terminal",
+  "annotator": "lexing",
+  "candidate_id": "C_lexing",
+  "source_reason": "波次2似乎不需要",
+  "interpretation": "将“波次2似乎不需要”解释为取消第二波coder委派，而非删除计算和Excel工作；五个研究agent保留，主agent在数据就绪后直接用terminal/Python计算、写表与回读。",
+  "interpretation_status": "inferred",
+  "change_type": "orchestration_change",
+  "changes": [
+    {
+      "original": "use two dependency waves: five explore sub-agents for the independent daily series and one coder writer for calculation and the workbook.",
+      "replacement": "use one research wave with five explore sub-agents for the independent daily series; the main agent performs all subsequent calculation, workbook writing and completion checks directly.",
+      "explanation": "移除第二波角色边界，完整保留必需处理与成品生成。"
+    },
+    {
+      "original": "Use one Coder sub-agent as the sole calculation/workbook owner.",
+      "replacement": "Without dispatching a coder, the main agent is the sole calculation/workbook owner.",
+      "explanation": "主agent接管原writer工作及校验，避免删波次同时删任务。"
+    },
+    {
+      "original": "persist every sorted Date/Close row to its own runtime-unique JSON, read it back",
+      "replacement": "the main agent alone persists each complete series once to its own runtime-unique symbol JSON in the workspace, reads it back",
+      "explanation": "固定研究角色只读，因此五路返回结构化结果，主agent负责持久化；为工具权限所必需的伴随修复。"
+    }
+  ],
+  "preserved_requirements": [
+    "五证券、2025-03-06到2026-03-06 end-exclusive、interval=1d、auto_adjust=true不变；完整交易日不硬凑252。",
+    "精确行业映射、门户原始阈值与边界语义、样本标准差对数收益年化、正最大回撤及首尾收益公式不变。",
+    "保留Risk Analysis全部8列、Daily Returns全部4列、三表名称/排序/日期/数字精度/首日空或零。",
+    "保留全部六Summary标签，非空ticker及源表行数、首末收益、类别和日期边界检查。",
+    "终端运行Python，不访问workspace外数据，不增加新agent。"
+  ],
+  "qualified_or_unimplemented": [
+    "意见措辞未指明由谁接管第二波工作；本候选选择主agent接管，不能删除任务要求的计算或workbook。"
+  ],
+  "assumptions": [
+    "起点仅为固定公开原版sources/tasks/yf-stock-volatility-terminal/plan.md（MS-Eval 4c1bbd3dc0d736623bba563e56cfd8666f85daac）；不使用26题修订。",
+    "按最小必要改写保留原版门户前置读取；行情和门户不消费彼此输出，题面的Start by不是明示全流程顺序，取消第二coder波次不需要另改门户调度。"
+  ],
+  "capability_conditions": [
+    "五个研究角色须返回完整价格行或主agent可读的合法工具结果引用；若只有计数/不存在路径，则不能处理或宣称完成。"
+  ],
+  "plan_summary": [
+    "主agent保留原版门户前置读取并冻结阈值，五个只读行情agent随后并行，主agent保存返回序列。",
+    "全部输入就绪后，主agent直接用terminal/Python计算和写Excel。",
+    "主agent回读全部成品并检查，无第二writer波次。"
+  ],
+  "expected_tradeoff": "预计减少一次委派和writer交接，但主agent需承载计算脚本与验证上下文；总成本和准确性仍待实验。",
+  "not_runtime_tested": true
+}

@@ -1,0 +1,24 @@
+{
+  "task_id": "terminal-sf-scholarly-excel-ppt-gcal",
+  "annotator": "lexing",
+  "reviewer": "audit01",
+  "review_type": "static_independent_review",
+  "status": "pass_with_conditions",
+  "checks": {
+    "feedback_coverage": true,
+    "task_contract": true,
+    "dependencies": true,
+    "role_permissions": true,
+    "no_answer_injection": true,
+    "metadata_traceability": true
+  },
+  "issues_fixed": [
+    "对原本高层“两周日历查询”补最小工具兼容：显式maxResults并在limit命中时增大limit，未虚构分页。",
+    "记录固定calendar的contained-range边界限制及实际证据核对路径；保留检索/脚本编写并行及真实输入到齐才运行的核心候选，metadata列明工具语义问题未被修复。"
+  ],
+  "remaining_conditions": [
+    "人工建议仅能安全实现为检索与match_recommendations.py编写并行；正式运行仍必须等待真实sales_gaps.json与真实论文信息。metadata已明确限定，不伪装完整独立并行。",
+    "固定日历contained-range语义不能单凭两周窗口排除跨边界占用；实验前需确认边界事件，候选记录查询范围并处理有证据事件，不能宣称已修复工具语义。"
+  ],
+  "not_runtime_tested": true
+}
